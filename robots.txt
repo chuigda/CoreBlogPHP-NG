@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow:
 
-Sitemap: /sitemap.xml
+Sitemap: https://chuigda.doki7.club/sitemap.xml
