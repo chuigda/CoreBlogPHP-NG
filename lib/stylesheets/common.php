@@ -6,7 +6,16 @@ body {
 }
 
 h1 {
+    font-size: 1.5em;
     text-align: center;
+}
+
+h2 {
+    font-size: 1.33em;
+}
+
+h3 {
+    font-size: 1.17em;
 }
 
 a {
