@@ -20,14 +20,14 @@ foreach ($lines as $line) {
 
     $index_page = true;
     $title = ucfirst($filename);
-    $lastmod = date('Y-m-d');
     if ($directory == '.') {
         $url = 'https://chuigda.doki7.club/'.$filename.'.html';
     } else {
         $url = 'https://chuigda.doki7.club/'.$directory.'/'.$filename.'.html';
     }
 
-    if ($suffix === '.ini') {
+    $lastmod = date('Y-m-d');
+    if ($suffix === 'ini') {
         $ini = parse_ini_file(__DIR__.'/'.$line);
 
         $index_page = false;
