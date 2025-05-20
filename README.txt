@@ -1,3 +1,3 @@
-= CoreBlogPHP-NG
+= CoreBlogPHP-N²G
 
-Neue Genesis CoreBlog and Personal Home Page, now in PHP again
+Neue Genesis Personal Home Page, now in PHP again

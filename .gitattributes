@@ -1,0 +1,5 @@
+extra/code/**/* linguist-generated
+*.ini linguist-generated
+*.typ linguist-generated
+
+*.php linguist-language=PHP
