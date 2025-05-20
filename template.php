@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title><?php echo $webpage_title; ?></title>
         <meta name="description" content="<?php echo $webpage_title ?>" />
+        <meta name="google-site-verification" content="zweSq9tV-4NYWcoheVVgcIR6Z9HQx5z9B5pHxfZKRM8" />
         <?php include './lib/color-scheme.php' ?>
         <?php include './lib/stylesheets/common.php' ?>
         <?php include './lib/stylesheets/iexplorer.php' ?>

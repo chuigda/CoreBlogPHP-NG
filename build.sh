@@ -11,6 +11,7 @@ mkdir output/resume
 echo "Generating TOC"
 find content -iname "*.php" -o -iname "*.ini" -o -iname "*.html" > tmp/toc.txt
 ./toc-pregen.php > tmp/toc.json
+./sitemap.php > output/sitemap.xml
 
 for file in `find content -iname "*.php" -o -iname "*.html" -o -iname "*.md" -o -iname "*.pdf"`; do
     # replace all occurrences of "content/" with "output/" in the file
@@ -41,5 +42,7 @@ for file in `find content -iname "*.pdf" -o -iname "*.typ"`; do
 done
 
 echo "Copying extra"
-
 cp -r ./extra output/extra
+
+echo "Copying robots.txt"
+cp ./robots.txt output/robots.txt
