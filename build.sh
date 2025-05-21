@@ -18,20 +18,9 @@ for file in `find content -iname "*.php" -o -iname "*.html" -o -iname "*.md" -o 
     output_file=${file/content\//output\/}
     # replace all suffix (any suffix, not only .php) to .html
     output_file=${output_file%%.*}.html
+
     echo "Processing $file -> $output_file"
-
-    # get the folder the file is in. for example, file is content/literature/a.md,
-    # the folder is literature
-    folder=$(dirname "$file")
-    filenav=$(basename "$folder")
-    # if filenav == "content", then use the name of the file itself instead
-    if [[ "$filenav" == "content" ]]; then
-        filenav=$(basename "$file")
-        # strip suffix
-        filenav=${filenav%%.*}
-    fi
-
-    ./template.php "$file" "$filenav" > "$output_file"
+    ./template.php "$file" > "$output_file"
 done
 
 for file in `find content -iname "*.pdf" -o -iname "*.typ"`; do
