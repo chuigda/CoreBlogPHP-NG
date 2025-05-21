@@ -5,6 +5,10 @@ body {
     color: var(--body-text-color);
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: var(--title-color);
+}
+
 h1 {
     font-size: 1.5em;
     text-align: center;
@@ -103,35 +107,18 @@ nav.top a.current {
 
     overflow: auto;
     font-family: var(--code-font-family);
-    font-size: 10pt;
+    font-size: 12pt;
     user-select: none;
-    padding-right: 1em;
+    padding: 0.5em 1em 0.5em 0.5em;
     text-wrap: nowrap;
 }
 
-.tree-view ul {
-    padding-left: 1em;
+.tree-view details > :not(summary)::before {
+    content: '├╴';
 }
 
-.tree-view > .toc-content > ul {
-    padding-left: 0.5em;
-}
-
-.tree-view li {
-    /* use ├ instead of dot */
-    list-style-type: none;
-}
-
-.tree-view li:first-child::before {
-    content: "┌╴";
-}
-
-.tree-view li::before {
-    content: "├╴";
-}
-
-.tree-view li:last-child::before {
-    content: "└╴";
+.tree-view details > :not(summary):last-child::before {
+    content: '└╴';
 }
 
 .tree-view a.current {
