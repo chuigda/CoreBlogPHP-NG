@@ -33,8 +33,8 @@ foreach ($lines as $line) {
         $index_page = false;
         $title = $ini['title'];
         $bcad = bcadtime($ini['time']);
-        if ($bcad['bc'] || $bcad['time'] < strtotime('1980-01-01')) {
-            $lastmod = '1980-01-01';
+        if ($bcad['bc'] || $bcad['time'] < strtotime('2000-01-01')) {
+            $lastmod = '2000-01-01';
         } else {
             $lastmod = date('Y-m-d', $bcad['time']);
         }
