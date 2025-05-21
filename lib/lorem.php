@@ -21,7 +21,11 @@ function initMetadata() {
         }
         $webpage_title = $ini['title'].' - Chuigda Homepage';
     } else {
-        $webpage_title = join(' - ', array_reverse($file_name_parts)).' - Chuigda Homepage';
+        // use the last part of $file_name_parts, do not modify the array
+        $last_part = $file_name_parts[count($file_name_parts) - 1];
+        $name_without_extension = pathinfo($last_part, PATHINFO_FILENAME);
+
+        $webpage_title = ucfirst($name_without_extension).' - Chuigda Homepage';
     }
 }
 
