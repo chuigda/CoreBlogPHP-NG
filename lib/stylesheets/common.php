@@ -107,7 +107,7 @@ nav.top a.current {
 
     overflow: auto;
     font-family: var(--code-font-family);
-    font-size: 12pt;
+    font-size: 11pt;
     user-select: none;
     padding: 0.5em 1em 0.5em 0.5em;
     text-wrap: nowrap;
