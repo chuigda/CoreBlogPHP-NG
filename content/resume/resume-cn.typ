@@ -48,7 +48,7 @@
   name: "陈天泽",
   contacts: (
     (type: "电话", value: "175 5416 0152"),
-    (type: "邮箱", value: "icey@icey.tech", link: "mailto://icey@icey.tech"),
+    (type: "邮箱", value: "chuigda@doki7.club", link: "mailto://chuigda@doki7.club"),
     (type: "GitHub", value: "chuigda", link: "https://github.com/chuigda"),
     (type: "网站", value: "CoreBlogN²G", link: "https://chuigda.doki7.club"),
   ),

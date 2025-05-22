@@ -43,8 +43,8 @@
 #show: project.with(
   name: "Chen Tianze",
   contacts: (
-    (type: "Phone", value: "175 5416 0152"),
-    (type: "E-Mail", value: "icey@icey.tech", link: "mailto://icey@icey.tech"),
+    (type: "Phone", value: "(+86) 175 5416 0152"),
+    (type: "E-Mail", value: "chuigda@doki7.club", link: "mailto://chuigda@doki7.club"),
     (type: "GitHub", value: "chuigda", link: "https://github.com/chuigda"),
     (type: "Website", value: "CoreBlogN²G", link: "https://chuigda.doki7.club"),
   )
