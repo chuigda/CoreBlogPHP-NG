@@ -1,7 +1,7 @@
 <style>
 :root {
-    --body-font-family: 'Noto Sans CJK SC', 'Noto Sans SC', 'Noto Sans', Dengxian, sans-serif;
-    --code-font-family: 'Fira Code', 'Noto Sans Mono', 'Dejavu Sans Mono', 'Consolas', 'Lucida Console', monospace;
+    --body-font-family: 'Noto Sans CJK SC', 'Noto Sans SC', 'Noto Sans', Dengxian, 'Microsoft YaHei', sans-serif;
+    --code-font-family: 'Fira Code', 'Noto Sans Mono', 'Dejavu Sans Mono', 'Consolas', 'Lucida Console', Dengxian, 'Microsoft YaHei', monospace;
 }
 
 /* 取材自 GitHub Light/Dark Colorblind 颜色主题，使用 Gemini-2.5 Pro 自动生成 */
