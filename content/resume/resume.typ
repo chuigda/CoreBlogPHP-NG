@@ -137,7 +137,7 @@ _JavaScript, HTML5, WebGL, CG_
 - Implemented games against AI with fairy-stockfish engine through WebAssembly.
 - Designed and implemented a highly extensible script system based on JavaScript, and developed a visual editor based on Blockly, which can achieve interactive teaching functions similar to game BOT.vinnik or software PyChess.
 
-*vulkan4j*, Java CG API bindings based on FFM #h(1fr) #link("https://github.com/chuigda/vulkan4j", text(blue, "https://github.com/chuigda/vulkan4j"))
+*vulkan4j*, Java CG API bindings based on FFM #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
 _Java, Kotlin, Vulkan, OpenGL, CG_
 

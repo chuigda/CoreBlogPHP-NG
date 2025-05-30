@@ -139,7 +139,7 @@ _JavaScript, HTML5, WebGL, CG_
 - 通过 WebAssembly 接入 fairy-stockfish 引擎实现人机对战
 - 基于 JavaScript 设计了高度可扩展的脚本系统，并基于 Blockly 开发了可视化编辑器，可实现类似于游戏 BOT.vinnik 或软件 PyChess 的交互式教学功能
 
-*vulkan4j*，基于 FFM 的图形学 API Java 绑定 #h(1fr) #link("https://github.com/chuigda/vulkan4j", text(blue, "https://github.com/chuigda/vulkan4j"))
+*vulkan4j*，基于 FFM 的图形学 API Java 绑定 #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
 _Java, Kotlin, Vulkan, OpenGL, CG_
 
