@@ -139,13 +139,15 @@ _JavaScript, HTML5, WebGL, CG_
 - 通过 WebAssembly 接入 fairy-stockfish 引擎实现人机对战
 - 基于 JavaScript 设计了高度可扩展的脚本系统，并基于 Blockly 开发了可视化编辑器，可实现类似于游戏 BOT.vinnik 或软件 PyChess 的交互式教学功能
 
-*vulkan4j*，基于 FFM 的图形学 API Java 绑定 #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
+*vulkan4j*，基于 FFM 的游戏常用 API Java 绑定 #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
-_Java, Kotlin, Vulkan, OpenGL, CG_
+_Java, Kotlin, Vulkan, OpenGL, OpenAL, CG_
 
-- 使用自动脚本从 Vulkan 注册表 `vk.xml`、OpenGL 注册表 `gl.xml`、Vulkan 内存分配器头文件 `vma.h` 和 GLFW  头文件 `glfw3.h` 抽取函数和类型定义，并生成 Java 绑定
+- 使用自动脚本从 Vulkan 注册表 `vk.xml`/`video.xml`、OpenGL 注册表 `gl.xml`、Vulkan 内存分配器头文件 `vma.h`、GLFW  头文件 `glfw3.h`/`glfw3native.h` 和 OpenAL 头文件 `al.h`/`alc.h`/`alext.h`/`efx.h` 抽取函数和类型定义，并生成 Java 绑定
 - 提供适度的 Java 抽象，使这些 API 更易于使用，也更加类型安全
-- 基于绑定后的 API 移植了完整的 Vulkan 教程
+- 基于绑定后的 API 移植了完整的 Vulkan 教程和部分 LearnOpenGL 教程移植
+
+#colbreak()
 
 *Vulkan-Tutorial-Rust-CN*，Vulkan 教程（Rust）的中文翻译 #h(1fr) #link("https://vk.7dg.tech", text(blue, "https://vk.7dg.tech"))
 
@@ -153,8 +155,6 @@ _Rust, Vulkan, CG, Translation_
 
 - 主导完整翻译了 #link("https://kylemayes.github.io/vulkanalia/introduction.html", text(blue, "Rust 版 Vulkan 教程"))，主要参与人员多达 8 人
 - 参考了未完成的 C++ 版教程中文翻译，在术语上作了严格的考证，表达方式尽可能贴合中文习惯
-
-#colbreak()
 
 *Project-WG*，3D 虚拟形象 #h(1fr) #link("https://github.com/chuigda/Project-WG", text(blue, "https://github.com/chuigda/Project-WG"))
 

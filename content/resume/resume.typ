@@ -139,9 +139,9 @@ _JavaScript, HTML5, WebGL, CG_
 
 *vulkan4j*, Java CG API bindings based on FFM #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
-_Java, Kotlin, Vulkan, OpenGL, CG_
+_Java, Kotlin, Vulkan, OpenGL, OpenAL, CG_
 
-- Designed and implemented extraction of function and type definitions from Vulkan registry `vk.xml`, OpenGL registry `gl.xml`, Vulkan memory allocator header file `vma.h` and GLFW header file `glfw3.h` using automatic scripts. Java bindings are generated from these extracted metadata.
+- Designed and implemented extraction of function and type definitions from Vulkan registry `vk.xml`/`video.xml`, OpenGL registry `gl.xml`, Vulkan memory allocator header file `vma.h`, GLFW header file `glfw3.h`/`glfw3native.h` and OpenAL header files `al.h`/`alc.h`/`alext.h`/`efx.h` using automatic scripts. Java bindings are generated from these extracted metadata.
 - Provided moderate Java abstractions to make these APIs easier to use and more type-safe.
 - Ported full Vulkan tutorial.
 
