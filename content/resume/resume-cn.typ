@@ -123,12 +123,13 @@ _ML, Python, Typst, Type theory_
 - 使用 Python 实现了 _Understanding Algorithm W_ 论文中的算法 $cal(W)$，并实现了 _Basic Polymorphic Typechecking_ 中的算法 $cal(J)$
 - 设计了一些标准 ML 以外的语言特性（主要是命令式特性）及其类型检查规则
 
-*Project-WGX*，3D 虚拟形象 #h(1fr) #link("https://github.com/chuigda/Project-WGX", text(blue, "https://github.com/chuigda/Project-WGX"))
+*3N112*，图形学与通用计算研究平台 #h(1fr) #link("https://github.com/club-doki7/3N112", text(blue, "https://github.com/club-doki7/3N112"))
 
-_Java, Vulkan, OpenGL, CG_
+_Java, Vulkan, CG_
 
-- 结合 `MonoBehavior` 和 ECS 两种系统的特性，根据实际需要设计了可扩展的 $mono("reactor")$ 系统
-- 实现了基于 Vulkan 和 OpenGL ES2 两种后端的数据驱动渲染器，支持多线程：以 Vulkan 为后端时，可以利用 Vulkan 的多线程和异步特性；以 OpenGL ES2 为后端时，通过 channel 将实际在渲染线程上进行的操作封装为同步操作
+- 基于使用体验、实际需求和 Vulkan 的特性，设计了并实现一整套 Vulkan 上下文核心及配套的抽象
+- 基于 Java 垃圾回收 + `AutoClosable` + `Cleaner` + 延迟回收机制，实现了 Vulkan 资源的自动回收
+- 基于这些封装后的特性，开展了若干图形学与通用计算相关的实验
 
 *Project-602*，国际象棋软件 #h(1fr) #link("https://github.com/chuigda/Project-602", text(blue, "https://github.com/chuigda/Project-602"))
 
@@ -141,11 +142,11 @@ _JavaScript, HTML5, WebGL, CG_
 
 *vulkan4j*，基于 FFM 的游戏常用 API Java 绑定 #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
-_Java, Kotlin, Vulkan, OpenGL, OpenAL, CG_
+_Java, Kotlin, Vulkan, OpenGL, WebGPU, OpenAL, CG_
 
-- 使用自动脚本从 Vulkan 注册表 `vk.xml`/`video.xml`、OpenGL 注册表 `gl.xml`、Vulkan 内存分配器头文件 `vma.h`、GLFW  头文件 `glfw3.h`/`glfw3native.h` 和 OpenAL 头文件 `al.h`/`alc.h`/`alext.h`/`efx.h` 抽取函数和类型定义，并生成 Java 绑定
+- 使用自动程序从 Vulkan 注册表 `vk.xml`/`video.xml`、OpenGL 注册表 `gl.xml`、WebGPU 注册表 `webgpu.yml`、Vulkan 内存分配器头文件 `vma.h` 等抽取函数、类型和常量定义，并生成 Java 绑定
 - 提供适度的 Java 抽象，使这些 API 更易于使用，也更加类型安全
-- 基于绑定后的 API 移植了完整的 Vulkan 教程和部分 LearnOpenGL 教程移植
+- 基于绑定后的 API 移植了完整的 Vulkan-Tutorial 教程和部分 LearnOpenGL 教程
 
 #colbreak()
 

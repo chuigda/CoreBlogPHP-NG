@@ -119,12 +119,13 @@ _ML, Python, Typst, Type theory_
 - Implemented algorithm $cal(W)$ in the paper _Understanding Algorithm W_ and algorithm $cal(J)$ in _Basic Polymorphic Typechecking_ using Python.
 - Designed additional language features (mainly imperative features) and their type checking rules, which are not included in standard ML.
 
-*Project-WGX*, 3D VTuber #h(1fr) #link("https://github.com/chuigda/Project-WGX", text(blue, "https://github.com/chuigda/Project-WGX"))
+*3N112*, Graphics and General Computing Research Platform #h(1fr) #link("https://github.com/club-doki7/3N112", text(blue, "https://github.com/club-doki7/3N112"))
 
-_Java, Vulkan, OpenGL, CG_
+_Java, Vulkan, CG_
 
-- Designed the extensible $mono("reactor")$ system based on the characteristics of `MonoBehavior` and ECS, according to actual needs.
-- Implemented the renderer based on Vulkan and OpenGL ES2, supporting multi-threading: when using Vulkan as the backend, it can utilize Vulkan's multi-threading and asynchronous features; when using OpenGL ES2 as the backend, it encapsulates operations performed on the rendering thread as synchronous operations through channels.
+- Designed and implemented a complete set of Vulkan context core and supporting abstractions based on user experience, actual needs, and Vulkan features.
+- Implemented automatic resource reclamation for Vulkan resources based on Java garbage collection, `AutoClosable`, `Cleaner`, and delayed reclamation mechanisms.
+- Conducted various graphics and general computing experiments based on these encapsulated features.
 
 #colbreak()
 
@@ -139,11 +140,11 @@ _JavaScript, HTML5, WebGL, CG_
 
 *vulkan4j*, Java CG API bindings based on FFM #h(1fr) #link("https://vulkan4j.doki7.club", text(blue, "https://vulkan4j.doki7.club"))
 
-_Java, Kotlin, Vulkan, OpenGL, OpenAL, CG_
+_Java, Kotlin, Vulkan, OpenGL, WebGPU, OpenAL, CG_
 
-- Designed and implemented extraction of function and type definitions from Vulkan registry `vk.xml`/`video.xml`, OpenGL registry `gl.xml`, Vulkan memory allocator header file `vma.h`, GLFW header file `glfw3.h`/`glfw3native.h` and OpenAL header files `al.h`/`alc.h`/`alext.h`/`efx.h` using automatic scripts. Java bindings are generated from these extracted metadata.
+- Designed and implemented extraction of function and type definitions from Vulkan registry `vk.xml`/`video.xml`, OpenGL registry `gl.xml`, WebGPU registry `WebGPU.yml`, Vulkan memory allocator header file `vma.h`, GLFW header file `glfw3.h`/`glfw3native.h` and so on, using automatic program. Java bindings are generated from these extracted metadata.
 - Provided moderate Java abstractions to make these APIs easier to use and more type-safe.
-- Ported full Vulkan tutorial.
+- Ported full Vulkan-Tutorial and partial LearnOpenGL tutorial based on the bound APIs.
 
 *Project-WG*, 3D VTuber #h(1fr) #link("https://github.com/chuigda/Project-WG", text(blue, "https://github.com/chuigda/Project-WG"))
 
