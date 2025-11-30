@@ -17,12 +17,12 @@
     <body>
         <?php include './lib/navbar.php' ?>
         <div class="main-layout">
-            <div class="tree-view" aria-label="sidebar navigator">
-                <?php include './lib/toc.php' ?>
-            </div>
             <article>
                 <?php include './page-content.php' ?>
             </article>
+            <div class="tree-view" aria-label="sidebar navigator">
+                <?php include './lib/toc.php' ?>
+            </div>
         </div>
         <?php include './lib/footbar.php' ?>
     </body>

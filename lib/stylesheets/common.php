@@ -94,7 +94,7 @@ nav.top a.current {
 
 .main-layout {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     flex: 1 1 auto;
     min-height: 0;
 }
