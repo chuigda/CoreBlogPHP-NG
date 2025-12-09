@@ -168,7 +168,7 @@ andThen action1 f =
     in WorldChanger innerFn
 ```
 
-And since now, we no more expose the `World` type and instance directly. Only caller of `main` may have access to the initial `World` instance and may construct the initial `WorldChanger`:
+And since now, we no more expose the `World` type and instance directly. Only caller of `main` may have access to the initial `World` instance:
 
 ```haskell
 -- Library code
