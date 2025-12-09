@@ -1,6 +1,6 @@
 # Explain IO Monad in 2025
 
-It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself such instead of "programmer"), not understanding this concept will severely reduce the opportunity of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
+It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself such instead of "programmer"), not understanding this concept will severely reduce the opportunities of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
 
 ## Couldn't you just let me perform the f*cking IO?
 
@@ -91,7 +91,15 @@ opaque World : Type
 def read (filename : String) (world : World) : (String × World) := magic
 ```
 
-And now, the world of determinism is saved! Since the world is passed in as an argument, now `read` does not have to return the same output for the same input filename, because the input world are different.
+And now, the world of determinism is saved! Since the world is passed in as an argument, now `read` does not have to return the same output for the same input filename, because the input worlds are different:
+
+```lean
+(content1, world1) = read "monika.chr" world0
+(content2, world2) = read "monika.chr" world1
+
+-- Now this no longer type checks
+theorem monika_great_theorem : content1 = content2 := rfl
+```
 
 Also, we saved evaluation order and lazy evaluation as well:
 
@@ -136,11 +144,11 @@ cubanMissileCrisis world0 =
     in ((), world2)
 ```
 
-Here `world0` is used twice, and two parallel universe branches are created. Despite the fact that in one branch the humanity will be destroyed, having two universes in one program is obviously problematic, and I believe you can trivially understand why.
+Here `world0` is used twice, and two parallel universe branches are created. Despite the fact that in one branch humanity will be destroyed, having two universes in one program is obviously problematic, and I believe you can trivially understand why.
 
 ## Encapsulating the `World`
 
-To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation, and that's what software engineering is all about. But on the contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
+To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation -- the bread and butter of software engineering. But on the contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
@@ -216,7 +224,7 @@ applicationStart =
 
 ## `andThen` Pro Plus Super TI
 
-Everything works fine yet. However, there's still one problem we haven't resolved. To explain, let's firstly define `read` function in the `WorldChanger` style:
+Everything works fine yet. However, there's still one problem we haven't resolved. To explain, let's start from defining a `read` function in the `WorldChanger` style:
 
 ```haskell
 -- Library code
@@ -325,7 +333,7 @@ That's it.
 > (>>)    :: Monad m  =>            m a ->            m b ->            m b
 > ```
 >
-> Congratulations, you found another operator defined for monads!
+> Congratulations, you just found another operator `(>>)` defined for Monads!
 
 ## Relations between `IO` and other monads
 
