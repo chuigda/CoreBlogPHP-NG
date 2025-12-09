@@ -139,8 +139,8 @@ Except that writing boilerplate is not what an ambitious computer scientist shou
 ```haskell
 cubanMissileCrisis :: World -> ((), World)
 cubanMissileCrisis world0 =
-    let ((), world1) = print "General secretary orders to launch missile!" world0
-        ((), world2) = print "Cancel the missile launch!" world0 -- Oops, we used world0 again!
+    let ((), world1) = print "Both Captain and Political Officer agree to launch the missile!" world0
+        ((), world2) = print "Executive Officer Vasily Arkhipov refuses to launch!" world0 -- Oops!!
     in ((), world2)
 ```
 
