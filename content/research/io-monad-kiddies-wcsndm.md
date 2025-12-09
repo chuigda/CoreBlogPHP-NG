@@ -195,7 +195,7 @@ andThen :: WorldChanger a -> WorldChanger b -> WorldChanger b
 andThen wc1 wc2 = WorldChanger innerFn where
     innerFn :: World -> (b, World)
     innerFn world0 =
-        let (result1, world1) = runWorldChanger wc1 world0
+        let (result1, world1) = runWorldChanger wc1 world0 -- Remember this unused result1
             (result2, world2) = runWorldChanger wc2 world1
         in (result2, world2)
 ```
@@ -224,7 +224,7 @@ applicationStart :: ()
 applicationStart =
     let initialWorld = getInitialWorld ()
         ((), finalWorld) = runWorldChanger main initialWorld
-        x = consumeWorld finalWorld
+        x = consumeFinalWorld finalWorld
     in x
 ```
 
@@ -445,6 +445,7 @@ return value = WorldChanger innerFn where
 > example = do
 >    pure ()                      -- No more looks like an early exit
 >    putStrLn "I'm still alive!"
+> ```
 
 ## Relations between `IO` and other monads
 
