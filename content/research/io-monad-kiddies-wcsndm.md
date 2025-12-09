@@ -18,7 +18,7 @@ theorem monika_great_theorem : read "monika.chr" = read "monika.chr" := rfl
 
 In the code snippet above, we read the same file twice. However, if the file is modified between the two reads, the two results will be different. If we consider `read` as a referentially transparent function (consider it deterministic), then the proposition above should type check, but actually we have no reason to believe it. We know that once you prove a proposition like `1 = 2`, you can prove anything. Then your world suddenly descends into a state of constant pancake flip-flopping and historical nihilism reminiscent of the Soviet era -- where everything is meaningless and every action is futile, leading to the inevitable collapse of the Union. This is definitely not what you want.
 
-You may argue that referential transparency is only important for theorem proving languages like Lean/Agda, and is completely irrelevant to your dirty dirty industrial codebase where IO happen every time you ping your database. Your argument is solid and correct, and in fact there are not-that-functional functional programming languages that simply allow performing IO without any restriction:
+You may argue that referential transparency is only important for theorem proving languages like Lean/Agda, and is completely irrelevant to your dirty dirty industrial codebase where IO happens every time you ping your database. Your argument is solid and correct, and in fact there are not-that-functional functional programming languages that simply allow performing IO without any restriction:
 
 ```scheme
 (define (drill-launch-missile)
@@ -77,7 +77,7 @@ militaryDrill =
 
 Compiler may evaluate `y` first and then `x`, and the two commands output in reverse order could confuse the soldiers quite well.
 
-What's worse, in a programming langauge with **lazy evaluation** like Haskell, expressions might not be evaluated at all if not needed. So if we never use `x`, `y` or `z`, none of the three `print` calls will be executed:
+What's worse, in a programming language with **lazy evaluation** like Haskell, expressions might not be evaluated at all if not needed. So if we never use `x`, `y` or `z`, none of the three `print` calls will be executed:
 
 ```haskell
 mutualAssuredDestruction :: ()
@@ -151,7 +151,7 @@ cubanMissileCrisis world0 =
 
 Here `world0` is used twice, and two parallel universe branches are created. Despite the fact that in one branch the humanity will be destroyed, having two universes in one program is obviously problematic, and I believe you can trivially understand why.
 
-## Wrapping the `World` into a something
+## Wrapping the `World` into something
 
 To prevent such problems, we can wrap the `World` manipulations into a restricted new type `WorldChanger`. We only allow operating the `WorldChanger` via specific functions:
 
