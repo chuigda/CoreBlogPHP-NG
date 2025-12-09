@@ -161,6 +161,8 @@ newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
 --                                      A function that takes a World, produces a new value and a new World
 ```
 
+> ### Interlude
+>
 > If you take a closer look at `runWorldChanger`, you'll find it's exactly the tail part of the previous `print` function signature.
 >
 > ```haskell
