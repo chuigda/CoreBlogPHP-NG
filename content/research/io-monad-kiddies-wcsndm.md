@@ -385,7 +385,6 @@ return value = WorldChanger innerFn where
 >
 > ```haskell
 > example :: IO ()
-> example :: IO ()
 > example = do
 >     return ()                    -- Looks like an early exit...
 >     putStrLn "I'm still alive!"  -- ...but this still gets executed!
