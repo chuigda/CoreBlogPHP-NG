@@ -155,24 +155,23 @@ Here `world0` is used twice, and two parallel universe branches are created. Des
 To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation -- the bread and butter of software engineering. But contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
 
 ```haskell
-newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
---                                      ^~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~~
---                                      |
---                                      A function that takes a World, produces a new value and a new World
+newtype WorldChanger a = WorldChanger (World -> (a, World))
+--                                    ^~~~~~~~~~~~~~~~~~~~~
+--                                    |
+--                                    The wrapped "world changing" function: A function that takes a
+--                                    World, produces a new value and a new World
+
+runWorldChanger :: WorldChanger a -> World -> (a, World)
+runWorldChanger wc world0 =
+    let (WorldChanger innerFn) = wc
+    in innerFn world0
 ```
 
-> ### Interlude
->
-> If you take a closer look at `runWorldChanger`, you'll find it's exactly the tail part of the previous `print` function signature.
->
-> ```haskell
-> -- Library code
-> print           :: String -> World -> ((), World)
-> runWorldChanger ::           World -> ( a, World)
->                              ^~~~~~~~~~~~~~~~~~~~
->                              |
->                              Exactly the same!
-> ```
+Or use the one-line version:
+
+```haskell
+newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
+```
 
 Then our original `print` function which takes a `String` and a `World` can be wrapped as such:
 
@@ -281,10 +280,9 @@ And now the world is finally saved (or mutually assured destroyed).
 
 ## The `IO` Monad
 
-Recall the definition of `WorldChanger`:
+Recall the signature of `andThenPro`:
 
 ```haskell
-newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
 andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 ```
 
@@ -456,18 +454,19 @@ So as you can see now, `IO`, `List` and `Maybe` are all monads, but they are use
 If you've read other tutorials prior to this, you may have seen that "`IO` is a type that represents a computation that performs IO", "the `main` function produces a recipe about 'how to perform IO' to the runtime system" and "the Haskell language itself does not have side effects, but the runtime system does", etc. These explanations are not completely wrong, but they are very confusing. To clarify this, let's get back to the definition of `WorldChanger` and `andThen`/`andThenPro`:
 
 ```haskell
-newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
---                                      ^~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~~
---                                      |
---                                      A function that takes a World, produces a new value and a new World
---                                      It is an unevaluated function, not an evaluated result
+newtype WorldChanger a = WorldChanger (World -> (a, World))
+--                                    ^~~~~~~~~~~~~~~~~~~~
+--                                    |
+--                                    A function that takes a World, produces a new value and
+--                                    a new World. It is an unevaluated function, not an evaluated
+--                                    result
 
 andThen :: WorldChanger a -> WorldChanger b -> WorldChanger b
---         ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
---         |                 |                    |
---         |                 |                    A new world changer constructed from the
---         |                 |                    two inputs, containing a new function,
---         |                 |                    which is also not evaluated yet
+--         ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
+--         |                 |                 |
+--         |                 |                 A new world changer constructed from the
+--         |                 |                 two inputs, containing a new function,
+--         |                 |                 which is also not evaluated yet
 --         |                 |
 --         |                 Another world changer, also containing a function not executed yet
 --         |
@@ -483,6 +482,14 @@ andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 --            |                 A function producing a new world changer, not evaluated yet
 --            |
 --            The existing world changer, containing a function not executed yet
+
+runWorldChanger :: WorldChanger a -> (World -> (a, World))
+runWorldChanger wc world0 =
+    let (WorldChanger innerFn) = wc
+    in innerFn world0
+--     ^~~~~~~ ~~~~~~
+--     |
+--     And here is where innerFn really gets called
 ```
 
 Did you see that? When we are doing `andThen`/`andThenPro`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `readFile`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with a rolled-up printout of this article.
