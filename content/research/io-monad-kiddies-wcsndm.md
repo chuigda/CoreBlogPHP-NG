@@ -1,6 +1,6 @@
 # Explain IO Monad in 2025
 
-It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself such instead of "programmer"), not understanding this concept will severely reduce the opportunities of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
+It's 2025 now and I find someone (including myself several days ago) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself such instead of "programmer"), not understanding this concept will severely reduce the opportunities of bragging on IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
 
 ## Couldn't you just let me perform the f*cking IO?
 
@@ -75,9 +75,9 @@ militaryDrill =
     in ()
 ```
 
-Implementation may evaluate `y` first and then `x`, and the two commands output in reverse order could confuse the soldiers quite well.
+Implementation may evaluate `y` first and then `x`, and the two commands, output in reverse order, could confuse the soldiers quite well.
 
-For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and laziness inherently requires referential transparency to hold.
+For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and **laziness inherently requires referential transparency to hold**.
 
 ## Saving the world with the `World`
 
@@ -148,7 +148,7 @@ Here `world0` is used twice, and two parallel universe branches are created. Des
 
 ## Encapsulating the `World`
 
-To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation -- the bread and butter of software engineering. But on the contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
+To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation -- the bread and butter of software engineering. But contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
@@ -224,7 +224,7 @@ applicationStart =
 
 ## `andThen` Pro Plus Super TI
 
-Everything works fine yet. However, there's still one problem we haven't resolved. To explain, let's start from defining a `read` function in the `WorldChanger` style:
+Everything works fine so far. However, there's still one problem we haven't resolved. To explain, let's start from defining a `read` function in the `WorldChanger` style:
 
 ```haskell
 -- Library code
@@ -239,7 +239,7 @@ read filename = WorldChanger innerFn where
 
 Consider the following requirement: before actually launching a missile, we need to read the password file from a floppy disk, to make sure that the launch order was really issued by the general secretary. And then comes the problem: we want to check the result of `read` before deciding whether to call `print` to launch the missile. However, in the current design of `andThen`, the second `WorldChanger b` does not have access to the result of the first `WorldChanger a`.
 
-We are not going to take apart `WorldChanger`s in user code and acquire `World` instances, since that breaks the encapsulation and backs us to square one. We need something more powerful than the current `andThen`:
+We are not going to take apart `WorldChanger`s in user code and acquire `World` instances, since that breaks the encapsulation and brings us back to square one. We need something more powerful than the current `andThen`:
 
 ```haskell
 -- Library code
@@ -267,11 +267,11 @@ launchMissileWithPasswordCheck =
 
 And now the world is finally saved (or mutually assured destroyed).
 
+*Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
+
 > Interlude
 >
-> In spite of wrapping the `World` manipulations into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
-
-*Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
+> Aside from wrapping the `World` manipulations into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
 
 ## The `IO` Monad
 
@@ -324,7 +324,7 @@ launchMissileWithPasswordCheck = do
 
 That's it.
 
-> Interlude: the `>>=` operator
+> Interlude
 >
 > If you look at the signature of `andThen` carefully, you will find it looks similar to another operator in Haskell:
 >
