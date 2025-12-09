@@ -151,64 +151,64 @@ cubanMissileCrisis world0 =
 
 Here `world0` is used twice, and two parallel universe branches are created. Despite the fact that in one branch the humanity will be destroyed, having two universes in one program is obviously problematic, and I believe you can trivially understand why.
 
-## Wrapping the `World` into a safe box
+## Wrapping the `World` into a something
 
-To prevent such problems, we can wrap the `World` type into a restricted new type `WorldBox`. We only allow operating the `WorldBox` via specific functions, and disallow extracting the `World` instance from the `WorldBox`:
+To prevent such problems, we can wrap the `World` type into a restricted new type `WorldChanger`. We only allow operating the `WorldChanger` via specific functions, and disallow extracting the `World` instance from the `WorldChanger`:
 
 ```haskell
-newtype WorldBox a = WorldBox { runWorldBox :: World -> (a, World) }
+newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
 
-andThen :: WorldBox a -> (a -> WorldBox b) -> WorldBox b
+andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 andThen action1 f =
     let innerFn world0 =
-            let (result1, world1) = runWorldBox action1 world0
+            let (result1, world1) = runWorldChanger action1 world0
                 action2 = f result1
-                (result2, world2) = runWorldBox action2 world1
+                (result2, world2) = runWorldChanger action2 world1
             in (result2, world2)
-    in WorldBox innerFn
+    in WorldChanger innerFn
 ```
 
-And since now, we no more expose the `World` type and instance directly. Only caller of `main` may have access to the initial `World` instance and may construct the initial `WorldBox`:
+And since now, we no more expose the `World` type and instance directly. Only caller of `main` may have access to the initial `World` instance and may construct the initial `WorldChanger`:
 
 ```haskell
 -- Library code
-print :: String -> WorldBox ()
+print :: String -> WorldChanger ()
 print = magic
 
 -- User code
-mutualAssuredDestruction :: WorldBox ()
+mutualAssuredDestruction :: WorldChanger ()
 mutualAssuredDestruction =
     andThen (print "Missile launched!")
             (\_ -> andThen (print "Missile launched!")
                            (\_ -> print "Missile launched!"))
 
-main :: WorldBox ()
+main :: WorldChanger ()
 main = mutualAssuredDestruction
 
 -- Caller of main
 applicationStart :: ()
 applicationStart =
     let initialWorld = getInitialWorld ()
-        ((), finalWorld) = runWorldBox main initialWorld
+        ((), finalWorld) = runWorldChanger main initialWorld
         x = consumeWorld finalWorld
     in x
 ```
 
 And now the world is finally saved (or mutually assured destroyed).
 
-*Still get confused by the fancy `WorldBox` type and `andThen` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
+*Still get confused by the fancy `WorldChanger` type and `andThen` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
 
 > Interlude
 >
-> In spite of wrapping the `World` into a safe box, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
+> In spite of wrapping the `World` into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
 
 ## The `IO` Monad
 
-Recall the definition of `WorldBox`:
+Recall the definition of `WorldChanger`:
 
 ```haskell
-newtype WorldBox a = WorldBox { runWorldBox :: World -> (a, World) }
-andThen :: WorldBox a -> (a -> WorldBox b) -> WorldBox b
+newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
+andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 ```
 
 and the definition of the `Monad` type class in Haskell:
@@ -220,7 +220,7 @@ class Monad m where
     (>>=)  :: m a -> (a -> m b) -> m b -- !
 ```
 
-We can see that `andThen` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldBox` an instance of `Monad`?
+We can see that `andThen` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldChanger` an instance of `Monad`?
 
 That's right, and that is `IO` in Haskell, which is in turn defined as:
 
@@ -257,16 +257,18 @@ So as you can see now, `IO`, `List` and `Maybe` are all monads, but they are use
 
 ## Some tricky word play
 
-If you've read other tutorials prior to this, you may have seen that "`IO` is a type that represents a computation that performs IO", "the `main` function produces a recipe about 'how to perform IO' to the runtime system" and "the Haskell language itself does not have side effects, but the runtime system does", etc. These explanations are not completely wrong, but they are very confusing. To clarify this, let's get back to the definition of `WorldBox` and `andThen`:
+If you've read other tutorials prior to this, you may have seen that "`IO` is a type that represents a computation that performs IO", "the `main` function produces a recipe about 'how to perform IO' to the runtime system" and "the Haskell language itself does not have side effects, but the runtime system does", etc. These explanations are not completely wrong, but they are very confusing. To clarify this, let's get back to the definition of `WorldChanger` and `andThen`:
 
 ```haskell
-newtype WorldBox a = WorldBox { runWorldBox :: World -> (a, World) }
-andThen :: WorldBox a -> (a -> WorldBox b) -> WorldBox b
---                       ^~~~~~~~~~~~~~~~~    ^~~~~~~~~
---                       |                    |
---                       |                    A new world box constructed from the previous one and a function
---                       |
---                       A function not executed yet, not an evaluated value!
+newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
+andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
+--         ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
+--         |                 |                        |
+--         |                 |                        A new world changer constructed from the previous one and a function
+--         |                 |
+--         |                 A function not executed yet, not an evaluated value!
+--         |
+--         The existing world changer, containing a function not executed yet
 ```
 
-Did you see that? When we are doing `andThen`, we are just toying with (not-yet executed!) functions and composing `WorldBox`es into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldBox` to its caller (runtime system). Only when `runWorldBox` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `read`/`print`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with this article printed in paper rolled into a tube.
+Did you see that? When we are doing `andThen`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `read`/`print`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with this article printed in paper rolled into a tube.
