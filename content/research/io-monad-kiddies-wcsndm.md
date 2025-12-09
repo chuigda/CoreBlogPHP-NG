@@ -153,7 +153,7 @@ Here `world0` is used twice, and two parallel universe branches are created. Des
 
 ## Wrapping the `World` into a something
 
-To prevent such problems, we can wrap the `World` type into a restricted new type `WorldChanger`. We only allow operating the `WorldChanger` via specific functions, and disallow extracting the `World` instance from the `WorldChanger`:
+To prevent such problems, we can wrap the `World` manipulations into a restricted new type `WorldChanger`. We only allow operating the `WorldChanger` via specific functions:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
@@ -200,7 +200,7 @@ And now the world is finally saved (or mutually assured destroyed).
 
 > Interlude
 >
-> In spite of wrapping the `World` into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
+> In spite of wrapping the `World` manipulations into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
 
 ## The `IO` Monad
 
@@ -217,7 +217,7 @@ and the definition of the `Monad` type class in Haskell:
 -- Simplified definition, just showing the relevant APIs
 class Monad m where
     return :: a -> m a                 -- not seen in our example yet but easy to define
-    (>>=)  :: m a -> (a -> m b) -> m b -- !
+    (>>=)  :: m a -> (a -> m b) -> m b -- !!
 ```
 
 We can see that `andThen` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldChanger` an instance of `Monad`?
