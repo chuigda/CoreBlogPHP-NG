@@ -130,6 +130,10 @@ applicationStart =
 
 The world passing now introduces a **dataflow dependency** between the two `print` calls, since `world1` is produced by the first `print` and consumed by the second `print`. Thus, the second `print` cannot be evaluated before the first one. Since the caller of `main` expects a `World` instance, the entire chain of `print` calls must be evaluated in order to produce that final `World` instance.
 
+> Interlude
+>
+> How can we really put the whole world into a value of type `World`? Well, we can't, but we don't have to. `World` is just an abstract type that **represents** instead of **contains** the entire state of the world. Implementation may even eliminate the storage of `World` instances completely, since they are only tokens used to enforce dataflow dependencies between IO operations.
+
 Till now, we haven't seen either "Monad" or `IO` yet. Since this article is about the `IO` monad, you may naturally think that there's still unresolved issues, and yes, you're right.
 
 ## `World` can destroy the world, too
@@ -267,7 +271,7 @@ launchMissileWithPasswordCheck =
 
 And now the world is finally saved (or mutually assured destroyed).
 
-*Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
+*Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function by hand, step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
 
 > Interlude
 >
@@ -287,20 +291,41 @@ and the definition of the `Monad` type class in Haskell:
 ```haskell
 -- Simplified definition, just showing the relevant APIs
 class Monad m where
-    return :: a -> m a                 -- not seen in our example yet but easy to define
+    return :: a -> m a                 -- not seen in our example yet
     (>>=)  :: m a -> (a -> m b) -> m b -- !!
 ```
 
 We can see that `andThenPro` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldChanger` an instance of `Monad`?
 
-That's right, and that is `IO` in Haskell, which is in turn defined as:
-
 ```haskell
--- Here State# and (# ... #) are unlifted counterparts to their normal variations, used for performance reasons
-newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #))
+instance Monad WorldChanger where
+    return :: a -> WorldChanger a -- We'll be back soon
+
+    (>>=) :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
+    (>>=) = andThenPro
 ```
 
+And the name `WorldChanger` is too long to type, so let's rename it...
+
+```haskell
+type IO a = WorldChanger a
+```
+
+Congratulations, you've re-invented the `IO` monad in Haskell!
+
+> Interlude
+>
+> `IO` in Haskell actually has a slightly more complicated definition:
+>
+> ```haskell
+> newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #))
+> ```
+>
+> Here `State# RealWorld` serves the same purpose as our `World` type, and `(# ... #)` is just "unboxed" tuple (tuple: `( ... )`, just the same syntax without `#`). If you couldn't understand this definition, don't worry. The high level idea is exactly the same as our `WorldChanger` type. Not understanding these implementation details will not block you from reading the rest of this article.
+
 Now we can rewrite our previous `launchMissileWithPasswordCheck` function using the bind operator `(>>=)`:
+
+*(And from now on I'll use real Haskell functions like `readFile` and `putStrLn` instead of our mock `read` and `print`.)*
 
 ```haskell
 launchMissileWithPasswordCheck :: IO ()
