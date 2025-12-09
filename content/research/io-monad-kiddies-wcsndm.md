@@ -90,7 +90,7 @@ mutualAssuredDestruction =
 
 And this time there's no court martial anymore -- death penalty carried out immediately!
 
-For an eager programming language that does not care about referential transparency, this problem is less deadly, since we can simply require the implementation to always evaluate things and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and laziness inherently requires referential transparency to hold.
+For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and laziness inherently requires referential transparency to hold.
 
 ## Saving the world with the `World`
 
