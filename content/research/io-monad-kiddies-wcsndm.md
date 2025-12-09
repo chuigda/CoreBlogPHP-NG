@@ -16,7 +16,7 @@ def read (filename : String) : String := magic
 theorem monika_great_theorem : read "monika.chr" = read "monika.chr" := rfl
 ```
 
-In the code snippet above, we read the same file twice. However, if the file is modified between the two reads, the two results will be different. If we consider `read` as a referentially transparent function (consider it deterministic), then the proposition above should type check, but actually we have no reason to believe it. We know that once you prove a proposition like `1 = 2`, you can prove anything. Then your world suddenly descends into a state of constant pancake flip-flopping and historical nihilism reminiscent of the Soviet era -- where everything is meaningless and every action is futile, leading to the inevitable collapse of the Union. This is definitely not what you want.
+In the Lean code snippet above, we read the same file twice. However, if the file is modified between the two reads, the two results will be different. If we consider `read` as a referentially transparent function (consider it deterministic), then the proposition above should type check, but actually we have no reason to believe it. We know that once you prove a proposition like `1 = 2`, you can prove anything. Then your world suddenly descends into a state of constant pancake flip-flopping and historical nihilism reminiscent of the Soviet era -- where everything is meaningless and every action is futile, leading to the inevitable collapse of the Union. This is definitely not what you want.
 
 You may argue that referential transparency is only important for theorem proving languages like Lean/Agda, and is completely irrelevant to your dirty dirty industrial codebase where IO happens every time you ping your database. Your argument is solid and correct, and in fact there are not-that-functional functional programming languages that simply allow performing IO without any restriction:
 
@@ -97,7 +97,7 @@ And now, the world of determinism is saved! Since the world is passed in as an a
 let (content1, world1) := read "monika.chr" world0
 let (content2, world2) := read "monika.chr" world1
 
--- Now this no longer type checks
+/- Now this no longer type checks -/
 theorem monika_great_theorem : content1 = content2 := rfl
 ```
 
@@ -334,6 +334,91 @@ That's it.
 > ```
 >
 > Congratulations, you just found another operator `(>>)` defined for Monads!
+
+## The `return`
+
+In the previous sections, we haven't seen the `return` function required by the `Monad` type class. So yes, we need another example. Imageine that the missile launch password is split into two files and stored on two floppy disks. We want a function that reads the two files and concatenates the passwords together, let's make a try with our existing tools:
+
+```haskell
+readPassword :: IO String
+readPassword =
+    readFile "A:\\password.txt" >>= \part1 ->
+    readFile "B:\\password.txt" >>= \part2 ->
+    (part1 ++ part2)
+--  ^~~~~~~~~~~~~~~
+--  |
+--  Does not type check
+```
+
+The innermost lambda does not typecheck, because it `(part1 ++ part2)` has type `String`, so that lambda has type `String -> String`, while the bind operator `(>>=)` requires the lambda to have type `String -> IO String`. So we need a way to lift a normal value into an `IO`, and this is exactly what `return` does:
+
+```haskell
+-- Simplified definition, just showing the relevant APIs
+class Monad m where
+    return :: a -> m a                 -- !!
+    (>>=)  :: m a -> (a -> m b) -> m b
+```
+
+With `return`, we can now fix our `readPassword` function:
+
+```haskell
+readPassword :: IO String
+readPassword =
+    readFile "A:\\password.txt" >>= \part1 ->
+    readFile "B:\\password.txt" >>= \part2 ->
+    return (part1 ++ part2)
+```
+
+The implementation of `return` can be quite straightforward. Since you definitely don't want to see the `#` syntax again, let's just show the implementation for our `WorldChanger` type as an illustration:
+
+```haskell
+-- Library code
+return :: a -> WorldChanger a
+return value = WorldChanger innerFn where
+    innerFn :: World -> (a, World)
+    innerFn world0 = (value, world0)
+```
+
+> Interlude
+>
+> And contrary to imperative languages, `return` is just a normal function, it just lifts a normal value into a monadic value, and does not really "return from the current function". For example, you can write code like:
+>
+> ```haskell
+> example :: IO ()
+> example :: IO ()
+> example = do
+>     return ()                    -- Looks like an early exit...
+>     putStrLn "I'm still alive!"  -- ...but this still gets executed!
+> ```
+>
+> Which can be desugared to:
+>
+> ```haskell
+> example :: IO ()
+> example =
+>     return () >>= \_ ->
+>     putStrLn "I'm still alive!"
+> ```
+>
+> `return`, what a terrible naming choice, meh. Fortunately, in modern Haskell, `return` is the same as `pure` from the `Applicative` type class:
+>
+> ```haskell
+> -- Simplified definition, just showing the relevant APIs
+> class Applicative f where
+>     pure :: a -> f a
+>
+> class Applicative m => Monad m where
+>     return :: a -> m a
+>     return = pure
+> ```
+>
+> So you can use `pure` to avoid confusion:
+>
+> ```haskell
+> example :: IO ()
+> example = do
+>    pure ()                      -- No more looks like an early exit
+>    putStrLn "I'm still alive!"
 
 ## Relations between `IO` and other monads
 
