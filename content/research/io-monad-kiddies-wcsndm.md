@@ -1,3 +1,5 @@
+# Explain IO Monad in 2025
+
 It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself as such instead of "programmer"), not understanding this concept will severely reduce the opportunity of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
 
 ## Couldn't you just let me perform the f*cking IO?
