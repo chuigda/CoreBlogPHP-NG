@@ -130,7 +130,7 @@ applicationStart =
 
 The world passing now introduces a **dataflow dependency** between the two `print` calls, since `world1` is produced by the first `print` and consumed by the second `print`. Thus, the second `print` cannot be evaluated before the first one. Since the caller of `main` expects a `World` instance, the entire chain of `print` calls must be evaluated in order to produce that final `World` instance.
 
-> Interlude
+> ### Interlude
 >
 > How can we really put the whole world into a value of type `World`? Well, we can't, but we don't have to. `World` is just an abstract type that **represents** instead of **contains** the entire state of the world. Implementation may even eliminate the storage of `World` instances completely, since they are only tokens used to enforce dataflow dependencies between IO operations.
 
@@ -273,7 +273,7 @@ And now the world is finally saved (or mutually assured destroyed).
 
 *Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function by hand, step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
 
-> Interlude
+> ### Interlude
 >
 > Aside from wrapping the `World` manipulations into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
 
@@ -313,7 +313,7 @@ type IO a = WorldChanger a
 
 Congratulations, you've re-invented the `IO` monad in Haskell!
 
-> Interlude
+> ### Interlude
 >
 > `IO` in Haskell actually has a slightly more complicated definition:
 >
@@ -349,7 +349,7 @@ launchMissileWithPasswordCheck = do
 
 That's it.
 
-> Interlude
+> ### Interlude
 >
 > If you look at the signature of `andThen` carefully, you will find it looks similar to another operator in Haskell:
 >
@@ -404,9 +404,9 @@ return value = WorldChanger innerFn where
     innerFn world0 = (value, world0)
 ```
 
-> Interlude
+> ### Interlude
 >
-> And contrary to imperative languages, `return` is just a normal function, it just lifts a normal value into a monadic value, and does not really "return from the current function". For example, you can write code like:
+> And contrary to imperative languages, `return` is just a conventional function, it just lifts a normal value into a monadic value, and does not "return from the current function". For example, you can write code like:
 >
 > ```haskell
 > example :: IO ()
