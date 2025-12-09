@@ -1,6 +1,6 @@
 # Explain IO Monad in 2025
 
-It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself as such instead of "programmer"), not understanding this concept will severely reduce the opportunity of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
+It's 2025 now and I find someone (including myself several days before) still does not understand IO Monads in functional programming languages. For any ambitious computer scientist (or at least you should call yourself such instead of "programmer"), not understanding this concept will severely reduce the opportunity of bragging in IM channels and tech forums, causing potential mental distress and loss of self-esteem. If that's you, don't worry, this article is here to help you out. Hi, this is Chuigda, let's discuss IO and IO Monads.
 
 ## Couldn't you just let me perform the f*cking IO?
 
@@ -30,7 +30,7 @@ So for Lean/Agda, the "referential transparency" answer is convincing enough. Bu
 
 ## It's all about expression evaluation
 
-In spite of determinism, there's another implication of referential transparency: **expressions can be evaluated in any order**, and **we can replace evaluated expressions with their values at any time**. Consider the following code:
+Aside from determinism, there's another implication of referential transparency: **expressions can be evaluated in any order**, and **we can replace evaluated expressions with their values at any time**. Consider the following code:
 
 ```haskell
 -- Library code
@@ -65,7 +65,7 @@ mutualAssuredDestruction =
 
 So the general secretary asked you to launch three missiles, and you just launched one missile and claimed that you launched three missiles. That must be great. See you on the court-martial.
 
-On the other hand, even if we don't do the above replacement, since expressions can be evaluated in any order, the compiler is theoretically free to evaluate later expression first:
+On the other hand, even if we don't do the above replacement, since expressions can be evaluated in any order, the implementation is theoretically free to evaluate later expression first:
 
 ```haskell
 militaryDrill :: ()
@@ -75,26 +75,13 @@ militaryDrill =
     in ()
 ```
 
-Compiler may evaluate `y` first and then `x`, and the two commands output in reverse order could confuse the soldiers quite well.
-
-What's worse, in a programming language with **lazy evaluation** like Haskell, expressions might not be evaluated at all if not needed. So if we never use `x`, `y` or `z`, none of the three `print` calls will be executed:
-
-```haskell
-mutualAssuredDestruction :: ()
-mutualAssuredDestruction =
-    let x = () -- eliminated
-        y = () -- eliminated
-        z = () -- eliminated
-    in () -- None of x, y, z is used, so none of the three print calls is executed
-```
-
-And this time there's no court martial anymore -- death penalty carried out immediately!
+Implementation may evaluate `y` first and then `x`, and the two commands output in reverse order could confuse the soldiers quite well.
 
 For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and laziness inherently requires referential transparency to hold.
 
 ## Saving the world with the `World`
 
-Thus, for both theorem proving languages and lazy functional programming languages, now we have very convincing reasons why performing IO directly in functions should not be allowed. However, if a program is completely IO free, it will be useless (maybe not for proof assistants, but definitely yes for your dirty dirty industrial codebase). Human cannot live without other people, while programs cannot function without performing IO. So how can we save the world?
+Thus, for both theorem proving languages and lazy functional programming languages, now we have very convincing reasons why performing IO directly in functions should not be allowed. However, if a program is completely IO free, it will be useless (maybe not for proof assistants, but definitely yes for your dirty dirty industrial codebase). A human cannot live without other people, while programs cannot function without performing IO. So how can we save the world?
 
 Wait, did I mention the "world"? Uh yes, in functional programming languages, we are always `map`ping things, transforming things, take an input and return an output. So why not take the "world" as an input and return a new "world" as an output?
 
@@ -139,7 +126,7 @@ Till now, we haven't seen either "Monad" or `IO` yet. Since this article is abou
 
 ## `World` can destroy the world, too
 
-Except that writing boilerplates is not what an ambitious computer scientist should do, since `World` is just a normal type, nothing prevents us from doing something like this:
+Except that writing boilerplate is not what an ambitious computer scientist should do, since `World` is just a normal type, nothing prevents us from doing something like this:
 
 ```haskell
 cubanMissileCrisis :: World -> ((), World)
@@ -151,40 +138,73 @@ cubanMissileCrisis world0 =
 
 Here `world0` is used twice, and two parallel universe branches are created. Despite the fact that in one branch the humanity will be destroyed, having two universes in one program is obviously problematic, and I believe you can trivially understand why.
 
-## Wrapping the `World` into something
+## Encapsulating the `World`
 
-To prevent such problems, we can wrap the `World` manipulations into a restricted new type `WorldChanger`. We only allow operating the `WorldChanger` via specific functions:
+To prevent such leaking issues, it's a natural thought to wrap the `World` type and its manipulations into new types and new functions. That's encapsulation, and that's what software engineering is all about. But on the contrary to what you may think, we are not going to wrap the `World` itself, but rather its manipulators. Let's define a new type `WorldChanger` that wraps functions that take a `World` and return a new value and a new `World`:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
-
-andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
-andThen action1 f =
-    let innerFn world0 =
-            let (result1, world1) = runWorldChanger action1 world0
-                action2 = f result1
-                (result2, world2) = runWorldChanger action2 world1
-            in (result2, world2)
-    in WorldChanger innerFn
+--                                      ^~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~~
+--                                      |
+--                                      A function that takes a World, produces a new value and a new World
 ```
 
-And since now, we no more expose the `World` type and instance directly. Only caller of `main` may have access to the initial `World` instance:
+> If you take a closer look at `runWorldChanger`, you'll find it's exactly the tail part of the previous `print` function signature.
+>
+> ```haskell
+> -- Library code
+> print           :: String -> World -> ((), World)
+> runWorldChanger ::           World -> ( a, World)
+>                              ^~~~~~~~~~~~~~~~~~~~
+>                              |
+>                              Exactly the same!
+> ```
+
+Then our original `print` function which takes a `String` and a `World` can be wrapped as such:
 
 ```haskell
 -- Library code
-print :: String -> WorldChanger ()
-print = magic
+originalPrint :: String -> World -> ((), World)
+originalPrint = magic
 
+print :: String -> WorldChanger ()
+print message = WorldChanger innerFn where
+    innerFn :: World -> ((), World)
+    innerFn world0 = originalPrint message world0
+```
+
+Then, we can define a function `andThen` that chains up two `WorldChanger`s together:
+
+```haskell
+-- Library code
+andThen :: WorldChanger a -> WorldChanger b -> WorldChanger b
+andThen wc1 wc2 = WorldChanger innerFn where
+    innerFn :: World -> (b, World)
+    innerFn world0 =
+        let (result1, world1) = runWorldChanger wc1 world0
+            (result2, world2) = runWorldChanger wc2 world1
+        in (result2, world2)
+```
+
+And now we can rewrite our previous `mutualAssuredDestruction` function using only `WorldChanger`, `print` and `andThen`:
+
+```haskell
 -- User code
 mutualAssuredDestruction :: WorldChanger ()
 mutualAssuredDestruction =
     andThen (print "Missile launched!")
-            (\_ -> andThen (print "Missile launched!")
-                           (\_ -> print "Missile launched!"))
+            (andThen (print "Missile launched!")
+                     (print "Missile launched!"))
 
 main :: WorldChanger ()
 main = mutualAssuredDestruction
+```
 
+There's still manual world passing in library code, but user code is now clean. When implementing a new IO operation, and thus creating a new function that returns a `WorldChanger`, library authors still need to manually pass the `World` instance in the inner `runWorldChanger` function (and can make mistakes, of course). But once all IO operations are settled, users of the library can just chain up `WorldChanger`s without worrying about world passing.
+
+Finally the caller of `main` is responsible for providing the initial `World` instance and consuming the final `World` instance:
+
+```haskell
 -- Caller of main
 applicationStart :: ()
 applicationStart =
@@ -194,13 +214,56 @@ applicationStart =
     in x
 ```
 
-And now the world is finally saved (or mutually assured destroyed).
+## `andThen` Pro Plus Super TI
 
-*Still get confused by the fancy `WorldChanger` type and `andThen` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
+Everything works fine yet. However, there's still one problem we haven't resolved. To explain, let's firstly define `read` function in the `WorldChanger` style:
+
+```haskell
+-- Library code
+originalRead :: String -> World -> (String, World)
+originalRead = magic
+
+read :: String -> WorldChanger String
+read filename = WorldChanger innerFn where
+    innerFn :: World -> (String, World)
+    innerFn world0 = originalRead filename world0
+```
+
+Consider the following requirement: before actually launching a missile, we need to read the password file from a floppy disk, to make sure that the launch order was really issued by the general secretary. And then comes the problem: we want to check the result of `read` before deciding whether to call `print` to launch the missile. However, in the current design of `andThen`, the second `WorldChanger b` does not have access to the result of the first `WorldChanger a`.
+
+We are not going to take apart `WorldChanger`s in user code and acquire `World` instances, since that breaks the encapsulation and backs us to square one. We need something more powerful than the current `andThen`:
+
+```haskell
+-- Library code
+andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
+andThenPro wc1 makeWC2 = WorldChanger innerFn where
+    innerFn :: World -> (b, World)
+    innerFn world0 =
+        let (result1, world1) = runWorldChanger wc1 world0
+            wc2 = makeWC2 result1
+            (result2, world2) = runWorldChanger wc2 world1
+        in (result2, world2)
+```
+
+Now the second `WorldChanger` is no more a fixed value, but dynamically constructed with the result of the first `WorldChanger`. With `andThenPro`, we can now define our `launchMissileWithPasswordCheck` function properly:
+
+```haskell
+launchMissileWithPasswordCheck :: WorldChanger ()
+launchMissileWithPasswordCheck =
+    andThenPro (read "A:\\password.txt")
+               (\password ->
+                    if password == "P2T8M-VJK83-22HF9-MR88B-QQX7Y"
+                    then print "Missile launched!"
+                    else print "Launch aborted: incorrect password.")
+```
+
+And now the world is finally saved (or mutually assured destroyed).
 
 > Interlude
 >
 > In spite of wrapping the `World` manipulations into a `WorldChanger`, there's another way of saving the world: using linear types. Linear types require that a value of a certain type must be used exactly once. Thus, if we define `World` as a linear type, the compiler will prevent us from using `world0` twice in the previous example. However, linear types were not initially supported in Haskell (though support has been added now). Despite this historical reason, monads provide additional goodness, as we'll see later.
+
+*Still get confused by the fancy `WorldChanger` type and `andThen`/`andThenPro` function? That's the "headache pills" part. To understand how it works in the dumb way, you can evaluate the entire `applicationStart` function step by step, just like evaluating a mathematical expression. To use things practically, you may just skip these details and think "okay it works anyway" and move on.*
 
 ## The `IO` Monad
 
@@ -208,7 +271,7 @@ Recall the definition of `WorldChanger`:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
-andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
+andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 ```
 
 and the definition of the `Monad` type class in Haskell:
@@ -220,36 +283,49 @@ class Monad m where
     (>>=)  :: m a -> (a -> m b) -> m b -- !!
 ```
 
-We can see that `andThen` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldChanger` an instance of `Monad`?
+We can see that `andThenPro` perfectly matches the signature of the bind operator `(>>=)`. Since there are so many useful abstractions and syntactic sugar built on top of the `Monad` type class, why not also make `WorldChanger` an instance of `Monad`?
 
 That's right, and that is `IO` in Haskell, which is in turn defined as:
 
 ```haskell
--- Here State# and (# ... #) are unlifted counterpart to their normal variations, used for performance reasons
+-- Here State# and (# ... #) are unlifted counterparts to their normal variations, used for performance reasons
 newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #))
 ```
 
-Now we can rewrite our previous `drillLaunchMissile` function using the bind operator `(>>=)`:
+Now we can rewrite our previous `launchMissileWithPasswordCheck` function using the bind operator `(>>=)`:
 
 ```haskell
-mutualAssuredDestruction :: IO ()
-mutualAssuredDestruction =
-    putStrLn "Missile launched!" >>= \_ ->
-    putStrLn "Missile launched!" >>= \_ ->
-    putStrLn "Missile launched!"
+launchMissileWithPasswordCheck :: IO ()
+launchMissileWithPasswordCheck =
+    readFile "A:\\password.txt" >>= \password ->
+        if password == "P2T8M-VJK83-22HF9-MR88B-QQX7Y"
+        then putStrLn "Missile launched!"
+        else putStrLn "Launch aborted: incorrect password."
 ```
 
 Or `do` notation:
 
 ```haskell
-mutualAssuredDestruction :: IO ()
-mutualAssuredDestruction = do
-    putStrLn "Missile launched!"
-    putStrLn "Missile launched!"
-    putStrLn "Missile launched!"
+launchMissileWithPasswordCheck :: IO ()
+launchMissileWithPasswordCheck = do
+    password <- readFile "A:\\password.txt"
+    if password == "P2T8M-VJK83-22HF9-MR88B-QQX7Y"
+        then putStrLn "Missile launched!"
+        else putStrLn "Launch aborted: incorrect password."
 ```
 
 That's it.
+
+> Interlude: the `>>=` operator
+>
+> If you look at the signature of `andThen` carefully, you will find it looks similar to another operator in Haskell:
+>
+> ```haskell
+> andThen ::             WorldChanger a -> WorldChanger b -> WorldChanger b
+> (>>)    :: Monad m  =>            m a ->            m b ->            m b
+> ```
+>
+> Congratulations, you found another operator defined for monads!
 
 ## Relations between `IO` and other monads
 
@@ -257,18 +333,36 @@ So as you can see now, `IO`, `List` and `Maybe` are all monads, but they are use
 
 ## Some tricky word play
 
-If you've read other tutorials prior to this, you may have seen that "`IO` is a type that represents a computation that performs IO", "the `main` function produces a recipe about 'how to perform IO' to the runtime system" and "the Haskell language itself does not have side effects, but the runtime system does", etc. These explanations are not completely wrong, but they are very confusing. To clarify this, let's get back to the definition of `WorldChanger` and `andThen`:
+If you've read other tutorials prior to this, you may have seen that "`IO` is a type that represents a computation that performs IO", "the `main` function produces a recipe about 'how to perform IO' to the runtime system" and "the Haskell language itself does not have side effects, but the runtime system does", etc. These explanations are not completely wrong, but they are very confusing. To clarify this, let's get back to the definition of `WorldChanger` and `andThen`/`andThenPro`:
 
 ```haskell
 newtype WorldChanger a = WorldChanger { runWorldChanger :: World -> (a, World) }
-andThen :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
---         ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
---         |                 |                        |
---         |                 |                        A new world changer constructed from the previous one and a function
+--                                      ^~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~~
+--                                      |
+--                                      A function that takes a World, produces a new value and a new World
+--                                      It is an unevaluated function, not an evaluated result
+
+andThen :: WorldChanger a -> WorldChanger b -> WorldChanger b
+--         ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
+--         |                 |                    |
+--         |                 |                    A new world changer constructed from the
+--         |                 |                    two inputs, containing a new function,
+--         |                 |                    which is also not evaluated yet
 --         |                 |
---         |                 A function not executed yet, not an evaluated value!
+--         |                 Another world changer, also containing a function not executed yet
 --         |
---         The existing world changer, containing a function not executed yet
+--         A world changer, containing a function not executed yet
+
+andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
+--            ^~~~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~~~~~    ^~~~~~~~~~~~~~
+--            |                 |                        |
+--            |                 |                        A new world changer constructed from the
+--            |                 |                        two inputs, containing a new function,
+--            |                 |                        which is also not evaluated yet
+--            |                 |
+--            |                 A function producing a new world changer, not evaluated yet
+--            |
+--            The existing world changer, containing a function not executed yet
 ```
 
-Did you see that? When we are doing `andThen`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `read`/`print`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with this article printed in paper rolled into a tube.
+Did you see that? When we are doing `andThen`/`andThenPro`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `readFile`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with a rolled-up printout of this article.
