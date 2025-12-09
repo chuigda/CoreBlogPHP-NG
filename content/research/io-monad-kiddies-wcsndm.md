@@ -77,7 +77,7 @@ militaryDrill =
 
 Implementation may evaluate `y` first and then `x`, and the two commands, output in reverse order, could confuse the soldiers quite well.
 
-For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default, and **laziness inherently requires referential transparency to hold**.
+For an eager programming language that does not care about referential transparency, these issues are less deadly, since we can simply require the implementation to always evaluate things, and always evaluate in specific order. However, Haskell is a lazy programming language, and it's lazy by default. And **laziness inherently requires referential transparency to hold**: if and only if expressions can be evaluated in any order, we can safely postpone evaluating an expression until its value is needed.
 
 ## Saving the world with the `World`
 
@@ -94,8 +94,8 @@ def read (filename : String) (world : World) : (String × World) := magic
 And now, the world of determinism is saved! Since the world is passed in as an argument, now `read` does not have to return the same output for the same input filename, because the input worlds are different:
 
 ```lean
-(content1, world1) = read "monika.chr" world0
-(content2, world2) = read "monika.chr" world1
+let (content1, world1) := read "monika.chr" world0
+let (content2, world2) := read "monika.chr" world1
 
 -- Now this no longer type checks
 theorem monika_great_theorem : content1 = content2 := rfl
