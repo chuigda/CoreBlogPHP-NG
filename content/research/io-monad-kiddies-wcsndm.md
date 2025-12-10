@@ -492,4 +492,8 @@ runWorldChanger wc world0 =
 --     And here is where innerFn really gets called
 ```
 
-Did you see that? When we are doing `andThen`/`andThenPro`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. `readFile`/`putStrLn`s of course perform IO when get executed, while in Haskell (and other languages employing monad for IO) the actual execution is just somewhat "postponed". And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with a rolled-up printout of this article.
+Did you see that? When we are doing `andThen`/`andThenPro`, we are just toying with (not-yet executed!) functions and composing `WorldChanger`s into new ones. And when we are doing these, no actual IO and computation is performed. When `main` returns, it just hands the "biggest" `WorldChanger` to its caller (runtime system). Only when `runWorldChanger` is called with an initial `World` instance, the entire chain of computations is executed. This supports the claims above somehow, but now you can see that it's just a matter of perspective and word play. And since now if you see anyone repeats the "language is pure while runtime is not" mantra to newbies once again, you should smile mercilessly and smack them with a rolled-up printout of this article.
+
+<div class="img-container">
+<img src="/extra/blog-images/smack-mercilessly.webp" alt="smack" width="1080" height="1159"/>
+</div>
