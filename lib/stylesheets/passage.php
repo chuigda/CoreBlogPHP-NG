@@ -30,6 +30,8 @@ article {
 
 .img-container {
     overflow-x: auto;
+    display: flex;
+    justify-content: center;
 }
 
 .placeholder {
