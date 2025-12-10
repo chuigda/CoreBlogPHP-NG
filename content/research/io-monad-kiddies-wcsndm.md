@@ -362,7 +362,7 @@ That's it.
 
 ## The `return`
 
-In the previous sections, we haven't seen the `return` function required by the `Monad` type class. So yes, we need another example. Imageine that the missile launch password is split into two files and stored on two floppy disks. We want a function that reads the two files and concatenates the passwords together, let's make a try with our existing tools:
+In the previous sections, we haven't seen the `return` function required by the `Monad` type class. So yes, we need another example. Imagine that the missile launch password is split into two files and stored on two floppy disks. We want a function that reads the two files and concatenates the passwords together, let's make a try with our existing tools:
 
 ```haskell
 readPassword :: IO String
@@ -483,7 +483,7 @@ andThenPro :: WorldChanger a -> (a -> WorldChanger b) -> WorldChanger b
 --            |
 --            The existing world changer, containing a function not executed yet
 
-runWorldChanger :: WorldChanger a -> (World -> (a, World))
+runWorldChanger :: WorldChanger a -> World -> (a, World)
 runWorldChanger wc world0 =
     let (WorldChanger innerFn) = wc
     in innerFn world0
