@@ -130,6 +130,8 @@ applicationStart =
 
 The world passing now introduces a **dataflow dependency** between the two `print` calls, since `world1` is produced by the first `print` and consumed by the second `print`. Thus, the second `print` cannot be evaluated before the first one. Since the caller of `main` expects a `World` instance, the entire chain of `print` calls must be evaluated in order to produce that final `World` instance.
 
+Did you see that? We did not eliminate IO at all. IO still happens when the underlying `originalPrint`/`originalRead` magical functions are called. However, by introducing the `World` type and passing it around, we successfully performed IO while preserving **referential transparency**.
+
 > ### Interlude
 >
 > How can we really put the whole world into a value of type `World`? Well, we can't, but we don't have to. `World` is just an abstract type that **represents** instead of **contains** the entire state of the world. Implementation may even eliminate the storage of `World` instances completely, since they are only tokens used to enforce dataflow dependencies between IO operations.
