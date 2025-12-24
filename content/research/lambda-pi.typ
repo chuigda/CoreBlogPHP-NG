@@ -24,7 +24,7 @@
 #show raw.where(lang: none): it => raw(it.text, lang: "hs", block: it.block)
 #set par(spacing: 1.2em)
 
-#let hlc = rgb(233, 255, 255)
+#let hlc = rgb(233, 233, 233)
 
 #let mhl(content) = box(
   $display(#content)$,
@@ -934,13 +934,13 @@ type↓ i Γ _ _
 #let repl = sym.chevron.r.double
 
 $
-  & repl bold("let") italic("id") = (lambda alpha x -> x) :: forall (alpha :: *) tdt alpha -> alpha \
-  & italic("id") :: forall (x :: *) thin (y :: x) tdt x \
-  & repl bold("assume") ("Bool" :: *) thin (italic("False") :: "Bool") \
-  & repl italic("id") "Bool" \
+  & repl bold("let") #[`id`] = (lambda alpha x -> x) :: forall (alpha :: *) tdt alpha -> alpha \
+  & #[`id`] :: forall (x :: *) thin (y :: x) tdt x \
+  & repl bold("assume") ("Bool" :: *) thin (#[`False`] :: "Bool") \
+  & repl #[`id`] "Bool" \
   & lambda x -> x :: forall x :: "Bool" tdt "Bool" \
-  & repl italic("id") "Bool" italic("False") \
-  & italic("False") :: "Bool"
+  & repl #[`id`] "Bool" #[`False`] \
+  & #[`False`] :: "Bool"
 $
 
 相比于简单类型，我们能做的事情更多，但其中并没有非用依值类型不可的。不幸地，尽管我们已经有了依值类型的框架，如果我们不为我们的语言添加一些特定的数据类型的话，我们就写不出什么有意思的程序。
@@ -985,7 +985,7 @@ $
   #[`natElim`] & :: && forall m :: #[`Nat`] -> * & #h(2em) & "动机" \
   & thin circle.filled.tiny thin && m #[`Zero`] & #h(2em) & "基准情况" \
   & -> && (forall l :: #[`Nat`] tdt m med l -> m thin (#[`Succ`] med l)) & #h(2em) & "归纳情况" \
-  & -> && forall k :: #[`Nat`] & #h(2em) & "要消去的数字" \
+  & -> && forall k :: #[`Nat`] & #h(2em) & "待消数" \
   & thin circle.filled.tiny thin && m thin k & #h(2em) & "返回类型"
 $
 
@@ -1069,7 +1069,7 @@ data Value = ...
   | VSucc Value
 ```
 
-引入消去子会让求值变得复杂。当要消去的自然数无法求值成构造子时，消去子的求值就会卡住。相应地，我们要为这种情况扩展用于表示中性项的数据类型：
+引入消去子会让求值变得复杂。当待消自然数无法求值成构造子时，消去子的求值就会卡住。相应地，我们要为这种情况扩展用于表示中性项的数据类型：
 
 ```
 data Neutral = ...
@@ -1099,7 +1099,7 @@ eval↑ (NatElim m mz ms k) d
 
 #align(center)[图 15#h(1em)为自然数扩展求值器]
 
-其中，消去子是唯一值得注意的情况。本质上，消去子会被求值为一个 Haskell 函数 `rec`，其行为合乎预期：若待消去的数字求值为 `VZero`，则求值基本情况 `mz`；若数字求值为 $#[`VSucc`] l$，则将 `ms` 应用于前驱 $l$ 和对消去子的递归调用 $#[`rec`] l$；最后，若数字求值为中性项，则整个 `natElim` 的求值结果亦为中性项。如果待消去的值既不是自然数也不是中性项，这在类型检查阶段就会导致类型错误。因此，最后的兜底分支永远都不会被执行。
+其中，消去子是唯一值得注意的情况。本质上，消去子会被求值为一个 Haskell 函数 `rec`，其行为合乎预期：若待消数求值为 `VZero`，则求值基本情况 `mz`；若待消数求值为 $#[`VSucc`] l$，则将 `ms` 应用于前驱 $l$ 和对消去子的递归调用 $#[`rec`] l$；最后，若待消数求值为中性项，则整个 `natElim` 的求值结果亦为中性项。如果待消数既不是自然数也不是中性项，这在类型检查阶段就会导致类型错误。因此，最后的兜底分支永远都不会被执行。
 
 === 类型
 
@@ -1131,7 +1131,7 @@ $
   #[`natElim`] & :: && forall m :: #[`Nat`] -> * & #h(2em) & "动机" \
   & thin circle.filled.tiny thin && m #[`Zero`] & #h(2em) & "基准情况" \
   & -> && (forall l :: #[`Nat`] tdt m med l -> m thin (#[`Succ`] med l)) & #h(2em) & "归纳情况" \
-  & -> && forall k :: #[`Nat`] & #h(2em) & "要消去的数字" \
+  & -> && forall k :: #[`Nat`] & #h(2em) & "待消数" \
   & thin circle.filled.tiny thin && m thin k & #h(2em) & "返回类型"
 $
 
@@ -1139,7 +1139,7 @@ $
 
 #colbreak()
 
-首先我们检查并求值#term[动机] `m`。拿到 `m` 的值之后，我们就可以检查基准情况和归纳情况了。用于处理 `Zero` 的函数 `mz` 应具有类型 `m Zero`，而用于处理任意自然数后继的函数 `ms` 应具有类型 $forall l :: #[`Nat`] tdt m med l -> m thin (#[`Succ`] l)$。抛开手动输入这个复杂类型的细枝末节，思路本身并不复杂#footnote[译注：原文为 "Despite the appearent complication resulting from having to hand code complex types, type checking these branches is exactly what would happen when type checking a fold over natural numbers in Haskell." 译者依个人好恶进行了改写。]。最后，我们对 `k` 作检查，确保它确实是一个自然数。整个 `natElim` 的返回类型就是将动机 `m` 的值应用于待消去自然数 `k` 的值得到的结果。
+首先我们检查并求值#term[动机] `m`。拿到 `m` 的值之后，我们就可以检查基准情况和归纳情况了。用于处理 `Zero` 的函数 `mz` 应具有类型 `m Zero`，而用于处理任意自然数后继的函数 `ms` 应具有类型 $forall l :: #[`Nat`] tdt m med l -> m thin (#[`Succ`] l)$。抛开手动输入这个复杂类型的细枝末节，思路本身并不复杂#footnote[译注：原文为 "Despite the appearent complication resulting from having to hand code complex types, type checking these branches is exactly what would happen when type checking a fold over natural numbers in Haskell." 译者依个人好恶进行了改写。]。最后，我们对 `k` 作检查，确保它确实是一个自然数。整个 `natElim` 的返回类型就是将#term[动机] `m` 的值应用于待数 `k` 的值得到的结果。
 
 === 其他函数
 
@@ -1150,18 +1150,18 @@ $
 有了手头的这些东西之后，我们终于可以在我们的解释器里定义加法了：
 
 $
-  & repl bold("let") italic("plus") = #[`natElim`] && (lambda underline(" ") -> #[`Nat`] -> #[`Nat`]) \
+  & repl bold("let") #[`plus`] = #[`natElim`] && (lambda #underline("  ") -> #[`Nat`] -> #[`Nat`]) \
   &                                                && (lambda n -> n) \
   &                                                && (lambda k italic("rec") n -> #[`Succ`] (italic("rec") n)) \
-  & italic("plus") :: forall (x :: #[`Nat`]) thin (y :: && #[`Nat`]) tdt #[`Nat`]
+  & #[`plus`] :: forall (x :: #[`Nat`]) thin (y :: && #[`Nat`]) tdt #[`Nat`]
 $
 
-我们通过对加法的第一个参数进行消去来定义函数 $italic("plus")$。我们为基准情况和归纳情况定义的函数的类型都是 $#[`Nat`] -> #[`Nat`]$，我们依此设定我们的动机为 $lambda underline(" ") -> #[`Nat`] -> #[`Nat`]$。在基准情况中，我们需要将 0 加到参数 `n` 上——也就是直接返回 `n`。在归纳情况下，传入的参数分别是前驱 `k`、递归调用 `rec`（对应于操作 $italic("plus") #[`k`]$）和数字 `n`，而我们要把数字 `n` 和 `Succ k` 相加。我们调用 `rec` 将 `n` 与 `k` 相加，然后在结果上再套一层 `Succ`。
+我们通过对加法的第一个参数进行消去，来定义函数 `plus`。我们为基准情况和归纳情况定义的函数的类型都是 $#[`Nat`] -> #[`Nat`]$，我们依此设定#term[动机]为 $lambda underline("  ") -> #[`Nat`] -> #[`Nat`]$。在基准情况中，我们需要将 $0$ 加到参数 $n$ 上——也就是直接返回 $n$。在归纳情况下，传入的参数分别是前驱 $k$、递归调用 $italic("rec")$（对应于操作 $#[`plus`] k$）和数字 $n$，而我们要把数字 $n$ 和 $#[`Succ`] k$ 相加。我们调用 $italic("rec")$ 将 $n$ 与 $k$ 相加，然后在结果上再套一层 `Succ`。
 
-在定义了 $italic("plus")$ 之后，我们就可以在解释器里求值简单的加法了：
+在定义了 `plus` 之后，我们就可以在解释器里求值简单的加法了：
 
 $
-  & repl italic("plus") 40 med 2 \
+  & repl #[`plus`] 40 med 2 \
   & 42 :: #[`Nat`]
 $
 
@@ -1169,7 +1169,7 @@ $
 
 只有自然数还是算不得亦可赛艇：我们在 Haskell 里也能轻松写出这样的数据类型。所以作为真正用到依值类型的例子，我们接下来会展示如何实现向量。
 
-// CZ: 请勿向已注销账户汇款
+// 请勿向已注销账户汇款
 
 和自然数一样，我们要为向量定义三个组件：向量类型、构造子和消去子。我们之前已经给出过向量的类型，它有一个类型和一个自然数作为参数：
 
@@ -1191,18 +1191,18 @@ $
 向量的消去子本质上和列表的 `foldr` 相同，但它的类型更加通用#footnote[译注：原文为 "but its type is a great deal more specific"，但依前文，更具体的显然是 #rs[foldr]，故改。]（因而也更复杂）：
 
 $
-  #[`vecElim`] & :: && forall alpha :: * & #h(2em) & "向量的元素类型" \
+  #[`vecElim`] & :: && forall alpha :: * & #h(2em) & "元素类型" \
   & thin circle.filled.tiny thin && forall m :: (forall k :: #[`Nat`] tdt #[`Vec`] alpha med k -> *) & #h(2em) & "动机" \
   & thin circle.filled.tiny thin && m #[`Zero`] (#[`Nil`] alpha) & #h(2em) & "基准情况" \
   & -> && (forall l :: #[`Nat`] tdt forall x :: alpha tdt forall#[$italic("xs")$] :: #[`Vec`] alpha med l .\
   & && #h(0.5em) m med l italic("xs") -> m med (#[`Succ`] l) med (#[`Cons`] alpha med l med x med italic("xs"))) & #h(2em) & "归纳情况" \
-  & -> && forall k :: #[`Nat`] tdt forall#[$italic("xs")$] :: #[`Vec`] alpha med k & #h(2em) & "要消去的向量" \
+  & -> && forall k :: #[`Nat`] tdt forall#[$italic("xs")$] :: #[`Vec`] alpha med k & #h(2em) & "待消向量" \
   & thin circle.filled.tiny thin && m thin k thin italic("xs") & #h(2em) & "返回类型"
 $
 
 // 老登到这时候已经完全沉浸在自己的艺术中了。“It combines those elements to form the required type”，已经连 form 的是 type 还是 instance of type 都不分了
 
-整个消去子的类型是对向量的元素类型 $alpha$ 泛化#footnote[译注：“泛化”原作“量化” (quantified)。]的。紧随其后的参数便是动机，和自然数的消去子 `natElim` 一样，`vecElim` 的动机本质上是一个接受向量 ($#[`Vec`] alpha med k$)、返回类型（#term[种类] $*$）的函数，而因为向量类型有其长度 $k$ 作为参数，所以动机还需要一个 `Nat` 型的参数 ($forall k :: #[`Nat`]$)#footnote[译注：原文为 "As was the case for natural numbers, the motive is a type (kind $*$) parameterized by a vector. As vectors are themselves parameterized by their length, the motive expects an additional argument of type #rs[Nat]."]。接下来的两个参数对应于 `Vec` 的两个构造子。构造子 `Nil` 表示空向量，因此对应于基准情况的参数的类型就是 $m #[`Zero`] (#[`Nil`] alpha)$。用于处理归纳情况——也就是构造子 `Cons`——的参数，则接受一个数字 $l$、一个类型为 $alpha$ 的元素 $x$、一个长度为 $l$ 的向量 $italic("xs")$，以及递归应用消去子的结果，其类型为 $m med l med italic("xs")$。它需要将这些元素结合起来，构造出符合所需类型 $m med (#[`Succ`] l) med (#[`Cons`] alpha med l med x med italic("xs"))$ 的一个词项，该类型对应于长度为 $#[`Succ`] l$、内容为 $x :italic("xs")$ 的向量#footnote[译注：原文为 "It combines those elements to form the required type, for the vector of length $#rs[Succ] l$ where x has been added to xs."]。在向 `vecElim` 提供了这些参数之后，我们就得到了一个能消去任意长度向量的函数。
+整个消去子的类型是对向量的元素类型 $alpha$ 泛化#footnote[译注：“泛化”原作“量化” (quantified)。]的。紧随其后的参数便是#term[动机]，和自然数的消去子 `natElim` 一样，`vecElim` 的#term[动机]本质上是一个接受向量 ($#[`Vec`] alpha med k$)、返回类型（#term[种类] $*$）的函数，而因为向量类型有其长度 $k$ 作为参数，所以#term[动机]还需要一个 `Nat` 型的参数 ($forall k :: #[`Nat`]$)#footnote[译注：原文为 "As was the case for natural numbers, the motive is a type (kind $*$) parameterized by a vector. As vectors are themselves parameterized by their length, the motive expects an additional argument of type #rs[Nat]."]。接下来的两个参数对应于 `Vec` 的两个构造子。构造子 `Nil` 表示空向量，因此对应于基准情况的参数的类型就是 $m #[`Zero`] (#[`Nil`] alpha)$。用于处理归纳情况——也就是构造子 `Cons`——的参数，则接受一个数字 $l$、一个类型为 $alpha$ 的元素 $x$、一个长度为 $l$ 的向量 $italic("xs")$，以及递归应用消去子的结果，其类型为 $m med l med italic("xs")$。它需要将这些元素结合起来，构造出符合所需类型 $m med (#[`Succ`] l) med (#[`Cons`] alpha med l med x med italic("xs"))$ 的一个词项，该类型对应于长度为 $#[`Succ`] l$、内容为 $x :italic("xs")$ 的向量#footnote[译注：原文为 "It combines those elements to form the required type, for the vector of length $#rs[Succ] l$ where x has been added to xs."]。在向 `vecElim` 提供了这些参数之后，我们就得到了一个能消去任意长度向量的函数。
 
 这个消去子的类型看起来相当复杂，不过如果我们把它和列表的 `foldr` 函数对比：
 
@@ -1210,7 +1210,7 @@ $
   #[`foldr`] :: forall alpha :: * tdt forall m :: * tdt m -> (alpha -> m -> m) -> [ alpha ] -> m
 $
 
-我们可以看到，它们的结构是一样的。`vecElim` 的签名看似盘根错节，其实这种复杂性很大程度上只是因为动机以向量为参数，而向量又以自然数为参数。
+我们可以看到，它们的结构是一样的。`vecElim` 的签名看似盘根错节，其实这种复杂性很大程度上只是因为#term[动机]以向量为参数，而向量又以自然数为参数。
 
 事实上，不是所有的参数都是必须的——有些参数能从其他参数中推断出来。这种推断能大幅削减语法噪音，用消去子编写程序也就不再寸步难行。所以#dtlc()看似繁文缛节，实则是设计使然——我们有意地把它设计成了一种显式的、低级的语言。
 
@@ -1241,3 +1241,231 @@ data Neutral = ...
 ```
 
 === 求值
+
+`Vec` 类型的构造器 `VNil` 和 `VCons` 的求值是按结构进行的，即将构造子中的词项求值为值。同样，唯一值得注意的情况是消去子的求值，如图 17 所示。如前所述，其行为类似于列表上的 `fold` 操作：我们根据待消向量是 `VNil` 还是 `VCons` 应用相应的参数。在 `VCons` 的分支中，我们还要对向量的尾部 `xs`（长度为 `l`）递归地调用消去子。若待消向量是一个中性项，则消去子无法被规约，返回的结果亦是中性项。
+
+```
+eval↑ (VecElim α m mn mc k xs) d =
+  let mnVal = eval↓ mn d
+      mcVal = eval↓ mc d
+      rec kVal xsVal =
+        case xsVal of
+          VNil _         -> mnVal
+          VCons _ l x xs -> foldl vapp mcVal [l, x, xs, rec l xs]
+          VNeutral n     -> VNeutral (NVecElim (eval↓ α d)
+                                               (eval↓ m d)
+                                               mnVal
+                                               mcVal
+                                               kVal
+                                               n)
+          _              -> error "internal: eval vecElim"
+  in rec (eval↓ k d) (eval↓ xs d)
+```
+
+#align(center)[图 17#h(1em)为向量实现求值]
+
+=== 类型检查
+
+我们扩展了类型检查器，如图 18 所示。代码相对较长，但只要记住每个结构中每个元素该是什么类型，理解起来还是相对容易的。
+
+和自然数一样，我们省略替换和引用的新代码，因为它们实现起来直截了当。
+
+```
+type↑ i Γ (Vec α k) =
+  do type↓ i Γ α VStar
+     type↓ i Γ k VNat
+     pure VStar
+type↑ i Γ (Nil α) =
+  do type↓ i Γ α VStar
+     let αVal = eval↓ α []
+     pure (VVec αVal VZero)
+type↑ i Γ (cons α k x xs) =
+  do type↓ i Γ α VStar
+     let αVal = eval↓ α []
+     type↓ i Γ k VNat
+     let kVal = eval↓ k []
+     type↓ i Γ x αVal
+     type↓ i Γ xs (VVec αVal kVal)
+     pure (VVec αVal (VSucc kVal))
+type↑ i Γ (VecElim α m mn mc k vs)
+  do type↓ i Γ α VStar
+     let αVal = eval↓ α []
+     type↓ i Γ m
+            (VPi VNat (\k -> VPi (VVec αVal k) (\_ -> VStar)))
+     let mVal = eval↓ m []
+     type↓ i Γ mn
+            (foldl vapp mVal [VZero, VNil αVal])
+     type↓ i Γ mc
+            (VPi VNat (\l ->
+             VPi αVal (\y ->
+             VPi (Vec αVal l) (\ys ->
+             VPi (foldl vapp mVal [l, ys]) (\_ ->
+             (foldl vapp mVal [VSucc l, VCons αVal l y ys]))))))
+     type↓ i Γ k VNat
+     let kVal = eval↓ k []
+     type↓ i Γ vs (Vec αVal kVal)
+     let vsVal = eval↓ vs []
+     pure (foldl vapp mVal [kVal, vsVal])
+```
+
+#align(center)[图 18#h(1em)为向量扩展类型检查器]
+
+#colbreak()
+
+=== `append`
+
+现在我们可以用实际行动来阐述真正的依值类型程序了：我们要写一个能将两个向量连接起来，并正确记录新向量长度的函数。在解释器中，这个函数可以像这样定义：
+
+$
+  & repl bold("let") #[`append`] = \
+  & #h(1em) (lambda alpha -> #[`vecElim`] alpha \
+  & #h(8em) (lambda m med underline("  ") -> forall (n :: #[`Nat`]) tdt #[`Vec`] alpha med n -> #[`Vec`] alpha med (#[`plus`] m med n)) \
+  & #h(8em) (lambda underline("  ") v -> v) \
+  & #h(8em) (lambda m med v italic("vs") italic("rec") n med w -> #[`Cons`] alpha med (#[`plus`] m med n) med v med (#[`rec`] n med w))) \
+  & #h(1em) :: forall (alpha :: *) (m :: #[`Nat`]) (v :: #[`Vec`] alpha med m) (n :: #[`Nat`]) (w :: #[`Vec`] alpha med n) tdt \
+  & #h(2em) #[`Vec`] alpha med (#[`plus`] m med n)
+$
+
+// 笔误把 w 打成 v 就算了，append whom to whom 是把谁加到谁后面这种指代都彻底搞不清楚了是吧？我提议先把作者家里所有的木棍换成棍木。
+
+和 `plus` 一样，我们通过消去二元函数的第一个参数，来为向量定义二元函数 `append`，因此#term[动机]要接受第二个向量。`append` 返回向量的长度应是两输入向量长度之和 $#[`plus`] m med n$。向空向量附加另一向量 $v$ #footnote[译注：也就是 $#rs[append] #rs[[]] med v$。]的结果是 $v$。向形如 $#[`Cons`] m med v med italic("vs")$ 的向量附加向量 $w$ #footnote[译注：也就是 $#rs[append] (#rs[Cons] med m med v italic("vs")) med w$。]则须先调用 `rec` 递归处理 $italic("vs")$ ——它会向 $italic("vs")$ 附加 $w$，然后再在 `rec` 结果的前面附上 $v$#footnote[译注：此段有译者大范围改写。原文为 "Appending an empty vector to another vector $v$ results in $v$. Appending a vector of the form $#rs[Cons] m med v med italic("vs")$ to a vector $v$ works by invoking recursion via #rs[rec] (which appends $italic("vs")$ to $w$) and prepending $v$."]。
+
+在定义了函数之后，我们就可以使用它了：
+
+$
+  & repl bold("assume") (alpha :: *) (x :: alpha) (y :: alpha) \
+  & repl #[`append`] alpha med 2 med (#[`Cons`] alpha med 1 med x med (#[`Cons`] alpha med 0 med x med (#[`Nil`] alpha))) \
+  & #h(5.25em) 1 med (#[`Cons`] alpha med 0 med y med (#[`Nil`] alpha)) \
+  & #[`Cons`] alpha med 2 med x med (#[`Cons`] alpha med 1 med x med (#[`Cons`] alpha med 0 med y med (#[`Nil`] alpha))) :: #[`Vec`] alpha med 3
+$
+
+我们先假设存在类型 $alpha$ 以及类型为 $alpha$ 的两个元素 $x$ 和 $y$，然后向包含两个 $x$ 的向量附加包含一个 $y$ 的向量。
+
+// 越到后面错误越离谱，我还得在脑子里时刻运行一个用自然语言当语法的 DTLC 解释器。
+
+== 讨论
+
+在本节中我们向核心演算中添加了两个数据类型：自然数和向量。运用同样的方法，我们可以添加许多其他的数据类型。例如，对于任意自然数 $n$，我们可以定义一个类型 $#[`Fin`] n$，该类型包含且仅包含 $n$ 个元素。特别地，$#[`Fin`] 0$、$#[`Fin`] 1$、$#[`Fin`] 2$ 分别就是空类型、#term[单位 (unit)] 类型和布尔类型。此外，`Fin` 还可以被用来定义一个#term[全函数 (total function)]#footnote[译注：所谓全函数，就是对于任何输入，都有确定输出的函数。有些函数对于某些输入没有确定的输出（抛出异常、无限循环、引入未定义行为……），这样的函数相应地称为#term[部分函数 (partial function)]。] 版本的#term[投影 (projection)]#footnote[译注：也就是下标索引：取向量/数组的第 $n$ 个元素。] 函数：
+
+$
+  #[`project`] :: forall (alpha :: *) (n :: #[`Nat`]) tdt #[`Vec`] alpha med n -> #[`Fin`] n -> alpha
+$
+
+因为类型 $#[`Fin`] n$ 有且仅有 $n$ 个取值，故若将其用作索引，则越界永不发生#footnote[译注：此句为译者补文。]。
+
+#colbreak()
+
+另一个值得注意的依值类型是#term[相等类型 (equality type)]：
+
+$
+  #[`Eq`] :: forall (alpha :: *) tdt alpha -> alpha -> *
+$
+
+它只有一个构造子：
+
+$
+  #[`Refl`] :: forall (alpha :: *) (x :: alpha) -> #[`Eq`] alpha med x med x
+$
+
+而这是它的消去子：
+
+$
+  #[`eqElim`] & :: && forall (alpha :: *) & #h(2em) & "元素类型" \
+  & thin circle.filled.tiny thin && forall (m :: forall (x :: alpha) tdt forall (y :: alpha) tdt #[`Eq`] alpha med x med y -> *) & #h(2em) & "动机" \
+  & thin circle.filled.tiny thin && (forall (z :: alpha) tdt m med z med z med (#[`Refl`] a med z)) & #h(2em) & "基础情况" \
+  & -> && forall (x :: alpha) tdt forall (y :: alpha) tdt forall (p :: #[`Eq`] alpha med x med y) & #h(2em) & "待消项" \
+  & thin circle.filled.tiny thin && m med x med y med p & #h(2em) & "返回类型"
+$
+
+使用 `Eq`，我们可以直接在#dtlc()中书写并证明和我们代码有关的定理。例如，类型
+
+$
+  forall (alpha :: *) (n :: #[`Nat`]) . #[`Eq`] #[`Nat`] (#[`plus`] n #[`Zero`]) med n
+$
+
+表明 `Zero` 是自然数加法中的#term[右单位元 (right identity)]#footnote[译注：“#term[单位元 (identity)]”原作 "neutral element"。]。而根据#term[柯里-霍华德同构 (Curry-Howard isomorphism)]，任何具有以上类型的词项即是这一定理的证明。
+
+这些例子和一些其他例子包含在论文源码附带的解释器中，可以从#dtlc()的主页 [7] 下载。关于适用于依值类型语言的数据类型，以及如何编写依值类型程序的更多信息，请参阅另一篇教程 [12]。
+
+在本节中，我们选择为新增的每种数据类型扩展核心语法。另一种选择是为数据类型使用#term[邱奇编码 (Church encoding)]，例如，我们可以用类型 $forall (alpha :: *) tdt alpha -> (alpha -> alpha) -> alpha$ 来表示自然数。这一选择看似事半功倍，实则后患无穷。我们能用邱奇编码写出简单的 `fold`，却不能用它写出依赖于消去子的程序，除非我们进一步扩展理论。这样一来，要编写那些天生就依靠依值类型的程序——例如我们的 `append` 函数——就变得举步维艰。而我们的核心理论应该能构成依值类型编程语言的坚实基础，所以我们不使用这种编码方式。
+
+= 通往依值类型编程
+
+我们现已描述的演算距离真正的程序设计语言尚且相距甚远。尽管我们已经可以写出简单的表达式、对其作类型检查并求值，距离它能被用来编写大型的复杂程序，却还有许多的工作要做。本节并不旨在列出进行大规模依值类型编程时所必须面对的全部问题，更遑论解决这些问题。相反，我们将尝试勾勒出如何在目前为止我们所看到的核心演算之上构建编程语言，并推荐相关文献。
+
+从上面的几个例子，我们看得出来，用消去子编程只是一时权宜，并非长久之计。Epigram [15] 通过巧妙地选择#term[动机]，使得用消去子编程变得更加实用 [9, 14]。通过选择合适的#term[动机]，我们可以在定义复杂函数时利用类型信息。消去子看起来可能并不是那么有用，但它们构成了依值类型编程语言得以建立的基础。
+
+编写带有复杂类型的程序也绝非易事。Epigram 和 Agda [19] 允许程序员在代码里留下“#term[空洞 (hole)]”——让程序中的这些部分处于未定义的状态 [20]。程序员可以询问系统某个空洞具有什么类型，这使得复杂程序能被有效率地逐步开发。
+
+#colbreak()
+
+目前，我们的核心系统要求程序员显式地实例化多态函数，繁琐不堪。以我们定义的 `append` 函数为例，它的五个参数中，只有两个（基础情况、归纳情况）是重要的。幸运的是，不重要的参数通常可以被推断出来。许多基于依值类型的编程语言和证明助手都支持#term[隐式参数 (implicit arguments)]，用户可以在调用函数时省略这些参数。需要注意的是，这些参数不必是类型，例如 `append` 函数的“多态性”也可以体现在向量长度上。
+
+最后，我们要重申我们现在所展示的类型系统是#term[不健全 (unsound)] 的。因为 $*$ 本身的#term[种类]也是 $*$，我们可以编码出#term[罗素悖论 (Russell's paradox)] 的某种变体——#term[吉拉德悖论 (Girard's paradox)] [3]。这使得我们可以创造出一个具有任何类型的东西。要修复这个问题，标准的解决方案是为类型引入一个无限的层级：$*$ 的类型是 $*_1$，$*_1$ 的类型是 $*_2$，依此类推。
+
+= 讨论
+
+在类型论和类型系统的实现这方面有着大量的相关文献。Pierce 的书 [21] 是绝佳的起点之一，而 Martin Löf 的类型论笔记 [8] 迄今为止仍有极高的价值，也是这一主题极佳的入门材料。Nordström 和 Thompson 等人近期所著的书籍 [17, 24] 也可在网络上免费取得。
+
+目前已有若干依值类型编程语言和证明助手可供使用。Coq [2] 是一个成熟且文档齐全的证明助手。虽然它并非主要为依值类型编程而设计，但学习 Coq 可以帮助我们建立对类型论的直觉。Haskell 程序员可能会更适应较新版本的 Agda [18]——一种依值类型编程语言。Agda 的语法不仅与 Haskell 相似，而且还可以使用模式匹配和一般递归来定义函数。最后，Epigram [15, 12] 与我们所熟知的函数式编程进行了更彻底的决裂。尽管其初始实现远非完美，但 Epigram 的许多理念尚未在其他地方得到实现。
+
+在引言中，我们提到了函数式程序员对依值类型的一些顾虑。对依值类型语言进行类型检查并不必然是不可判定的——事实上，我们在这里展示的类型检查器只会在某些刻意构造的例子 [3] 中无法停机。求值和类型检查之间的阶段区分变得更加微妙，但这一区分仍然存在。类型与词项的融合带来了新的挑战，但也提供了很多机会。但最重要的是，入门依值类型并不像你想象的那么难。我们希望这篇文章能够激发你的兴趣，引导你迈出第一步，并鼓励你自己开始探索依值类型！
+
+#set heading(numbering: none)
+
+== 致谢
+
+我们要感谢 Thorsten Altenkirch、Lennart Augustsson、Isaac Dupree、Clemens Fruhwirth、Jurriaan Hage、Stefan Holdermans、穆信成、Edsko de Vries、Phil Wadler、乌特勒支大学的几期类型系统研讨班的学生们、Lambda the Ultimate 社区，以及匿名审稿人对本文早期版本提出的宝贵意见#footnote[译注：你们还要谢谢我，你们的译者。天知道我在翻译这论文的时候受了多少气——Chuigda Whitegive.]。
+
+= 参考文献
+
+[1] Abel, A., Altenkirch, T.: A Partial Type Checking Algorithm for Type:Type, International Workshop on
+Mathematically Structured Functional Programming (V. Capretta, C. McBride, Eds.), 2008.
+
+[2] Bertot, Y., Cast'eran, P.: Interactive Theorem Proving and Program Development. Coq'Art: The Calculus of
+Inductive Constructions, Springer Verlag, 2004.
+
+[3] Coquand, T.: An analysis of Girard's paradox, First IEEE Symposium on Logic in Computer Science, 1986.
+
+[4] Coquand, T.: An Algorithm for Type-Checking Dependent Types, Science of Computer Programming, 26(1-3), 1996, 167-177.
+
+[5] Coquand, T., Takeyama, M.: An Implementation of Type: Type, International Workshop on Types for Proofs and Programs, 2000.
+
+[6] Hinze, R., Löh, A.: lhs2TEX, 2007, http://www.cs.uu.nl/~andres/lhs2tex.
+
+[7] λ5 homepage, 2007, http://www.cs.uu.nl/~andres/LambdaPi.
+
+[8] Martin-Löf, P.: Intuitionistic type theory, Bibliopolis, 1984.
+
+[9] McBride, C.: Dependently Typed Functional Programs and their Proofs, Ph.D. Thesis, University of Edinburgh, 1999.
+
+[10] McBride, C.: Elimination with a Motive, TYPES ’00: Selected papers from the International Workshop on Types for Proofs and Programs, Springer-Verlag, 2000.
+
+[11] McBride, C.: Faking it: Simulating Dependent Types in Haskell, Journal of Functional Programming, 12(5), 2002, 375-392.
+
+[12] McBride, C.: Epigram: Practical Programming with Dependent Types., Advanced Functional Programming, 2004.
+
+[13] McBride, C., McKinna, J.: Functional pearl: I am not a number - I am a free variable, Haskell ’04: Proceedings of the 2004 ACM SIGPLAN workshop on Haskell, 2004.
+
+[14] McBride, C., McKinna, J.: The view from the left, Journal of Functional Programming, 14(1), 2004, 69-111.
+
+[15] McBride, C. et al.: Epigram, 2004, http://www.e-pig.org.
+
+[16] Meijer, E., Fokkinga, M., Paterson, R.: Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, 5th Conf. on Functional Programming Languages and Computer Architecture, 1991.
+
+[17] Nordström, B., Petersson, K., Smith, J. M.: Programming in Martin-Löf's Type Theory: An Introduction, Clarendon, 1990.
+
+[18] Norell, U.: Agda 2, http://appserv.cs.chalmers.se/users/ulfn/wiki/agda.php.
+
+[19] Norell, U.: Towards a practical programming language based on dependent type theory, Ph.D. Thesis, Chalmers University of Technology, 2007.
+
+[20] Norell, U., Coquand, C.: Type checking in the presence of meta-variables, Submitted to Typed Lambda Calculi and Applications 2007.
+
+[21] Pierce, B. C.: Types and Programming Languages, MIT Press, Cambridge, MA, USA, 2002, ISBN 0-262-16209-1.
+
+[22] Pierce, B. C., Turner, D. N.: Local Type Inference, ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL), San Diego, California, 1998, Full version in ACM Transactions on Programming Languages and Systems (TOPLAS), 22(1), January 2000, pp. 1-44.
+
+[23] Pollack, R.: Closure under alpha-conversion, TYPES ’93: Proceedings of the international workshop on Types for proofs and programs, 1994.
+
+[24] Thompson, S.: Type Theory and Functional Programming, Addison Wesley Longman Publishing Co., Inc.,
+1991.
