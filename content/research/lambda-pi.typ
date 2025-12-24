@@ -24,7 +24,7 @@
 #show raw.where(lang: none): it => raw(it.text, lang: "hs", block: it.block)
 #set par(spacing: 1.2em)
 
-#let hlc = rgb(233, 233, 233)
+#let hlc = rgb(212, 233, 255)
 
 #let mhl(content) = box(
   $display(#content)$,
@@ -723,7 +723,7 @@ $
 
 // given a term e and <<an>> type τ，写到这地方的时候作者已经完全忘记英语怎么用了属于是
 
-对可推断项作检查的规则 [CHK] 还是跟以前一样：给定一个词项 $e$ 和一个类型 $tau$，我们首先推断出 $e$ 的类型，接着检查推断出的类型和期望的类型 $tau$ 是否相等。然而，我们现在处理的是已求值的类型，因此这种相等性要比类型词项的语法相等性要强得多：不然要是 `Vec` $alpha med 2$ 和 #box[`Vec` $alpha med (1 + 1)$] 表示的不是同一个类型，那就太不幸了。而我们的系统能识别出它们相等，因为两个类型的求值结果都是 `Vec` $alpha med 2$。
+对可推断项作检查的规则 [CHK] 还是跟以前一样：给定一个词项 $e$ 和一个类型 $tau$，我们首先推断出 $e$ 的类型，接着检查推断出的类型和期望的类型 $tau$ 是否相等。然而，我们现在处理的是已求值的类型，因此这种相等性要比类型词项的语法相等性强得多：不然要是 `Vec` $alpha med 2$ 和 #[`Vec` $alpha med (1 + 1)$] 表示的不是同一个类型，那就太不幸了。而我们的系统能识别出它们相等，因为两个类型的求值结果都是 `Vec` $alpha med 2$。
 
 许多支持依值类型的类型系统都有一条这样的规则：
 
@@ -1279,7 +1279,7 @@ type↑ i Γ (Nil α) =
   do type↓ i Γ α VStar
      let αVal = eval↓ α []
      pure (VVec αVal VZero)
-type↑ i Γ (cons α k x xs) =
+type↑ i Γ (Cons α k x xs) =
   do type↓ i Γ α VStar
      let αVal = eval↓ α []
      type↓ i Γ k VNat
@@ -1287,7 +1287,7 @@ type↑ i Γ (cons α k x xs) =
      type↓ i Γ x αVal
      type↓ i Γ xs (VVec αVal kVal)
      pure (VVec αVal (VSucc kVal))
-type↑ i Γ (VecElim α m mn mc k vs)
+type↑ i Γ (VecElim α m mn mc k vs) =
   do type↓ i Γ α VStar
      let αVal = eval↓ α []
      type↓ i Γ m
@@ -1298,12 +1298,12 @@ type↑ i Γ (VecElim α m mn mc k vs)
      type↓ i Γ mc
             (VPi VNat (\l ->
              VPi αVal (\y ->
-             VPi (Vec αVal l) (\ys ->
+             VPi (VVec αVal l) (\ys ->
              VPi (foldl vapp mVal [l, ys]) (\_ ->
              (foldl vapp mVal [VSucc l, VCons αVal l y ys]))))))
      type↓ i Γ k VNat
      let kVal = eval↓ k []
-     type↓ i Γ vs (Vec αVal kVal)
+     type↓ i Γ vs (VVec αVal kVal)
      let vsVal = eval↓ vs []
      pure (foldl vapp mVal [kVal, vsVal])
 ```
@@ -1372,12 +1372,12 @@ $
 $
   #[`eqElim`] & :: && forall (alpha :: *) & #h(2em) & "元素类型" \
   & thin circle.filled.tiny thin && forall (m :: forall (x :: alpha) tdt forall (y :: alpha) tdt #[`Eq`] alpha med x med y -> *) & #h(2em) & "动机" \
-  & thin circle.filled.tiny thin && (forall (z :: alpha) tdt m med z med z med (#[`Refl`] a med z)) & #h(2em) & "基础情况" \
+  & thin circle.filled.tiny thin && (forall (z :: alpha) tdt m med z med z med (#[`Refl`] alpha med z)) & #h(2em) & "基础情况" \
   & -> && forall (x :: alpha) tdt forall (y :: alpha) tdt forall (p :: #[`Eq`] alpha med x med y) & #h(2em) & "待消项" \
   & thin circle.filled.tiny thin && m med x med y med p & #h(2em) & "返回类型"
 $
 
-使用 `Eq`，我们可以直接在#dtlc()中书写并证明和我们代码有关的定理。例如，类型
+使用 `Eq`，我们可以直接在#dtlc()中书写并证明与我们代码有关的定理。例如，类型
 
 $
   forall (alpha :: *) (n :: #[`Nat`]) . #[`Eq`] #[`Nat`] (#[`plus`] n #[`Zero`]) med n
@@ -1391,7 +1391,7 @@ $
 
 = 通往依值类型编程
 
-我们现已描述的演算距离真正的程序设计语言尚且相距甚远。尽管我们已经可以写出简单的表达式、对其作类型检查并求值，距离它能被用来编写大型的复杂程序，却还有许多的工作要做。本节并不旨在列出进行大规模依值类型编程时所必须面对的全部问题，更遑论解决这些问题。相反，我们将尝试勾勒出如何在目前为止我们所看到的核心演算之上构建编程语言，并推荐相关文献。
+我们现已描述的演算距离真正的程序设计语言尚且相距甚远。尽管我们已经可以写出简单的表达式、对其作类型检查并求值，但距离它能被用来编写大型的复杂程序，还有许多的工作要做。本节并不旨在列出进行大规模依值类型编程时所必须面对的全部问题，更遑论解决这些问题。相反，我们将尝试勾勒出如何在目前为止我们所看到的核心演算之上构建编程语言，并推荐相关文献。
 
 从上面的几个例子，我们看得出来，用消去子编程只是一时权宜，并非长久之计。Epigram [15] 通过巧妙地选择#term[动机]，使得用消去子编程变得更加实用 [9, 14]。通过选择合适的#term[动机]，我们可以在定义复杂函数时利用类型信息。消去子看起来可能并不是那么有用，但它们构成了依值类型编程语言得以建立的基础。
 
@@ -1399,7 +1399,7 @@ $
 
 #colbreak()
 
-目前，我们的核心系统要求程序员显式地实例化多态函数，繁琐不堪。以我们定义的 `append` 函数为例，它的五个参数中，只有两个（基础情况、归纳情况）是重要的。幸运的是，不重要的参数通常可以被推断出来。许多基于依值类型的编程语言和证明助手都支持#term[隐式参数 (implicit arguments)]，用户可以在调用函数时省略这些参数。需要注意的是，这些参数不必是类型，例如 `append` 函数的“多态性”也可以体现在向量长度上。
+目前，我们的核心系统要求程序员显式地实例化多态函数，繁琐不堪。以我们定义的 `append` 函数为例，它的五个参数中，只有两个是重要的。幸运的是，不重要的参数通常可以被推断出来。许多基于依值类型的编程语言和证明助手都支持#term[隐式参数 (implicit arguments)]，用户可以在调用函数时省略这些参数。需要注意的是，这些参数不必是类型，例如 `append` 函数的“多态性”也可以体现在向量长度上。
 
 最后，我们要重申我们现在所展示的类型系统是#term[不健全 (unsound)] 的。因为 $*$ 本身的#term[种类]也是 $*$，我们可以编码出#term[罗素悖论 (Russell's paradox)] 的某种变体——#term[吉拉德悖论 (Girard's paradox)] [3]。这使得我们可以创造出一个具有任何类型的东西。要修复这个问题，标准的解决方案是为类型引入一个无限的层级：$*$ 的类型是 $*_1$，$*_1$ 的类型是 $*_2$，依此类推。
 
@@ -1407,7 +1407,7 @@ $
 
 在类型论和类型系统的实现这方面有着大量的相关文献。Pierce 的书 [21] 是绝佳的起点之一，而 Martin Löf 的类型论笔记 [8] 迄今为止仍有极高的价值，也是这一主题极佳的入门材料。Nordström 和 Thompson 等人近期所著的书籍 [17, 24] 也可在网络上免费取得。
 
-目前已有若干依值类型编程语言和证明助手可供使用。Coq [2] 是一个成熟且文档齐全的证明助手。虽然它并非主要为依值类型编程而设计，但学习 Coq 可以帮助我们建立对类型论的直觉。Haskell 程序员可能会更适应较新版本的 Agda [18]——一种依值类型编程语言。Agda 的语法不仅与 Haskell 相似，而且还可以使用模式匹配和一般递归来定义函数。最后，Epigram [15, 12] 与我们所熟知的函数式编程进行了更彻底的决裂。尽管其初始实现远非完美，但 Epigram 的许多理念尚未在其他地方得到实现。
+目前已有若干依值类型编程语言和证明助手可供使用。Coq [2] 是一个成熟且文档齐全的证明助手。虽然它并非主要为依值类型编程而设计，但学习 Coq 有助于建立对类型论的直觉。Haskell 程序员可能会更适应较新版本的 Agda [18]——一种依值类型编程语言。Agda 的语法不仅与 Haskell 相似，而且还可以使用模式匹配和一般递归来定义函数。最后，Epigram [15, 12] 与我们所熟知的函数式编程进行了更彻底的决裂。尽管其初始实现远非完美，但 Epigram 的许多理念尚未在其他地方得到实现。
 
 在引言中，我们提到了函数式程序员对依值类型的一些顾虑。对依值类型语言进行类型检查并不必然是不可判定的——事实上，我们在这里展示的类型检查器只会在某些刻意构造的例子 [3] 中无法停机。求值和类型检查之间的阶段区分变得更加微妙，但这一区分仍然存在。类型与词项的融合带来了新的挑战，但也提供了很多机会。但最重要的是，入门依值类型并不像你想象的那么难。我们希望这篇文章能够激发你的兴趣，引导你迈出第一步，并鼓励你自己开始探索依值类型！
 
