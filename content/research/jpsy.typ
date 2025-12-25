@@ -1,4 +1,4 @@
-#let brand-green = rgb("#009944")
+#let brand-green = rgb("#0099447F")
 
 #let logo-cell(content, bg-color, text-color) = {
   rect(
@@ -11,7 +11,8 @@
       weight: 500,
       size: 36pt, // 字体大小
       fill: text-color,
-      content
+      content,
+      stroke: none
     ))
   )
 }
@@ -20,7 +21,7 @@
   #box(
     width: 3cm,
     height: 3cm,
-    stroke: 3pt + brand-green, // 外边框
+    stroke: 2pt + brand-green, // 外边框
   )[
     #grid(
       columns: (1fr, 1fr),
