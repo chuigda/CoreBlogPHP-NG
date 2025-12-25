@@ -572,7 +572,7 @@ $
 
 // 傻逼作者非得用你那抽象代数知识跟普通读者的初等代数直觉对着干是吧，函数的值域哪有不依赖于定义域的？
 
-依值函数空间 "$forall$" 扩展了通常的函数空间 "$->$"，它允许函数返回值的类型依赖于输入值#footnote[译注：原文为 "The dependent function space '$forall$' generalizes the usual function space '$->$' by allowing the range to depend on the domain"，译者依个人理解进行了意译。例如，依值类型的函数 $#rs[zeros] :: forall alpha :: * med . forall n :: #rs[Nat] . #rs[Vec] alpha med n$ 返回的类型 $#rs[Vec] alpha med n$ 显然依赖于参数 $n$ 的值。]。Haskell 中的#term[参数化多态 (parametric polymorphism)] 可以看作是依值函数的一种特例#footnote[译注：因为类型也可以被视作一种值。下一小节“一切皆项”将详细展开。]，这也是我们使用符号 "$forall$" 的动机#footnote[类型学家称依值函数类型为 $Pi$-类型，并且会这么写：$Pi alpha : * tdt Pi n : #rs[Nat] tdt #rs[Vec] alpha med n$。这也是为什么我们将依值类型 Lambda 演算称为#dtlc()。]。但与参数化多态不同的是，依值函数空间不止能对类型进行抽象。上面的 `Vec` 类型是一个有效的依值类型。
+依值函数空间 "$forall$" 扩展了通常的函数空间 "$->$"，它允许函数返回值的类型依赖于输入值#footnote[译注：原文为 "The dependent function space '$forall$' generalizes the usual function space '$->$' by allowing the range to depend on the domain"，译者依个人理解进行了意译。例如，依值类型的函数 $#rs[zeros] :: forall alpha :: * med . forall n :: #rs[Nat] . #rs[Vec] alpha med n$ 返回的类型 $#rs[Vec] alpha med n$ 显然依赖于参数 $n$ 的值。]。Haskell 中的#term[参数化多态 (parametric polymorphism)] 可以看作是依值函数的一种特例#footnote[译注：因为类型也可以被视作一种值。下一小节“一切皆词项”将详细展开。]，这也是我们使用符号 "$forall$" 的动机#footnote[类型学家称依值函数类型为 $Pi$-类型，并且会这么写：$Pi alpha : * tdt Pi n : #rs[Nat] tdt #rs[Vec] alpha med n$。这也是为什么我们将依值类型 Lambda 演算称为#dtlc()。]。但与参数化多态不同的是，依值函数空间不止能对类型进行抽象。上面的 `Vec` 类型是一个有效的依值类型。
 
 值得注意的是，依值函数空间是通常函数空间的泛化。例如，我们可以为应用于上述 `Vec` 类型的恒等函数 `id` 添加这样的类型注解：
 
@@ -1419,8 +1419,7 @@ $
 
 = 参考文献
 
-[1] Abel, A., Altenkirch, T.: A Partial Type Checking Algorithm for Type:Type, International Workshop on
-Mathematically Structured Functional Programming (V. Capretta, C. McBride, Eds.), 2008.
+[1] Abel, A., Altenkirch, T.: A Partial Type Checking Algorithm for Type:Type, International Workshop on Mathematically Structured Functional Programming (V. Capretta, C. McBride, Eds.), 2008.
 
 [2] Bertot, Y., Cast'eran, P.: Interactive Theorem Proving and Program Development. Coq'Art: The Calculus of
 Inductive Constructions, Springer Verlag, 2004.
@@ -1467,5 +1466,4 @@ Inductive Constructions, Springer Verlag, 2004.
 
 [23] Pollack, R.: Closure under alpha-conversion, TYPES ’93: Proceedings of the international workshop on Types for proofs and programs, 1994.
 
-[24] Thompson, S.: Type Theory and Functional Programming, Addison Wesley Longman Publishing Co., Inc.,
-1991.
+[24] Thompson, S.: Type Theory and Functional Programming, Addison Wesley Longman Publishing Co., Inc., 1991.
