@@ -13,7 +13,7 @@
   // Set paragraph spacing.
   set par(spacing: 0.9em)
   set par(leading: 0.58em)
-  show raw: text.with(font: "New Computer Modern Mono", size: 11pt, ligatures: false, features: (liga: 0,  dlig: 0, clig: 0, calt: 0))
+  show raw: text.with(font: "New Computer Modern Mono", size: 11pt, ligatures: false, features: (liga: 0,  dlig: 0, clig: 0, calt: 0, locl: 0))
   show math.equation: text.with(font: ("New Computer Modern"))
 
   // Title row.
