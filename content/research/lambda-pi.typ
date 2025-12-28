@@ -80,7 +80,7 @@
 
 尽管本文中没有发明新的类型系统，我们相信本文可以作为 Haskell 中依值类型系统实现的入门教程。实现一个类型系统是学习其中所有微妙细节的最佳途径之一。尽管我们不打算全面探讨所有实现类型化 Lambda 演算的方法，但我们会尽量明确阐述我们的设计决策，仔细提供其他选择，并概述更广泛的设计空间。
 
-只有将数据类型添加到这个基础演算中，才能真正发挥依值类型的全部威力。因此，我们在第四节中演示了如何使用自然数和#term[向量 (vector)]扩展我们的语言。使用这些新增的数据类型，我们编写了经典的向量追加操作，以演示如何在我们的核心演算中进行编程。而利用本节解释的原理，可以向演算中加入更多数据类型。
+只有将数据类型添加到这个基础演算中，才能真正发挥依值类型的全部威力。因此，我们在第四节中演示了如何使用自然数和#term[向量 (vector)] 扩展我们的语言。使用这些新增的数据类型，我们编写了经典的向量追加操作，以演示如何在我们的核心演算中进行编程。而利用本节解释的原理，可以向演算中加入更多数据类型。
 
 最后，我们简化了系统实验流程：本文源代码包含一个小型解释器，用于解释我们描述的类型系统和求值规则。由于使用了与本文相同的源代码，该解释器能够保证严格遵循我们描述的实现，并且文档齐全。因此，它为进一步学习和实验提供了一个宝贵的平台。
 
@@ -1320,7 +1320,7 @@ $
   & repl bold("let") #[`append`] = \
   & #h(1em) (lambda alpha -> #[`vecElim`] alpha \
   & #h(8em) (lambda m med underline("  ") -> forall (n :: #[`Nat`]) tdt #[`Vec`] alpha med n -> #[`Vec`] alpha med (#[`plus`] m med n)) \
-  & #h(8em) (lambda underline("  ") v -> v) \
+  & #h(8em) (lambda underline("  ") med v -> v) \
   & #h(8em) (lambda m med v italic("vs") italic("rec") n med w -> #[`Cons`] alpha med (#[`plus`] m med n) med v med (#[`rec`] n med w))) \
   & #h(1em) :: forall (alpha :: *) (m :: #[`Nat`]) (v :: #[`Vec`] alpha med m) (n :: #[`Nat`]) (w :: #[`Vec`] alpha med n) tdt \
   & #h(2em) #[`Vec`] alpha med (#[`plus`] m med n)
