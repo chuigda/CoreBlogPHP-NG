@@ -18,7 +18,7 @@ theorem monika_great_theorem : read "monika.chr" = read "monika.chr" := rfl
 
 In the Lean code snippet above, we read the same file twice. However, if the file is modified between the two reads, the two results will be different. If we consider `read` as a referentially transparent function (consider it deterministic), then the proposition above should type check, but actually we have no reason to believe it. We know that once you prove a proposition like `1 = 2`, you can prove anything. Then your world suddenly descends into a state of constant pancake flip-flopping and historical nihilism reminiscent of the Soviet era -- where everything is meaningless and every action is futile, leading to the inevitable collapse of the Union. This is definitely not what you want.
 
-You may argue that referential transparency is only important for theorem proving languages like Lean/Agda, and is completely irrelevant to your dirty dirty industrial codebase where IO happens every time you ping your database. Your argument is solid and correct, and in fact there are not-that-functional functional programming languages that simply allow performing IO without any restriction:
+You may argue that referential transparency is only important for theorem proving languages like Lean/Agda, and is completely irrelevant to your dirty dirty industrial codebase where IO happens every time you ping your database. The latter half of your argument is solid and correct, and in fact there are not-that-functional functional programming languages that simply allow performing IO without any restriction:
 
 ```scheme
 (define (drill-launch-missile)
@@ -26,7 +26,7 @@ You may argue that referential transparency is only important for theorem provin
     (display "That's just a drill!"))
 ```
 
-So for Lean/Agda, the "referential transparency" answer is convincing enough. But for Haskell, we'd better find a more convincing answer.
+So for Lean/Agda, the "referential transparency" ↔︎ "mathematical correctness" answer is convincing enough. But for Haskell, we'd better find a more convincing answer.
 
 ## It's all about expression evaluation
 
