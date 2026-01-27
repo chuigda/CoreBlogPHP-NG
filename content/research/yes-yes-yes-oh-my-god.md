@@ -182,4 +182,6 @@
 [ ] 当云服务的账单寄过来的时候，我不想跟你吴越同舟
 ```
 
-另一篇很有用的文章：[超市买菜](https://zhuanlan.zhihu.com/p/66349646)。
+另外两篇很有用的文章：
+- [超市买菜](https://zhuanlan.zhihu.com/p/66349646)
+- [DSL 的误区](https://yinwang-wiki.github.io/feeds/2017-05-25-dsl.html)
