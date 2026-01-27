@@ -1,4 +1,4 @@
-#let brand-green = rgb("#0099447F")
+#let brand-green = rgb("#009944")
 
 #let logo-cell(content, bg-color, text-color) = {
   rect(
@@ -7,7 +7,7 @@
     fill: bg-color,
     stroke: none,
     align(center + horizon, text(
-      font: "Noto Serif CJK SC",
+      font: ("Noto Serif SC", "Noto Serif CJK SC"),
       weight: 500,
       size: 36pt, // 字体大小
       fill: text-color,
@@ -29,9 +29,9 @@
       gutter: 0pt,
 
       logo-cell("精", white, brand-green),
+      logo-cell("品", brand-green, white),
       logo-cell("神", brand-green, white),
-      logo-cell("药", brand-green, white),
-      logo-cell("品", white, brand-green),
+      logo-cell("药", white, brand-green),
     )
   ]
 ]
