@@ -1,8 +1,11 @@
 # 程序设计语言检查单 2024 版
 
+## 本文的历史：
 - [Colin McMillen, Jason Reed, Elly Fong-Jones 创作于 2011-10-10](https://www.mcmillen.dev/language_checklist.html)
 - [BoppreH 改编于 2024-01-24](https://gist.github.com/boppreh/3b88231b7af15af54d292963f3d79b02)
 - Chuigda Whitegive 翻译于 2025-02
+
+## 正文：
 
 ```
 显然，你正在发明一种新的：
