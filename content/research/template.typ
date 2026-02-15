@@ -1,7 +1,7 @@
 // The project function defines how your document looks.
 // It takes your content and some metadata and formats it.
 // Go ahead and customize it to your liking!
-#let zh-fonts = ("New Computer Modern", "Noto Serif", "Noto Serif SC", "Noto Serif CJK SC")
+#let zh-fonts = ("Libertinus Serif", "Noto Serif", "Noto Serif SC", "Noto Serif CJK SC")
 
 #let project(title: "", authors: (), body) = {
   // Set the document's basic properties.
@@ -46,5 +46,5 @@
 }
 
 #let defn(content) = par(first-line-indent: 1.5em, hanging-indent: 1.5em)[#content]
-#let term = text.with(font: ("New Computer Modern", "Zhuque Fangsong (technical preview)"), style: "italic")
+#let term = text.with(font: ("Libertinus Serif", "Zhuque Fangsong (technical preview)"), style: "italic")
 #let rs = text.with(font: "New Computer Modern Mono", size: 9pt, lang: "hs")
