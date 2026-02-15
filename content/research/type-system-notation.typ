@@ -2,10 +2,12 @@
 
 #show: project.with(
   title: "如何阅读类型系统符号",
+  author-cols: 2,
   authors: (
     (name: "Alexis King", contrib: "原作者", affiliation: ""),
     (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
-    (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind")
+    (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
+    (name: "Claude", contrib: "校对", affiliation: "Anthropic"),
   )
 )
 
@@ -58,7 +60,7 @@ $
 - $1 + 2 : "Bool"$ 表示“$1 + 2$ 的类型是 Bool”，而这是没有意义的。
 - $"true" + 2 : "Int"$ 表示“$"true" + 2$ 的类型是 Int”，这更没有意义，因为 $"true" + 2$ 本来就是无稽之谈，根本不应该有类型。
 
-我们应该系一些能准确捕捉我们“哪些陈述有意义，哪些没有”直觉的规则。为此，我们定义#term[类型判断 (typing judgement)]，写作：
+我们应该写一些能准确捕捉我们“哪些陈述有意义，哪些没有”直觉的规则。为此，我们定义#term[类型判断 (typing judgement)]，写作：
 
 $
   tack e : tau
@@ -78,10 +80,10 @@ $
 
 $
   \
-  () / (0 : "Int") wide
-  () / (1 : "Int") wide
-  () / (-1 : "Int") wide
-  () / (2 : "Int") wide
+  () / (tack 0 : "Int") wide
+  () / (tack 1 : "Int") wide
+  () / (tack -1 : "Int") wide
+  () / (tack 2 : "Int") wide
   …
 $
 
@@ -157,18 +159,18 @@ $
   &                &     & #[`assert`] "infer"(e_2) = "Int"; \
   &                &     & "Bool" \
   & wide #[`if`] e_1 #[`then`] e_2 #[`else`] e_3 & |-> & #[`assert`] "infer"(e_1) = "Bool"; \
-  &                                              & |-> & #[`let`] tau = "infer"(e_2); \
-  &                                              & |-> & #[`assert`] "infer"(e_3) = tau; \
-  &                                              & |-> & tau
+  &                                              &     & #[`let`] tau = "infer"(e_2); \
+  &                                              &     & #[`assert`] "infer"(e_3) = tau; \
+  &                                              &     & tau
 $
 
-即使无法将类型规则直接转换为类型检查算法，在对逻辑判断进行推理时考虑信息流仍然非常有用：对于判断 $tack e : tau$，$e$ 可以被视为判断的“输入”，而 $tau$ 可以被视为“输出”。这种严格的方向性并并不总适用于类型系统中的每条规则，但通常它适用于多数规则，并且是理解规则含义的一种有效方法。
+即使无法将类型规则直接转换为类型检查算法，在对逻辑判断进行推理时考虑信息流仍然非常有用：对于判断 $tack e : tau$，$e$ 可以被视为判断的“输入”，而 $tau$ 可以被视为“输出”。这种严格的方向性并不总适用于类型系统中的每条规则，但通常它适用于多数规则，并且是理解规则含义的一种有效方法。
 
 #colbreak()
 
 == 变量、语境和环境
 
-目前为止，我们用作例子的语言异常地简单。目前为止，我都在有意规避#term[变量 (variable)] 这一复杂性，但如果我们要为任何有用的程序设计语言编写类型规则，那么我们就不能逃避。所以接下来让我们扩展我们的小小语言，向其中加入函数，使其成为#link("https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus")[#term[简单类型 $lambda$ 演算 (Simply-typed lambdada calculus, STLC)]] 的一个变体。这需要向语言的文法中添加如下内容：
+目前为止，我们用作例子的语言异常地简单。此前我一直在有意规避#term[变量 (variable)] 这一复杂性，但如果我们要为任何有用的程序设计语言编写类型规则，那么我们就不能逃避。所以接下来让我们扩展我们的小小语言，向其中加入函数，使其成为#link("https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus")[#term[简单类型 $lambda$ 演算 (Simply-typed lambda calculus, STLC)]] 的一个变体。这需要向语言的文法中添加如下内容：
 
 #let tdt = $thin . thin$
 
@@ -197,7 +199,7 @@ $
   Gamma tack e : tau
 $
 
-$Gamma$ 被称为“语境”或者“类型环境”，而 $tack$ 所扮演的角色现在更明确了：它把#term[语境假设 (contextual assumptions)] 从待证陈述里分离了出去。因此，扩展后的判断可以读作“在语境 $Gamma$ 中，表达式 $e$ 具有类型 $tau$”，而在算法上，$Gamma$ 可以被视为判断的一个额外的“输入”，具有类型 `Map<Varaible, Type>`。然而，正式地说，任何类型规则都必须被语法性地定义。类型规则中的语境可以显式地定义为如下的语法结构：
+$Gamma$ 被称为“语境”或者“类型环境”，而 $tack$ 所扮演的角色现在更明确了：它把#term[语境假设 (contextual assumptions)] 从待证陈述里分离了出去。因此，扩展后的判断可以读作“在语境 $Gamma$ 中，表达式 $e$ 具有类型 $tau$”，而在算法上，$Gamma$ 可以被视为判断的一个额外的“输入”，具有类型 `Map<Variable, Type>`。然而，正式地说，任何类型规则都必须被语法性地定义。类型规则中的语境可以显式地定义为如下的语法结构：
 
 #let wideemptyset = text(features: ("cv01",), $nothing$)
 
@@ -214,10 +216,10 @@ $
 
 $
   () / (Gamma tack "true" : "Bool") wide
-  (tack e_1 : "Int" \
-   tack e_2 : "Int")
+  (Gamma tack e_1 : "Int" \
+   Gamma tack e_2 : "Int")
   /
-  (e_1 + e_2 : "Int")
+  (Gamma tack e_1 + e_2 : "Int")
 $
 
 然而，语境对于两种新增结构——变量使用和 $lambda$ 表达式——的类型规则是必须的：
@@ -253,7 +255,7 @@ $
 
 == 其他常见符号和注意事项
 
-目前为止，本答案已经描述了绝大多数用于描述类型系统的符号，但对符号的修改和扩展极其常见。要涵盖所有修改和扩展是不可能的，但幸运的是，优秀的论文通常会先解释它们引入的任何非标准符号。然而，有些约定俗成的惯例十分普遍，以至于人们常常不加解释就是用它们，本节会尝试提供一个基本概述，并描述一些符号上的怪癖。
+目前为止，本答案已经描述了绝大多数用于描述类型系统的符号，但对符号的修改和扩展极其常见。要涵盖所有修改和扩展是不可能的，但幸运的是，优秀的论文通常会先解释它们引入的任何非标准符号。然而，有些约定俗成的惯例十分普遍，以至于人们常常不加解释就使用它们，本节会尝试提供一个基本概述，并描述一些符号上的怪癖。
 
 这不是一个详尽的列表，也永远不可能是。如果你发现此处未涵盖某些符号，请另行提问！
 
@@ -294,7 +296,7 @@ $
 
 $
   (& Gamma tack e_1 : tau_2 -> tau_3 \
-   & Gamma tack e_2 : tau_2 \
+   & Gamma tack e_2 : tau_1 \
    & tau_1 <: tau_2
    )
   /
@@ -305,7 +307,7 @@ $
 
 有些类型系统所定义的类型判断涉及到多个语境。第二个语境通常被命名为 $Delta$。常用于表示多语境的符号是 $Gamma; Delta tack e : tau$（当两个语境都是“输入”时）和 $Gamma tack e : tau tack.l Delta$（当 $Delta$ 是“输出”时）。
 
-第二个语境可能有多种不同的用途。例如，某些变量可能在某些表达式中被引用，而其他表达式则不行；又或者，输出上下文可在#term[资源感知型 (resource-aware)] 程序设计语言中被用于跟踪哪些变量被“消耗”了。
+第二个语境可能有多种不同的用途。例如，某些变量可能在某些表达式中被引用，而其他表达式则不行；又或者，输出语境可在#term[资源感知型 (resource-aware)] 程序设计语言中被用于跟踪哪些变量被“消耗”了。
 
 === 双向类型检查
 
@@ -314,7 +316,7 @@ $
 
 #link("https://arxiv.org/abs/1908.05839")[#term[双向类型检查 (Bidirectional typechecking)]] 是一种无需约束求解器的有限非局部类型推理方法。一个双向系统将通常的类型判断 $Gamma tack e : tau$ 分为两个特化的判断：
 - $Gamma tack e arrow.l.double tau$（或作 $Gamma tack e arrow.b tau$，$Gamma tack e tin tau$）是#term[检查 (checking)] 判断，它检查表达式 $e$ 是否具有期望的类型 $tau$。算法上，$tau$ 是判断的输入。
-- $Gamma tack e arrow.r.double tau$（或作 $Gamma tack e arrow.t tau$，$Gamma tack e tout tau$） 是#term[推导 (inferencing)] 判断，在“不知道期望类型是什么”的时候使用。算法上，$tau$ 是判断的输出。
+- $Gamma tack e arrow.r.double tau$（或作 $Gamma tack e arrow.t tau$，$Gamma tack e tout tau$） 是#term[推导 (inference)] 判断，在“不知道期望类型是什么”的时候使用。算法上，$tau$ 是判断的输出。
 
 两个判断以互递归的方式定义，双向传播类型信息，因此允许在某些时候省略类型注解。例如，$lambda$ 抽象的类型规则的检查变体允许省略变量绑定上的类型注解，因为变量的类型可以根据期望的类型确定：
 
