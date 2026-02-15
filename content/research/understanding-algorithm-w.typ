@@ -3,7 +3,7 @@
 #show: project.with(
   title: "理解 Algorithm W",
   authors: (
-    (name: "Jeremy Mikkola", contrib: "原作者", affiliation: "个人"),
+    (name: "Jeremy Mikkola", contrib: "原作者", affiliation: ""),
     (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
     (name: "Alias Qli", contrib: "校对", affiliation: ""),
     (name: "Anqur", contrib: "类型论支持", affiliation: "第七通用设计局"),
@@ -448,6 +448,9 @@ $
 希望这篇文章能让你理解诸如泛化或归一化之类的单个操作是如何工作的，以及它们的用途。也许在反复阅读本文之后，你甚至能理解它们在每种类型的表达式上的作用。
 
 #set heading(numbering: none)
+
+#colbreak()
+
 = 注释
 
 如果以上文本存在内容性错误，请在 #link("https://twitter.com/silenceofnight")[Twitter] 上报告给原作者；如果存在翻译错误，请#link("https://github.com/chuigda/9T56/issues")[通过 GitHub issue 报告问题]。
