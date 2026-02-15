@@ -3,7 +3,7 @@
 // Go ahead and customize it to your liking!
 #let zh-fonts = ("Libertinus Serif", "Noto Serif", "Noto Serif SC", "Noto Serif CJK SC")
 
-#let project(title: "", authors: (), body) = {
+#let project(title: "", authors: (), author-cols: 3, body) = {
   // Set the document's basic properties.
   set document(author: authors.map(a => a.name), title: title)
   set page(numbering: "1", number-align: center)
@@ -28,9 +28,9 @@
     x: 4em,
     grid(
       align: center,
-      columns: (1fr,) * calc.min(3, authors.len()),
+      columns: (1fr,) * calc.min(author-cols, authors.len()),
       gutter: 1em,
-      ..authors.map(author => [
+      ..authors.map(author => align(center)[
         *#author.name* \
         #author.contrib \
         #author.affiliation
