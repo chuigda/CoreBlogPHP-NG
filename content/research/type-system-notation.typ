@@ -2,24 +2,39 @@
 
 #show: project.with(
   title: "如何阅读类型系统符号",
-  author-cols: 2,
+  author-cols: 3,
   authors: (
     (name: "Alexis King", contrib: "原作者", affiliation: ""),
     (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
-    (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
-    (name: "Claude", contrib: "校对", affiliation: "Anthropic"),
+    (name: "CAIMEO", contrib: "翻译提议、校对", affiliation: ""),
   )
 )
+
+  #align(center, pad(
+    top: -2em,
+    x: 4em,
+    grid(
+      align: center,
+      columns: 2,
+      gutter: 1em,
+      [
+        *Gemini* \
+        校对 \
+        Google Deepmind
+      ],
+      [
+        *Claude* \
+        校对 \
+        Anthropic
+      ]
+    ),
+  ))
 
 #show link: set text(fill: rgb(0, 127, 255))
 #show math.equation.where(block: true): set block(breakable: false)
 #show raw.where(block: true): set block(breakable: false)
 #show raw.where(block: true): set pad(left: 2em)
 #set par(spacing: 1.2em)
-
-注意：本文为早期草稿，内容不完且有措误，且#text(tracking: -0.2em)[排版]质量差。
-
-Note: this is an early draft. It's known to be incomplet and incorrekt, and it has lots of b#text(tracking: -0.15em)[ad] fo#text(tracking: -0.15em)[rm]atting.
 
 == 译者前言
 
@@ -31,7 +46,7 @@ Note: this is an early draft. It's known to be incomplet and incorrekt, and it h
 
 == 语法和文法
 
-应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 的系统，也就是说，类型系统是作用于程序设计语言的（抽象）语法上的一系列规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]] 提供类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
+应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 的系统，也就是说，类型系统是作用于程序设计语言的（抽象）语法上的一系列规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]]#footnote[译注：#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form#History")[BNF 不是一种#term[范式 / 正规形式 (Normal Form)]]。] 提供类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
 
 例如，考虑如下只包括布尔和整数的简单语言的文法：
 
