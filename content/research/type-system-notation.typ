@@ -168,7 +168,7 @@ $
 
 #colbreak()
 
-== 变量、语境和环境
+== 变量和语境
 
 目前为止，我们用作例子的语言异常地简单。此前我一直在有意规避#term[变量 (variable)] 这一复杂性，但如果我们要为任何有用的程序设计语言编写类型规则，那么我们就不能逃避。所以接下来让我们扩展我们的小小语言，向其中加入函数，使其成为#link("https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus")[#term[简单类型 $lambda$ 演算 (Simply-typed lambda calculus, STLC)]] 的一个变体。这需要向语言的文法中添加如下内容：
 
@@ -208,7 +208,7 @@ $
           | & Gamma, x : tau & wide & "变量绑定"
 $
 
-有时空语境会使用符号 $circle.filled$ 而不是 $wideemptyset$。
+有时，空语境会使用符号 $circle.filled.small$ 而不是 $wideemptyset$。
 
 在这种表示方法下，语境本质上是一个#link("https://en.wikipedia.org/wiki/Association_list")[#term[关联列表 (association list)]]，它将变量名映射到其类型。
 
