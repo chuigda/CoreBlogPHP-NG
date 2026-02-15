@@ -15,7 +15,7 @@
     x: 4em,
     grid(
       align: center,
-      columns: 2,
+      columns: (1fr,) * 2,
       gutter: 1em,
       [
         *Gemini* \
