@@ -39,9 +39,9 @@
 
 = 译者前言
 
-⚠️注意：本文为早期草稿，内容不完且有措误，且#text(tracking: -0.15em)[排版]质量差。
+⚠ 注意：本文为早期草稿，内容不完且有措误，且#text(tracking: -0.15em)[排版]质量差。
 
-⚠️Note: this is an early draft. It's known to be incomplet and incorrekt, and it has lots of b#text(tracking: -0.1em)[ad] fo#text(tracking: -0.1em)[rm]atting.
+⚠ Note: this is an early draft. It's known to be incomplet and incorrekt, and it has lots of b#text(tracking: -0.1em)[ad] fo#text(tracking: -0.1em)[rm]atting.
 
 本文是文章 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf")[Programming language semantics: It's easy as 1, 2, 3] 的中文翻译，部分字句有所改动。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以#term[仿宋体]呈现。
 
