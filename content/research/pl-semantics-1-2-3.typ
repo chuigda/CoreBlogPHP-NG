@@ -84,3 +84,4 @@ data Expr = Val Integer | Add Expr Expr
 #include "./pl-semantics-1-2-3/3-denotional.typ"
 #include "./pl-semantics-1-2-3/4-small-step.typ"
 #include "./pl-semantics-1-2-3/5-rule-induction.typ"
+#include "./pl-semantics-1-2-3/6-contextual.typ"

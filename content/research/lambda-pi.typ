@@ -1099,7 +1099,7 @@ eval↑ (NatElim m mz ms k) d
 
 #align(center)[图 15#h(1em)为自然数扩展求值器]
 
-其中，消去子是唯一值得注意的情况。本质上，消去子会被求值为一个 Haskell 函数 `rec`，其行为合乎预期：若待消数求值为 `VZero`，则求值基本情况 `mz`；若待消数求值为 $#[`VSucc`] l$，则将 `ms` 应用于前驱 $l$ 和对消去子的递归调用 $#[`rec`] l$；最后，若待消数求值为中性项，则整个 `natElim` 的求值结果亦为中性项。如果待消数既不是自然数也不是中性项，这在类型检查阶段就会导致类型错误。因此，最后的兜底分支永远都不会被执行。
+其中，消去子是唯一值得注意的情况。本质上，消去子会被求值为一个 Haskell 函数 `rec`，其行为合乎预期：若待消数求值为 `VZero`，则求值基准情况 `mz`；若待消数求值为 $#[`VSucc`] l$，则将 `ms` 应用于前驱 $l$ 和对消去子的递归调用 $#[`rec`] l$；最后，若待消数求值为中性项，则整个 `natElim` 的求值结果亦为中性项。如果待消数既不是自然数也不是中性项，这在类型检查阶段就会导致类型错误。因此，最后的兜底分支永远都不会被执行。
 
 === 类型
 
@@ -1372,7 +1372,7 @@ $
 $
   #[`eqElim`] & :: && forall (alpha :: *) & #h(2em) & "元素类型" \
   & thin circle.filled.tiny thin && forall (m :: forall (x :: alpha) tdt forall (y :: alpha) tdt #[`Eq`] alpha med x med y -> *) & #h(2em) & "动机" \
-  & thin circle.filled.tiny thin && (forall (z :: alpha) tdt m med z med z med (#[`Refl`] alpha med z)) & #h(2em) & "基础情况" \
+  & thin circle.filled.tiny thin && (forall (z :: alpha) tdt m med z med z med (#[`Refl`] alpha med z)) & #h(2em) & "基准情况" \
   & -> && forall (x :: alpha) tdt forall (y :: alpha) tdt forall (p :: #[`Eq`] alpha med x med y) & #h(2em) & "待消项" \
   & thin circle.filled.tiny thin && m med x med y med p & #h(2em) & "返回类型"
 $
