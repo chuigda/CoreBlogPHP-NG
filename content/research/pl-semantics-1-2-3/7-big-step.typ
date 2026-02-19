@@ -66,4 +66,4 @@ $
 
 最后的两个条件都可以简单地应用规则 $[V"-Val"]$ 和 $[V"-Add"]$ 来验证。
 
-*延伸阅读* #h(1em) 当我们只关注执行的最终结果而不关心执行的具体细节时，大步语义很有用。在本文中，我们主要关注指称性和操作性的语义学方法，但还有很多其他的语义学方法，包括#term[公理 (axiomatic)] 语义 #link("Hoare 1969")[(Hoare, 1969)]、#term[代数 (algebraic)] 语义 #link("Goguen Malcolm 1996")[(Goguen & Malcolm, 1996)]、#term[模块化 (modular)] 语义 #link("Mosses 2004")[(Mosses, 2004)]、#term[动作 (action)] 语义 #link("Mosses 2005")[(Mosses, 2005)] 和#term[游戏 (game)] 语义 #link("(Abramsky & McCusker, 1999)")。
+*延伸阅读* #h(1em) 当我们只关注执行的最终结果而不关心执行的具体细节时，大步语义很有用。本文主要关注指称性和操作性的语义学方法，但还有很多其他的语义学方法，包括#term[公理 (axiomatic)] 语义 #link("Hoare 1969")[(Hoare, 1969)]、#term[代数 (algebraic)] 语义 #link("Goguen Malcolm 1996")[(Goguen & Malcolm, 1996)]、#term[模块化 (modular)] 语义 #link("Mosses 2004")[(Mosses, 2004)]、#term[动作 (action)] 语义 #link("Mosses 2005")[(Mosses, 2005)] 和#term[游戏 (game)] 语义 #link("(Abramsky & McCusker, 1999)")。

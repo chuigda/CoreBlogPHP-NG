@@ -33,7 +33,7 @@
 #show link: set text(fill: rgb(0, 127, 255))
 #show math.equation.where(block: true): set block(breakable: false)
 #show raw.where(block: true): set block(breakable: false)
-#show raw.where(block: true): set pad(left: 2em)
+#show raw.where(block: true): it => pad(left: 2em, it)
 #show raw.where(lang: none): it => raw(it.text, lang: "hs", block: it.block)
 #set par(spacing: 1.2em)
 

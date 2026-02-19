@@ -89,4 +89,4 @@ $
 
 稍后在第 8 节中，在讨论将语义变换为抽象机时，我们会看到另一种指定求值顺序的方法。抽象机也为表达式的求值提供了一种更高效的小步方法。
 
-*延伸阅读*#h(1em) 语境与程序设计和语义学中的许多概念息息相关，包括但不限于用#term[续延 (continuation)] 显式地表示控制流 #link("Reynolds 1972")[(Reynolds, 1972)]、使用#term[拉链 (zipper)] 在数据结构中导航 #link("Huet 1997")[(Huet, 1997)]、从求值器推导出抽象机 #link("Ager et al 2003a")[(Ager 等, 2003a)] 以及对数据结构进行#term[微分 (differentiating)] #link("Abbott et al 2005")[(Abbott 等, 2005)] 和#term[解剖 (dissecting)] #link("McBride 2008")[(McBride, 2008)] 的思想。我们会在稍后讨论抽象机时讨论其中的某些主题。
+*延伸阅读*#h(1em) 语境与程序设计和语义学中的许多概念息息相关，包括但不限于用续延显式地表示控制流 #link("Reynolds 1972")[(Reynolds, 1972)]、使用#term[拉链 (zipper)] 在数据结构中导航 #link("Huet 1997")[(Huet, 1997)]、从求值器推导出抽象机 #link("Ager et al 2003a")[(Ager 等, 2003a)] 以及对数据结构进行#term[微分 (differentiating)] #link("Abbott et al 2005")[(Abbott 等, 2005)] 和#term[解剖 (dissecting)] #link("McBride 2008")[(McBride, 2008)] 的思想。我们会在稍后讨论抽象机时讨论其中的某些主题。
