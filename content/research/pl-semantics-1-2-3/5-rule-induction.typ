@@ -36,7 +36,7 @@ $
   & quad forall n in EE dt n + n in EE \
   & <=> quad { "定义" P(n) <=> n + n in EE } \
   & quad forall n in EE dt P(n) \
-  & <=> quad { EE"-Rule-Ind" } \
+  & <=> quad { "规则" [EE"-Rule-Ind"] } \
   & quad P(0) qaq forall n in EE dt P(n) => P(n + 2) \
   & <=> quad { "展开" P "的定义" } \
   & quad 0 + 0 in EE qaq forall n in EE dt n + n in EE => (n + 2) + (n + 2) in EE
@@ -83,7 +83,7 @@ $
   & quad forall e --> e' dt [| e |] = [| e' |] \
   & <=> quad { "定义" P(e, e') <=>  [| e |] = [| e' |] } \
   & quad forall e --> e' dt P(e, e') \
-  & <=> quad { E"-Rule-Ind" } \
+  & <=> quad { "规则" [E"-Rule-Ind"] } \
   & quad P(#[`Add (Val n) (Val m)`], #h(0.5em) #[`Val (n + m)`]) qaq \
   & quad forall #[`x`] --> #[`x'`]dt P(#[`x`], med #[`x'`]) => P(#[`Add x y`], #h(0.5em) #[`Add x' y`]) qaq \
   & quad forall #[`y`] --> #[`y'`]dt P(#[`y`], med #[`y'`]) => P(#[`Add x y`], #h(0.5em) #[`Add x y'`]) \
@@ -99,27 +99,27 @@ $
 
 $
   & [| #[`Add (Val n) (Val m)`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`Val n`] |] + [| #[`Val m`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Val"] } \
   & n + m \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`Val (n + m)`] |]
   \ \ & wide / wide \ \
   & [| #[`Add x y`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`x`] |] + [| #[`y`] |] \
   & = quad { "归纳假设" [| #[`x`] |] = [| #[`x'`] |] } \
   & [| #[`x'`] |] + [| #[`y`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`Add x' y`] |] \
   \ \ & wide / wide \ \
   & [| #[`Add x y`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`x`] |] + [| #[`y`] |] \
   & = quad { "归纳假设" [| #[`y`] |] = [| #[`y'`] |] } \
   & [| #[`x`] |] + [| #[`y'`] |] \
-  & = quad { [|-|] "的定义" } \
+  & = quad { "规则" [V"-Add"] } \
   & [| #[`Add x y'`] |]
 $
 

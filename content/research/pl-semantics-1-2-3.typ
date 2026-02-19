@@ -86,3 +86,4 @@ data Expr = Val Integer | Add Expr Expr
 #include "./pl-semantics-1-2-3/5-rule-induction.typ"
 #include "./pl-semantics-1-2-3/6-contextual.typ"
 #include "./pl-semantics-1-2-3/7-big-step.typ"
+#include "./pl-semantics-1-2-3/8-abstract-machines.typ"
