@@ -12,7 +12,7 @@ eval (Add x y) = eval x + eval y
 
 如前所述，定义并未指定 `Add x y` 中两个参数的求值顺序——求值顺序是元语言 Haskell 的实现决定的。若有必要，可以构建一个用于求值表达式的抽象机来明确求值顺序。
 
-形式化地说，抽象机通常由一组语法重写规则定义，这些规则明确地描述了求值过程中的每一步。在 Haskell 中，可以在适当的数据结构上定义一组一阶尾递归函数来实现来实现抽象机。本节将展示两个重要的语义概念——续延和去函数化，并展示如何使用基于这两个概念的两步过程，从求值函数系统地推导出抽象机。这一方法由 Danvy 及其合作者率先提出 #link("(Ager 等, 2003a)")。
+形式化地说，抽象机通常由一组语法重写规则定义，这些规则明确地描述了求值过程中的每一步。在 Haskell 中，可以在适当的数据结构上定义一组一阶尾递归函数来实现抽象机。本节将展示两个重要的语义概念——续延和去函数化，并展示如何使用基于这两个概念的两步过程，从求值函数系统地推导出抽象机。这一方法由 Danvy 及其合作者率先提出 #link("(Ager 等, 2003a)")。
 
 == 第一步 -- 添加续延
 
@@ -33,7 +33,7 @@ type Cont = Integer -> Integer
 接下来要定义新的语义函数 `eval'`，它比 `eval` 多接受一个 `Cont` 类型的参数，这个参数（续延）会被应用于表达式求值的结果。也就是说，函数具有如下类型：
 
 ```haskell
-eval' :: Expr -> Cont -> Expr
+eval' :: Expr -> Cont -> Integer
 ```
 
 而 `eval'` 应有的行为可由以下等式描述：
@@ -64,7 +64,7 @@ $
   #[`eval' (Val n)`] c quad = quad c med #[`n`]
 $
 
-也就是说，若表达式是一个#term[值]，则简单地将续延应用于这个#term[值]。对于归纳情况 $e = #[`Add x y`]$，我们也以同样的方式开局：
+也就是说，若表达式是一个#term[值]，则简单地将续延应用于这个#term[值]。对于归纳情况 $e = #[`Add x y`]$，我们也以同样的方式着手：
 
 $
   & #[`eval' (Add x y)`] c \
@@ -74,7 +74,7 @@ $
   & c med (#[`eval x`] + #[`eval y`])
 $
 
-这里我们没法进一步应用定义了。不过，因为我们是在进行归纳演算，所以我们还有参数表达式 `x` 和 `y` 的归纳假设可用：对于任意续延 $c', c''$，有 $#[`eval' x`] med c' = (c' med #[`eval x`])$ 和 #linebreak() $#[`eval' y`] med c'' = (c'' med #[`eval y`])$。要运用这些假设，我们须重写词项中的某些部分，使其形如 $c' med (#[`eval x`])$ 和 $c'' med (#[`eval y`])$。这可以通过用 $lambda$ 表达式对 `eval x` 和 `eval y` 抽象来实现。有了这些想法，余下的演算便势如破竹：
+此时无法进一步应用定义。不过，因为我们是在进行归纳演算，所以我们还有参数表达式 `x` 和 `y` 的归纳假设可用：对于任意续延 $c', c''$，有 $#[`eval' x`] med c' = (c' med #[`eval x`])$ 和 #linebreak() $#[`eval' y`] med c'' = (c'' med #[`eval y`])$。要运用这些假设，我们须重写词项中的某些部分，使其形如 $c' med (#[`eval x`])$ 和 $c'' med (#[`eval y`])$。这可以通过用 $lambda$ 表达式对 `eval x` 和 `eval y` 抽象来实现。有了这些想法，余下的演算便势如破竹：
 
 $
   & c med (#[`eval x`] + #[`eval y`]) \
@@ -85,13 +85,13 @@ $
   & = quad { "对" #[`eval y`] "抽象" } \
   & #[`eval' x`] (lambda n -> (lambda m -> c med (n + m)) med (#[`eval y`])) \
   & = quad { "应用" #[`y`] "的归纳假设" } \
-  & #[`eval' x`] (lambda n -> #[`eval y'`] (lambda m -> c med (n + m)))
+  & #[`eval' x`] (lambda n -> #[`eval' y`] (lambda m -> c med (n + m)))
 $
 
 最后所得的词项确是我们需要的形式——其中不包含 `eval`。如是我们便发现了 `eval'` 在归纳情况下的如下定义：
 
 $
-  #[`eval' (Add x y)`] med c quad = quad #[`eval' x`] (lambda n -> #[`eval y'`] (lambda m -> c med (n + m)))
+  #[`eval' (Add x y)`] med c quad = quad #[`eval' x`] (lambda n -> #[`eval' y`] (lambda m -> c med (n + m)))
 $
 
 #colbreak()
