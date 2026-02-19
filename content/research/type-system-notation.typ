@@ -46,7 +46,7 @@
 
 == 语法和文法
 
-应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 的系统，也就是说，类型系统是作用于程序设计语言的（抽象）语法上的一系列规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]]#footnote[译注：#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form#History")[BNF 不是一种#term[范式 / 正规形式 (Normal Form)]]。] 提供类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
+应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 系统，也就是说，类型系统是定义在程序设计语言（抽象）语法之上的一组规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]]#footnote[译注：#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form#History")[BNF 不是一种#term[范式 / 正规形式 (Normal Form)]]。] 提供类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
 
 例如，考虑如下只包括布尔和整数的简单语言的文法：
 
@@ -156,7 +156,7 @@ $
 
 == 作为算法规范的判断
 
-到目前为止，我一直在刻意避免谈及类型判断的计算解释。一般而言，判断只是逻辑规则，而某些以这种方式指定的类型系统并不直接对应于#term[可判定的 (decidable)] 类型检查算法。然而，如果你不习惯思考证明系统，这种基于“逻辑规则”的视角可能非常难以理解。
+到目前为止，我一直在刻意避免谈及类型判断的计算解释。一般而言，判断只是逻辑规则，而某些以这种方式指定的类型系统并不直接对应于#term[可判定的 (decidable)] 类型检查算法。然而，如果你不习惯思考证明系统，这种纯逻辑的视角可能不太直观。
 
 幸运地，很多时候，你都可以用一种方法照着类型规则写出类型检查算法：我们可以把 $tack e : tau$ 解释成一个从表达式 $e$ 到其类型 $tau$ 的#term[函数 (function)]。通常表达式文法中的每种情况都有相应的一条规则，我们可以将整个类型规则转写成一个递归的类型检查函数，每条规则对应于这个递归函数中的一条分支。
 
@@ -296,7 +296,7 @@ $
 
 #term[子类型 (subtyping)] 引入了一种比严格相等性更弱的类型一致性概念。子类型关系必须被显式定义，通常记作 $tau_1 <: tau_2$ 或者 $tau_1 prec.eq tau_2$，可以读作“$tau_1$ 是 $tau_2$ 的子类型”。
 
-子类型关系通常使用与判断相同的语法来定义。例如，一个非常简单的子类型关系可能引入两个特殊的类型，$top$（读作“#term[顶 / top]”）和 $bot$（读作“#term[底 / bottom]”）。$top$ 是所有类型的#term[超类型 (supertype)]，而 $bot$ 是所有类型的#term[子类型 (subtype)]。这一关系可以用以下三条简单公理表示：
+子类型关系通常也使用推理规则的形式来定义。例如，一个非常简单的子类型关系可能引入两个特殊的类型，$top$（读作“#term[顶 / top]”）和 $bot$（读作“#term[底 / bottom]”）。$top$ 是所有类型的#term[超类型 (supertype)]，而 $bot$ 是所有类型的#term[子类型 (subtype)]。这一关系可以用以下三条简单公理表示：
 
 $
   \
@@ -305,7 +305,7 @@ $
   () / (bot <: tau)
 $
 
-第一条规则是#term[自反性 (reflexive)] 规则，通常简写为“refl”，它声明每个类型都是自身的子类型。这条规则确保了子类型严格弱于相等。
+第一条规则是#term[自反性 (reflexive)] 规则，通常简写为“refl”，它声明每个类型都是自身的子类型。这条规则确保了子类型关系严格弱于全等关系。
 
 然后，在所有允许子类型的规则中，都必须显式地使用如上定义的子类型关系。例如，支持子类型的系统可以用以下规则来实现函数应用：
 
@@ -329,7 +329,7 @@ $
 #let tin = $#math.op(sym.colon, limits: false)_arrow.b$
 #let tout = $#math.op(sym.colon, limits: false)_arrow.t$
 
-#link("https://arxiv.org/abs/1908.05839")[#term[双向类型检查 (Bidirectional typechecking)]] 是一种无需约束求解器的有限非局部类型推理方法。一个双向系统将通常的类型判断 $Gamma tack e : tau$ 分为两个特化的判断：
+#link("https://arxiv.org/abs/1908.05839")[#term[双向类型检查 (Bidirectional typechecking)]] 是一种不依赖约束求解器的、有限的非局部类型推理技术。一个双向系统将通常的类型判断 $Gamma tack e : tau$ 分为两个特化的判断：
 - $Gamma tack e arrow.l.double tau$（或作 $Gamma tack e arrow.b tau$，$Gamma tack e tin tau$）是#term[检查 (checking)] 判断，它检查表达式 $e$ 是否具有期望的类型 $tau$。算法上，$tau$ 是判断的输入。
 - $Gamma tack e arrow.r.double tau$（或作 $Gamma tack e arrow.t tau$，$Gamma tack e tout tau$） 是#term[推导 (inference)] 判断，在“不知道期望类型是什么”的时候使用。算法上，$tau$ 是判断的输出。
 
