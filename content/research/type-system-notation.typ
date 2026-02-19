@@ -46,7 +46,7 @@
 
 == 语法和文法
 
-应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 系统，也就是说，类型系统是定义在程序设计语言（抽象）语法之上的一组规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]]#footnote[译注：#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form#History")[BNF 不是一种#term[范式 / 正规形式 (Normal Form)]]。] 提供类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
+应用于程序设计语言的类型系统是#term[语法性 (syntactic)] 系统，也就是说，类型系统是定义在程序设计语言（抽象）语法之上的一组规则。因此，对类型系统的全面论述首先会使用#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form")[#term[巴科斯-瑙尔表示法 (Backus Naur Form, BNF)]]#footnote[译注：#link("https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form#History")[BNF 不是一种#term[范式 / 正规形式 (Normal Form)]]。] 给出类型系统所考虑的所有#term[语法构造 (syntactic construct)] 的#link("https://en.wikipedia.org/wiki/Formal_grammar")[#term[文法 (grammar)]]。在最简单的类型化语言中，语法仅用于两件事：表达式和类型。
 
 例如，考虑如下只包括布尔和整数的简单语言的文法：
 
@@ -158,7 +158,7 @@ $
 
 到目前为止，我一直在刻意避免谈及类型判断的计算解释。一般而言，判断只是逻辑规则，而某些以这种方式指定的类型系统并不直接对应于#term[可判定的 (decidable)] 类型检查算法。然而，如果你不习惯思考证明系统，这种纯逻辑的视角可能不太直观。
 
-幸运地，很多时候，你都可以用一种方法照着类型规则写出类型检查算法：我们可以把 $tack e : tau$ 解释成一个从表达式 $e$ 到其类型 $tau$ 的#term[函数 (function)]。通常表达式文法中的每种情况都有相应的一条规则，我们可以将整个类型规则转写成一个递归的类型检查函数，每条规则对应于这个递归函数中的一条分支。
+幸运的是，很多时候，你都可以用一种方法照着类型规则写出类型检查算法：我们可以把 $tack e : tau$ 解释成一个从表达式 $e$ 到其类型 $tau$ 的#term[函数 (function)]。通常表达式文法中的每种情况都有相应的一条规则，我们可以将整个类型规则转写成一个递归的类型检查函数，每条规则对应于这个递归函数中的一条分支。
 
 例如，考虑以上我们小小语言的规则。它直接对应于一个这样的 `infer` 函数：
 
