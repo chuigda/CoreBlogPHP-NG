@@ -41,7 +41,7 @@ eval' :: Expr -> Cont -> Integer
 #let p-eval1 = $[P"-"#[`eval'`]]$
 
 $
-  #[`eval'`] e med c wide =  wide c med (#[`eval`] e) quad #(p-eval1)
+  #[`eval'`] e med c quad = quad c med (#[`eval`] e) wide #(p-eval1)
 $
 
 也就是说，将 `eval'` 应用于一个表达式和一个续延，相当于将 `eval` 应用于表达式，得到表达式的#term[值]，再对该#term[值]应用续延。
@@ -94,8 +94,6 @@ $
   #[`eval' (Add x y)`] med c quad = quad #[`eval' x`] (lambda n -> #[`eval' y`] (lambda m -> c med (n + m)))
 $
 
-#colbreak()
-
 也就是说，若表达式形如 `Add x y`，则先求值其第一个参数 `x`，记其值为 $n$，再求值其第二个参数 `y`，记其值为 $m$，最后将续延 $c$ 应用于 $n$ 和 $m$ 的和。如此，语义中求值的顺序便明确了。综上所述，我们演算得到了如下定义：
 
 ```haskell
@@ -131,3 +129,34 @@ next y c = λn -> eval' y (add n c)
 add :: Integer -> Cont -> Cont
 add n c = λm -> c (n + m)
 ```
+
+每种续延中的自由变量都变成了组合子的参数。使用以上定义，续延语义现可重写为：
+
+```haskell
+eval :: Expr -> Integer
+eval e = eval' e halt
+
+eval' :: Expr -> Cont -> Integer
+eval' (Val n)   c = c n
+eval' (Add x y) c = eval' x (next y c)
+```
+
+下一步便是定义一种一阶数据类型，其构造子对应于三种组合子：
+
+```haskell
+data CONT where
+  HALT :: CONT
+  NEXT :: Expr -> CONT -> CONT
+  ADD  :: Integer -> CONT -> CONT
+```
+
+注意到 `CONT` 的构造子和三种 `Cont` 组合子具有相同的名称和类型，只是现在名字换成了大写。而以下函数为数据类型 `CONT` 定义了一个指称语义，形式化地阐述了 `CONT` 类型的值如何用于表示 `Cont` 类型的续延：
+
+```haskell
+exec :: CONT -> Cont
+exec HALT       = halt
+exec (NEXT y c) = next y (exec c)
+exec (ADD n c)  = add n (exec c)
+```
+
+在文献中这一函数常被称作 `apply` #link("(Reynolds, 1972)")：若将 `exec` 的类型展开成 #linebreak() `CONT -> Integer -> Integer`，则这一函数可被视作将续延应用于一个整数，以得到另一个整数。而本文选用 `exec` 的缘由稍后便会揭晓。
