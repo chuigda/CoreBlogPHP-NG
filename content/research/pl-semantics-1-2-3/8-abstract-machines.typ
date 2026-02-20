@@ -74,7 +74,7 @@ $
   & c med (#[`eval x`] + #[`eval y`])
 $
 
-此时无法进一步应用定义。不过，因为我们是在进行归纳演算，所以我们还有参数表达式 `x` 和 `y` 的归纳假设可用：对于任意续延 $c', c''$，有 $#[`eval' x`] med c' = (c' med #[`eval x`])$ 和 #linebreak() $#[`eval' y`] med c'' = (c'' med #[`eval y`])$。要运用这些假设，我们须重写词项中的某些部分，使其形如 $c' med (#[`eval x`])$ 和 $c'' med (#[`eval y`])$。这可以通过用 $lambda$ 表达式对 `eval x` 和 `eval y` 抽象来实现。有了这些想法，余下的演算便势如破竹：
+此时无法进一步应用定义。不过，因为我们是在进行归纳演算，所以我们还有参数表达式 `x` 和 `y` 的归纳假设可用：对于任意续延 $c', c''$，有 $#[`eval' x`] med c' = c' med (#[`eval x`])$ 和 #linebreak() $#[`eval' y`] med c'' = c'' med (#[`eval y`])$。要运用这些假设，我们须重写词项中的某些部分，使其形如 $c' med (#[`eval x`])$ 和 $c'' med (#[`eval y`])$。这可以通过用 $lambda$ 表达式对 `eval x` 和 `eval y` 抽象来实现。有了这些想法，余下的演算便势如破竹：
 
 $
   & c med (#[`eval x`] + #[`eval y`]) \
