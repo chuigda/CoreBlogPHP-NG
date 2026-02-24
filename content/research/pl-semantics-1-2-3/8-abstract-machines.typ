@@ -2,7 +2,7 @@
 
 = 抽象机
 
-目前为止，我们的所有例子都侧重于解释语义学概念。而本节将展示如何利用整数和加法的语言来帮助发现语义概念。本节将展示如何将这一语言用作基础，发现如何实现抽象机 #link("(Landin, 1964)")，从而以明确定义的求值顺序对表达式求值。回顾第 3 节中的简单求值函数：
+目前为止，我们的所有例子都侧重于解释语义学概念。而本节将展示如何利用整数和加法的语言来帮助发现语义概念：如何将这一语言用作基础，发现如何实现抽象机 #link("(Landin, 1964)")，从而以明确定义的求值顺序对表达式求值。回顾第 3 节中的简单求值函数：
 
 ```haskell
 eval :: Expr -> Integer
@@ -197,7 +197,7 @@ $
   & #[`eval' x (next y (exec `] c #[`))`] \
   & = quad { #[`exec`] "的定义" } \
   & #[`eval' x (exec (NEXT y `] c #[`))`] \
-  & = { #[`x`] "的归纳假设" } \
+  & = { "应用" #[`x`] "的归纳假设" } \
   & #[`eval'' x (NEXT y`] c #[`)`]
 $
 
@@ -263,7 +263,7 @@ exec (ADD n c)  m = exec c (n + m)
 
   ```haskell
   type CONT = [INST]
-  data INST = ADD Int | NEXT Expr
+  data INST = ADD Integer | NEXT Expr
   ```
 
   不过本文仍使用 `CONT` 原本的定义，因为它是以系统的方式得出的，并且只需要声明一种类型。
@@ -302,4 +302,4 @@ data Con = Hole | AddL Con Expr | AddR Integer Con
 
 *延伸阅读* #h(1em) Reynolds 的开创性论文 (1972) 引入了三项关键技术：#term[定义性解释器 (definitional interpreter)]、续延传递风格和去函数化。Danvy 和他的合作者后来揭示出 Reynolds 的论文实际上包含了从求值器推导出抽象机的蓝图 (Ager et al., 2003a)，并继续就相关主题发表了一系列有影响力的论文，包括从求值器推导出编译器 (Ager et al., 2003b)、从小步语义推导出抽象机 (Danvy & Nielsen, 2004) 以及去函数化的对偶性 (Danvy & Millikin, 2009)；更多参考文献可在 Danvy 的特邀论文 (2008) 中找到。McBride (2008) 利用数据类型剖析的思想，开发了一种将使用 `fold` 算子表示的指称语义转换为等价抽象机的通用方法。
 
-本节基于 (Hutton & Wright, 2006; Hutton & Bahr, 2016)，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 (Bahr & Hutton, 2015)、寄存器机 (Hutton & Bahr, 2017; Bahr & Huhr, 2020)、类型化语言 (Pickard & Hutton, 2021), 非终止语言 (Bahr & Hutton, 2022) 和并行语言 (Bahr & Hutton) 演算编译器。
+本节基于 (Hutton & Wright, 2006; Hutton & Bahr, 2016)，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 (Bahr & Hutton, 2015)、寄存器机 (Hutton & Bahr, 2017; Bahr & Hutton, 2020)、类型化语言 (Pickard & Hutton, 2021), 非终止语言 (Bahr & Hutton, 2022) 和并行语言 (Bahr & Hutton) 演算编译器。
