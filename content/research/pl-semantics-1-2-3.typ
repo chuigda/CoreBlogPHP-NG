@@ -7,28 +7,11 @@
     (name: "Graham Hutton", contrib: "原作者", affiliation: "诺丁汉大学"),
     (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
     (name: "CAIMEO", contrib: "翻译提议、校对", affiliation: ""),
+    (name: "gjz010", contrib: "Typst 技术支持", affiliation: ""),
+    (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
+    (name: "Claude", contrib: "校对", affiliation: "Anthropic")
   )
 )
-
-#align(center, pad(
-  top: -2em,
-  x: 4em,
-  grid(
-    align: center,
-    columns: (1fr,) * 2,
-    gutter: 1em,
-    [
-      *Gemini* \
-      校对 \
-      Google Deepmind
-    ],
-    [
-      *Claude* \
-      校对 \
-      Anthropic
-    ]
-  ),
-))
 
 #show link: set text(fill: rgb(0, 127, 255))
 #show math.equation.where(block: true): set block(breakable: false)
@@ -38,10 +21,6 @@
 #set par(spacing: 1.2em)
 
 = 译者前言
-
-⚠ 注意：本文为早期草稿，内容不完且有措误，且#text(tracking: -0.15em)[排版]质量差。
-
-⚠ Note: this is an early draft. It's known to be incomplet and incorrekt, and it has lots of b#text(tracking: -0.1em)[ad] fo#text(tracking: -0.1em)[rm]atting.
 
 本文是文章 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf")[Programming language semantics: It's easy as 1, 2, 3] 的中文翻译，部分字句有所改动。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
@@ -94,7 +73,7 @@ data Expr = Val Integer | Add Expr Expr
 
 当然，使用简单的语言亦有局限。例如这一语言不足以阐述不同语义学方法之间的差异：在讨论算术表达式的大步语义时，我们注意到其与指称语义相去无几，不同之处仅仅是将等式换作推理规则。此外，简单的语言不会像更复杂的语言那样引出语义学上的问题和挑战。例如，从语义角度看，可变状态、变量绑定和并发等特性尤其有趣，当它们组合使用时尤其如此。
 
-对于有兴趣深入了解语义学的读者，有很多优秀的教科书可供选择，例如 #link("(Winskel, 1993; Reynolds, 1998; Pierce, 2002; Harper, 2016)")。此外还有各种暑期学校，例如俄勒冈编程语言暑期学校 (OPLSS, 2023) 和米德兰兹研究生院 (MGS, 2022)，以及大量的在线资源。我们希望我们开发的简单语言能够为其他人提供一个有用的入口和工具，以探索程序语言语义学的更多方面。在这个框架下，一切就像“数数手指一二三”一样简单。
+对于有兴趣深入了解语义学的读者，有很多优秀的教科书可供选择，例如 #link("(Winskel, 1993; Reynolds, 1998; Pierce, 2002; Harper, 2016)")。此外还有各种暑期学校，例如俄勒冈编程语言暑期学校 #link("(OPLSS, 2023)") 和米德兰兹研究生院 #link("(MGS, 2022)")，以及大量的在线资源。我们希望我们开发的简单语言能够为其他人提供一个有用的入口和工具，以探索程序语言语义学的更多方面。在这个框架下，一切就像“数数手指一二三”一样简单。
 
 #set heading(numbering: none)
 

@@ -1,3 +1,6 @@
+#import "@preview/cetz:0.4.2"
+#import cetz.tree
+
 #import "../template.typ": term
 
 = 指称语义
@@ -51,9 +54,54 @@ eval (Val n)   = n
 eval (Add x y) = eval x + eval y
 ```
 
-更一般地说，指称语义可以被视为一个由函数式语言编写的#term[求值器 (evaluator)] 或解释器。例如，使用上述定义，我们有 $`#[`eval (Add (Val 1) (Add (Val 2) (Val 3)))`] = 1 + (2 + 3) = 6$，或者可以这样画成图：
+更一般地说，指称语义可以被视为一个由函数式语言编写的#term[求值器 (evaluator)] 或解释器。例如，使用上述定义，我们有 $#[`eval (Add (Val 1) (Add (Val 2) (Val 3)))`] = 1 + (2 + 3) = 6$，或者可以这样画成图：
 
-_(译者不会用 Typst 画图，暂时对照原论文看吧)_
+#let expr(x, spread) = tree.tree(
+    direction: "down",
+    x,
+    spread: spread,
+    draw-edge: (from, to, ..) => {
+      cetz.draw.line(from, to, mark: (end: "straight"))
+    }
+)
+
+$
+  #[`eval`] (
+    #box(baseline: 50%, cetz.canvas({
+      import cetz.draw: *
+      // 匹配原图较细的连线风格
+      set-style(stroke: 0.4pt)
+
+      expr(
+        (
+          `Add`,
+          `Val 1`,
+          (
+            `Add`,
+            `Val 2`,
+            `Val 3`
+          )
+        ),
+        0.5
+      )
+    }))
+  ) =
+  #box(baseline: 50%, cetz.canvas({
+    import cetz.draw: *
+    set-style(stroke: 0.4pt)
+    expr(
+      (
+        $+$,
+        $1$,
+        (
+          $+$,
+          $2$,
+          $3$
+        )
+      ), 1
+    )
+  })) = 6
+$
 
 在这个例子中我们注意到表达式的求值方式：将每个 `Add` #term[构造子 (constructor)] 替换为整数加法函数 `+`，并移除 `Val` 构造子——或者说，将每个 `Val` 替换成整数上的恒等函数 `id`。这也就是说，尽管函数 `eval` 是递归定义的，因为语义是组合性的，其行为可以被理解为简单地用其他函数替换表达式中的构造子。用这种方式，指称语义也可以被视为一个通过“#term[折叠 (fold)]”源语言的语法来定义的求值函数：
 
