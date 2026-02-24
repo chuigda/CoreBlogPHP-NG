@@ -28,7 +28,7 @@ eval (Val n)   = [n]
 eval (Add x y) = [n + m | n <- eval x, m <- eval y]
 ```
 
-就这个简单的表达式语言而言，大步语义看似与第 3 节所讲论的指称语义如出一辙，不过是把等式换成了推理规则。然而，组合性是指称语义的关键性质，而大步语义不必是组合性的，当讨论更复杂的语言时，这一区分就会变得尤为明显。例如，Bahr 和 Hutton 的 $lambda$ 演算编译器 #link("Bahr Hutton 2015")[(2015)] 就基于一个大步形式的非组合性语义。
+就这个简单的表达式语言而言，大步语义看似与第 3 节所讲论的指称语义如出一辙，不过是把等式换成了推理规则。然而，组合性是指称语义的关键性质，而大步语义不必是组合性的，当讨论更复杂的语言时，这一区分就会变得尤为明显。例如，Bahr 和 Hutton 的 $lambda$ 演算编译器 #link("(2015)") 就基于一个大步形式的非组合性语义。
 
 我们可以将表达式语言的指称语义和大步语义之间的等价性形式化地写作：
 
@@ -76,4 +76,4 @@ $
 
 最后的两个条件都可以简单地应用规则 $[V"-Val"]$ 和 $[V"-Add"]$ 来验证。
 
-*延伸阅读* #h(1em) 当我们只关注执行的最终结果而不关心执行的具体细节时，大步语义很有用。本文主要关注指称性和操作性的语义学方法，但还有很多其他的语义学方法，包括#term[公理 (axiomatic)] 语义 #link("Hoare 1969")[(Hoare, 1969)]、#term[代数 (algebraic)] 语义 #link("Goguen Malcolm 1996")[(Goguen & Malcolm, 1996)]、#term[模块化 (modular)] 语义 #link("Mosses 2004")[(Mosses, 2004)]、#term[动作 (action)] 语义 #link("Mosses 2005")[(Mosses, 2005)] 和#term[游戏 (game)] 语义 #link("(Abramsky & McCusker, 1999)")。
+*延伸阅读* #h(1em) 当我们只关注执行的最终结果而不关心执行的具体细节时，大步语义很有用。本文主要关注指称性和操作性的语义学方法，但还有很多其他的语义学方法，包括#term[公理 (axiomatic)] 语义 #link("(Hoare, 1969)")、#term[代数 (algebraic)] 语义 #link("(Goguen & Malcolm, 1996)")、#term[模块化 (modular)] 语义 #link("(Mosses, 2004)")、#term[动作 (action)] 语义 #link("(Mosses, 2005)") 和#term[游戏 (game)] 语义 #link("(Abramsky & McCusker, 1999)")。

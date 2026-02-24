@@ -2,7 +2,7 @@
 
 = 指称语义
 
-在文章的第一部分，我们展示了如何使用我们简单的表达式语言，来解释和比较多种不同的为语言赋予语义的方法。在本节中，我们将探讨语义学的指称方法 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.strachey")[(Scott 和 Strachey, 1971)]——使用#term[值化函数 (valuation function)] 将语言中的#term[词项 (term)] 映射到适当的#term[语义域 (semantic domain)] 中的#term[值 (value)] 来定义词项的#term[意义]。
+在文章的第一部分，我们展示了如何使用我们简单的表达式语言，来解释和比较多种不同的为语言赋予语义的方法。在本节中，我们将探讨语义学的指称方法 #link("(Scott 和 Strachey, 1971)")——使用#term[值化函数 (valuation function)] 将语言中的#term[词项 (term)] 映射到适当的#term[语义域 (semantic domain)] 中的#term[值 (value)] 来定义词项的#term[意义]。
 
 形式化地说，对于由#term[语法项 (syntactic term)] 构成的语言 $T$，其指称语义由两部分组成：一个#term[语义值 (semantic value)] 集合 $V$，以及一个类型为 $T -> V$ 的值化函数，该函数将词项映射到以#term[值]表示的#term[意义]。值化函数通常写作 $[| t |]$——将词项用#term[语义括号 (semantic bracket)] 括起来，表示对词项 $t$ 应用值化函数的结果。语义括号也被称作牛津括号或斯特雷奇括号，以纪念克里斯托弗·斯特雷奇在指称方法上的开创性工作。
 
@@ -39,7 +39,7 @@ $
   & [| #[`Add x' y'`] |] \
 $
 
-在实践中，由于词项的语义是归纳地构建的，指称语义的证明常用#term[结构归纳法 (structural induction)] 进行 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.induction")[(Burstall, 1969)]。作为例子，让我们看看如何证明这个表达式语言的语义是#term[全函数的 (total)]：对于任何表达式 $e$，都存在整数 $n$，使得 $[| e |] = n$。
+在实践中，由于词项的语义是归纳地构建的，指称语义的证明常用#term[结构归纳法 (structural induction)] 进行 #link("(Burstall, 1969)")。作为例子，让我们看看如何证明这个表达式语言的语义是#term[全函数的 (total)]：对于任何表达式 $e$，都存在整数 $n$，使得 $[| e |] = n$。
 
 #term[全函数性 (totality)] 的证明通过对表达式 $e$ 的结构进行归纳来进行。对于#term[基准情况 (base case)] #linebreak() $e = #[`Val n`]$，根据值化函数的定义，等式 $[|#[`Val n`]|]  = n$ 显然成立。对于#term[归纳情况 (inductive case)] $e = #[`Add x y`]$，由归纳假设可得，存在整数 $n, m$，使得 $[| #[`x`] |] = n$ 且 $[| #[`y`] |] = m$，接着应用值化函数，有 $[| #[`Add x y`] |] = [| #[`x`] |] + [| #[`y`] |] = n + m$，从而归纳情况也得证。
 
@@ -62,7 +62,7 @@ eval :: Expr -> Integer
 eval = fold id (+)
 ```
 
-`fold` 算子 (#link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.bananas")[Meijer et al., 1991]) 体现了用其他函数替换语言中构造子的思想。这里，构造子 `Val` 和 `Add` 分别被函数 $f$ 和 $g$ 替换：
+`fold` 算子 #link("(Meijer et al., 1991)") 体现了用其他函数替换语言中构造子的思想。这里，构造子 `Val` 和 `Add` 分别被函数 $f$ 和 $g$ 替换：
 
 ```haskell
 fold :: (Integer -> a) -> (a -> a -> a) -> Expr -> a
@@ -83,6 +83,6 @@ $
 
 其次，注意到，上述语义并未指定求值顺序——也就是说，我们并未指定加法的两个参数应以何种顺序求值。在这个例子中，求值顺序对最后得到的值没有影响。若要显式指定求值顺序，就要向语义中引入额外的结构，我们将在第 8 节讲论抽象机时探讨这一点。
 
-*延伸阅读* #h(1em) 关于指称语义的标准参考文献是 #link("dummy")[Schmidt (1986)]，而 #link("dummy")[Winskel (1993)] 的形式语义教科书则对该方法进行了简明扼要的介绍。为 $lambda$ 演算赋予指称语义的问题，特别是递归定义函数和类型所引出的技术问题，促成了域论的发展 #link("dummy")[(Abramsky & Jung, 1994)]。
+*延伸阅读* #h(1em) 关于指称语义的标准参考文献是 #link("Schmidt (1986)")，而 #link("Winskel (1993)") 的形式语义教科书则对该方法进行了简明扼要的介绍。为 $lambda$ 演算赋予指称语义的问题，特别是递归定义函数和类型所引出的技术问题，促成了域论的发展 #link("(Abramsky & Jung, 1994)")。
 
-#link("dummy")[Hutton (1998)] 进一步探讨了使用折叠算子定义指称语义的思想。简单的整数和加法语言也被用作研究一系列其他语言特性的基础，包括异常 #link("dummy")[(Hutton & Wright, 2004)]、中断 #link("dummy")[(Hutton & Wright, 2007)]、事务 #link("dummy")[(Hu & Hutton, 2009)]、非确定性 #link("dummy")[(Hu & Hutton, 2010)] 和状态 #link("dummy")[(Bahr & Hutton, 2015)]。
+#link("Hutton (1998)") 进一步探讨了使用折叠算子定义指称语义的思想。简单的整数和加法语言也被用作研究一系列其他语言特性的基础，包括异常 #link("(Hutton & Wright, 2004)")、中断 #link("(Hutton & Wright, 2007)")、事务 #link("(Hu & Hutton, 2009)")、非确定性 #link("(Hu & Hutton, 2010)") 和状态 #link("(Bahr & Hutton, 2015)")。

@@ -300,6 +300,6 @@ data Con = Hole | AddL Con Expr | AddR Integer Con
 
 注意到这两个类型是同构的，也就是说其值之间存在一一对应关系。这一同构表明了求值语境即是去函数化的续延，这并不仅限于此例，而是揭示了一种深层次的语义联系。下文引用的多篇文章对此进行了深入探讨。
 
-*延伸阅读* #h(1em) Reynolds 的开创性论文 (1972) 引入了三项关键技术：#term[定义性解释器 (definitional interpreter)]、续延传递风格和去函数化。Danvy 和他的合作者后来揭示出 Reynolds 的论文实际上包含了从求值器推导出抽象机的蓝图 (Ager et al., 2003a)，并继续就相关主题发表了一系列有影响力的论文，包括从求值器推导出编译器 (Ager et al., 2003b)、从小步语义推导出抽象机 (Danvy & Nielsen, 2004) 以及去函数化的对偶性 (Danvy & Millikin, 2009)；更多参考文献可在 Danvy 的特邀论文 (2008) 中找到。McBride (2008) 利用数据类型剖析的思想，开发了一种将使用 `fold` 算子表示的指称语义转换为等价抽象机的通用方法。
+*延伸阅读* #h(1em) Reynolds 的开创性论文 #link("(1972)") 引入了三项关键技术：#term[定义性解释器 (definitional interpreter)]、续延传递风格和去函数化。Danvy 和他的合作者后来揭示出 Reynolds 的论文实际上包含了从求值器推导出抽象机的蓝图 #link("(Ager 等, 2003a)")，并继续就相关主题发表了一系列有影响力的论文，包括从求值器推导出编译器 #link("(Ager 等, 2003b)")、从小步语义推导出抽象机 #link("(Danvy & Nielsen, 2004)") 以及去函数化的对偶性 #link("(Danvy & Millikin, 2009)")；更多参考文献可在 Danvy 的特邀论文 #link("(2008)") 中找到。#link("McBride (2008)") 利用数据类型剖析的思想，开发了一种将使用 `fold` 算子表示的指称语义转换为等价抽象机的通用方法。
 
-本节基于 (Hutton & Wright, 2006; Hutton & Bahr, 2016)，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 (Bahr & Hutton, 2015)、寄存器机 (Hutton & Bahr, 2017; Bahr & Hutton, 2020)、类型化语言 (Pickard & Hutton, 2021), 非终止语言 (Bahr & Hutton, 2022) 和并行语言 (Bahr & Hutton) 演算编译器。
+本节基于 #link("(Hutton & Wright, 2006; Hutton & Bahr, 2016)")，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 #link("(Bahr & Hutton, 2015)")、寄存器机 #link("(Hutton & Bahr, 2017; Bahr & Hutton, 2020)")、类型化语言 #link("(Pickard & Hutton, 2021)"), 非终止语言 #link("(Bahr & Hutton, 2022)") 和并行语言 #link("(Bahr & Hutton)") 演算编译器。

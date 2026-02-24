@@ -43,7 +43,7 @@
 
 ⚠ Note: this is an early draft. It's known to be incomplet and incorrekt, and it has lots of b#text(tracking: -0.1em)[ad] fo#text(tracking: -0.1em)[rm]atting.
 
-本文是文章 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf")[Programming language semantics: It's easy as 1, 2, 3] 的中文翻译，部分字句有所改动。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以#term[仿宋体]呈现。
+本文是文章 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf")[Programming language semantics: It's easy as 1, 2, 3] 的中文翻译，部分字句有所改动。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
 = 摘要
 
@@ -57,7 +57,7 @@
 
 多年以来，这门语言在我自己的工作中扮演着核心角色。起初，它被用来辅助解释语义概念，而随着时间的推移，它逐渐成为了我发现新思想的机制，并出现在我的许多出版物中。本文的目的是巩固这些经验，并展示如何使用这个简单的算术表达式语言以简单的方式呈现一系列语义概念。
 
-使用最简洁的语言来探索语义概念，正是奥卡姆剃刀原理的一个例证 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.occams-razor")[(Duignan, 2018)]。奥卡姆剃刀原理是一种哲学原则，它倾向于用最简单的解释来阐明某种现象。尽管由整数和加法组成的语言没有提供实际编程所需的特性，但它却提供了恰好足以解释许多语义学概念的结构。特别地，整数提供了一个简单的“值”的概念，而加法运算符则提供了一个简单的“计算”的概念。这一语言在过去曾被许多作者使用，例如 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.mccarthy")[McCarthy 和 Painter (1967)], #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.wand")[Wand (1982)] 和 #link("https://people.cs.nott.ac.uk/pszgmh/123.pdf#cite.expression-problem")[Wadler (1998)]，仅举几例。而本文首次将这一语言作为通用工具来探索不同语义学话题。
+使用最简洁的语言来探索语义概念，正是奥卡姆剃刀原理的一个例证 #link("(Duignan, 2018)")。奥卡姆剃刀原理是一种哲学原则，它倾向于用最简单的解释来阐明某种现象。尽管由整数和加法组成的语言没有提供实际编程所需的特性，但它却提供了恰好足以解释许多语义学概念的结构。特别地，整数提供了一个简单的“值”的概念，而加法运算符则提供了一个简单的“计算”的概念。这一语言在过去曾被许多作者使用，例如 #link("McCarthy & Painter (1967)"), #link("Wand (1982)") 和 #link("Wadler (1998)")，仅举几例。而本文首次将这一语言作为通用工具来探索不同语义学话题。
 
 当然，也可以使用一个更复杂的最小语言，例如带有可变变量的简单命令式语言，或是基于 $lambda$ 演算的简单函数式语言。但这会引入许多其他概念，例如存储、环境、替换和变量捕获。学习这些当然也很重要，但我的经验一次又一次地证明，先将注意力集中在整数和加法的简单语言上大有裨益。只要这个框架下理解了基本概念，读者就可以自行扩展语言，加入其他感兴趣的特性。作者自己的许多工作已经证明了这一方法是行之有效的。
 
@@ -94,7 +94,7 @@ data Expr = Val Integer | Add Expr Expr
 
 当然，使用简单的语言亦有局限。例如这一语言不足以阐述不同语义学方法之间的差异：在讨论算术表达式的大步语义时，我们注意到其与指称语义相去无几，不同之处仅仅是将等式换作推理规则。此外，简单的语言不会像更复杂的语言那样引出语义学上的问题和挑战。例如，从语义角度看，可变状态、变量绑定和并行等特性尤其有趣，当它们组合使用时尤其如此。
 
-对于有兴趣深入了解语义学的读者，有很多优秀的教科书可供选择，例如 (Winskel, 1993; Reynolds, 1998; Pierce, 2002; Harper, 2016)。此外还有各种暑期学校，例如俄勒冈编程语言暑期学校 (OPLSS, 2023) 和米德兰兹研究生院 (MGSm, 2022)，以及大量的在线资源。我们希望我们开发的简单语言能够为其他人提供一个有用的入口和工具，以探索程序语言语义学的更多方面。在这个框架下，一切就像“数数手指一二三”一样简单。
+对于有兴趣深入了解语义学的读者，有很多优秀的教科书可供选择，例如 #link("(Winskel, 1993; Reynolds, 1998; Pierce, 2002; Harper, 2016)")。此外还有各种暑期学校，例如俄勒冈编程语言暑期学校 (OPLSS, 2023) 和米德兰兹研究生院 (MGS, 2022)，以及大量的在线资源。我们希望我们开发的简单语言能够为其他人提供一个有用的入口和工具，以探索程序语言语义学的更多方面。在这个框架下，一切就像“数数手指一二三”一样简单。
 
 #set heading(numbering: none)
 
