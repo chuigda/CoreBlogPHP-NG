@@ -146,7 +146,7 @@
 [ ] 你乐于针对以下玩具功能进行基准测试：
     [ ] 加法  [ ] 斐波那契  [ ] FizzBuzz  [ ] JSON 解析  [ ] HTTP 伺服
 [ ] 没有人认为你的语言能比这门语言快：
-    [ ] 汇编  [ ] C  [ ] Rust  [ ] Go  [ ] Javascript  [ ] Python
+    [ ] 汇编  [ ] C  [ ] Rust  [ ] Go  [ ] JavaScript  [ ] Python
 [ ] 你毫无理由地拒绝正统程序设计语言理论
 [ ] 你毫无理由地拒绝正统系统编程
 [ ] 你毫无理由地拒绝正统算法理论
@@ -179,7 +179,7 @@
 [ ] 你重新发明了个更差的 Zig
 [ ] 你重新发明了个更差的 ECMAScript
 [ ] 你重新发明了个更好的 ECMAScript，但这毫无意义
-[ ] 你重新发明了 IntercalScript，但却没有 IntercalScript 的讽刺意味
+[ ] 你重新发明了 IntercalScript，却不是为了讽刺
 
 总的来说，我觉得：
 [ ] 你有很多有趣的想法，但你造的这玩意飞不起来
