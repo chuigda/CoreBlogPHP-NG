@@ -87,3 +87,133 @@ data Expr = Val Integer | Add Expr Expr
 #include "./pl-semantics-1-2-3/6-contextual.typ"
 #include "./pl-semantics-1-2-3/7-big-step.typ"
 #include "./pl-semantics-1-2-3/8-abstract-machines.typ"
+
+= 总结
+
+本文用整数和加法的简单语言展示了一系列语义学概念，考察了多种语义学方法、归纳原理如何被用于分析语义，以及如何将语义转换为实现。最小语言的运用规避了更复杂的语言会带来的额外复杂性，使得精明干练地阐述这些思想成为可能。
+
+当然，使用简单的语言亦有局限。例如这一语言不足以阐述不同语义学方法之间的差异：在讨论算术表达式的大步语义时，我们注意到其与指称语义相去无几，不同之处仅仅是将等式换作推理规则。此外，简单的语言不会像更复杂的语言那样引出语义学上的问题和挑战。例如，从语义角度看，可变状态、变量绑定和并行等特性尤其有趣，当它们组合使用时尤其如此。
+
+对于有兴趣啊深入了解语义学的读者，有很多优秀的教科书可供选择，例如 (Winskel, 1993; Reynolds, 1998; Pierce, 2002; Harper, 2016)。此外还有各种暑期学校，例如俄勒冈编程语言暑期学校 (OPLSS, 2023) 和米德兰兹研究生院 (MGSm, 2022)，以及大量的在线资源。我们希望我们开发的简单语言能够为其他人提供一个有用的入口和工具，以探索程序语言语义学的更多方面。在这个框架下，一切就像“数数手指一二三”一样简单。
+
+#set heading(numbering: none)
+
+= 致谢
+
+我要感谢 Jeremy Gibbons, Ralf Hinze, Peter Thiemann, Andrew Tolmach 和众多匿名审稿人，他们给出了许多有用的评论和建议，显著提升了本文的质量。这项工作由 EPSRC 拨款 EP/P00587X/1 资助，项目名称为“关于程序正确性和效率的统一推理”。
+
+= 补充材料
+
+本文的补充材料参见 #link("http://doi.org/10.1017/S0956796823000072")。
+
+= 参考文献
+
+Abbott, M. G., Altenkirch, T., McBride, C. & Ghani, N. (2005) δ for data: Differentiating data structures. _Fundam. Inform._ 65(1-2), 1–28.
+
+Abramsky, S. & Jung, A. (1994) Domain theory. In _Handbook of Logic in Computer Science_, vol. 3. Clarendon, pp. 1–168.
+
+Abramsky, S. & McCusker, G. (1999) Game semantics. _Comput. Logic_ 165, 1–55.
+
+Ager, M. S., Biernacki, D., Danvy, O., & Midtgaard, J. (2003a) A functional correspondence between evaluators and abstract machines. In _Proceedings of the 5th ACM SIGPLAN International Conference on Principles and Practice of Declarative Programming_.
+
+Ager, M. S., Biernacki, D., Danvy, O. & Midtgaard, J. (2003b) _From Interpreter to Compiler and Virtual Machine: A Functional Derivation_. Research Report RS-03-14. BRICS, Department of Computer Science, University of Aarhus.
+
+Bahr, P. & Hutton, G. (2015) Calculating correct compilers. _J. Funct. Program._ 25.
+
+Bahr, P. & Hutton, G. (2020) Calculating correct compilers II: Return of the register machines. _J. Funct. Program._ 30.
+
+Bahr, P. & Hutton, G. (2022) Monadic compiler calculation. _Proc. ACM Program. Lang._ 6(ICFP), 80–108.
+
+Bahr, P. & Hutton, G. (2023) Calculating compilers for concurrency. _Proc. ACM Program. Lang._ 7(ICFP), 740–767.
+
+Burstall, R. (1969) Proving properties of programs by structural induction. _Comput. J._ 12(1), 41–48.
+
+Danvy, O. (2008) Defunctionalized interpreters for programming languages. In _Proceedings of the 13th ACM SIGPLAN International Conference on Functional Programming_.
+
+Danvy, O. & Millikin, K. (2009) Refunctionalization at work. _Sci. Comput. Program._ 74(8), 534–549.
+
+Danvy, O. & Nielsen, L. R. (2004) _Refocusing in Reduction Semantics_. Research Report RS-04-26. BRICS, Department of Computer Science, University of Aarhus.
+
+Duignan, B. (2018) _Occam's Razor_. Encyclopedia Britannica. Available at: https://www.britannica.com/topic/Occams-razor.
+
+Dybjer, P. (1994) Inductive families. _Formal Aspects Comput._ 6(4), 440–465.
+
+Felleisen, M. & Hieb, R. (1992) The revised report on the syntactic theories of sequential control and state. _Theoret. Comput. Sci._ 103(2), 235–271.
+
+Gibbons, J. & Jones, G. (1998) The under-appreciated unfold. In _Proceedings of the Third ACM SIGPLAN International Conference on Functional Programming_.
+
+Goguen, J. & Malcolm, G. (1996) _Algebraic Semantics of Imperative Programs_. MIT.
+
+Harper, R. (2016) _Practical Foundations for Programming Languages_, 2nd ed. Cambridge University.
+
+Hoare, T. (1969) An axiomatic basis for computer programming. _Commun. ACM_ 12, 576–583.
+
+Hope, C. (2008) _A Functional Semantics for Space and Time_. Ph.D. thesis, University of Nottingham.
+
+Hope, C. & Hutton, G. (2006) Accurate step counting. In _Implementation and Application of Functional Languages_. LNCS, vol. 4015. Berlin/Heidelberg: Springer, pp. 91–105.
+
+Hu, L. & Hutton, G. (2009) Towards a verified implementation of software transactional memory. In _Trends in Functional Programming Volume 9_. Intellect, pp. 129–143.
+
+Hu, L. & Hutton, G. (2010) Compiling concurrency correctly: Cutting out the middle man. In _Trends in Functional Programming Volume 10_. Intellect, pp. 17–32.
+
+Huet, G. (1997) The zipper. _J. Funct. Program._ 7(5), 549–554.
+
+Hutton, G. (1998) Fold and unfold for program semantics. In _Proceedings of the 3rd International Conference on Functional Programming_.
+
+Hutton, G. & Bahr, P. (2016) Cutting out continuations. In _A List of Successes That Can Change the World_. LNCS, vol. 9600. Springer, pp. 187–200.
+
+Hutton, G. & Bahr, P. (2017) Compiling a 50-year journey. _J. Funct. Program._ 27.
+
+Hutton, G. & Wright, J. (2004) Compiling exceptions correctly. In _Proceedings of the 7th International Conference on Mathematics of Program Construction_. LNCS, vol. 3125. Springer.
+
+Hutton, G. & Wright, J. (2006) Calculating an Exceptional Machine. In _Trends in Functional Programming Volume 5_. Intellect, pp. 49–64.
+
+Hutton, G. & Wright, J. (2007) What is the meaning of these constant interruptions? _J. Funct. Program._ 17(6), 777–792.
+
+Kahn, G. (1987) Natural semantics. In _Proceedings of the 4th Annual Symposium on Theoretical Aspects of Computer Science_.
+
+Landin, P. (1964) The mechanical evaluation of expressions. _Comput. J._ 6, 308–320.
+
+McBride, C. (2008) Clowns to the left of me, jokers to the right: Dissecting data structures. In _Proceedings of the Symposium on Principles of Programming Languages_.
+
+McCarthy, J. & Painter, J. (1967) Correctness of a compiler for arithmetic expressions. In _Mathematical Aspects of Computer Science_. Proceedings of Symposia in Applied Mathematics, vol. 19. American Mathematical Society, pp. 33–41.
+
+Meijer, E., Fokkinga, M. & Paterson, R. (1991) Functional programming with bananas, lenses, envelopes and barbed wire. In _Proceedings of the Conference on Functional Programming and Computer Architecture_.
+
+MGS. (2022) _Midlands Graduate School in the Foundations of Computing Science_. Available at: http://www.cs.nott.ac.uk/MGS/.
+
+Milner, R. (1999) _Communicating and Mobile Systems: The Pi Calculus_. Cambridge University.
+
+Moran, A. (1998) _Call-By-Name, Call-By-Need, and McCarthy's Amb_. Ph.D. thesis, Chalmers University of Technology.
+
+Mosses, P. (2004) Modular structural operational semantics. _J. Logic Algebraic Program._ 60-61, 195–228.
+
+Mosses, P. (2005) _Action Semantics_. Cambridge University.
+
+Norell, U. (2007) _Towards a Practical Programming Language Based on Dependent Type Theory_. Ph.D. thesis, Department of Computer Science and Engineering, Chalmers University of Technology.
+
+OPLSS. (2023) _Oregon Programming Languages Summer School_. Available at: https://www.cs.uoregon.edu/research/summerschool/archives.html.
+
+Pickard, M. & Hutton, G. (2021) Calculating dependently-typed compilers. _Proc. ACM Program. Lang._ 5(ICFP), 1–27.
+
+Pierce, B. (2002) _Types and Programming Languages_. MIT.
+
+Plotkin, G. (1981) _A Structured Approach to Operational Semantics_. Report DAIMI-FN-19. Computer Science Department, Aarhus University, Denmark, pp. 3–15.
+
+Plotkin, G. (2004) The origins of structural operational semantics. _J. Logic Algebraic Program._ 60-61.
+
+Reynolds, J. C. (1972) Definitional interpreters for higher-order programming languages. In _Proceedings of the ACM Annual Conference_.
+
+Reynolds, J. C. (1998) _Theories of Programming Languages_. Cambridge University.
+
+Schmidt, D. A. (1986) _Denotational Semantics: A Methodology for Language Development_. Allyn and Bacon, Inc.
+
+Scott, D. & Strachey, C. (1971) _Toward a Mathematical Semantics for Computer Languages_. Technical Monograph PRG-6. Oxford Programming Research Group.
+
+Wadler, P. (1998) _The Expression Problem_. Available at: http://homepages.inf.ed.ac.uk/wadler/papers/expression/expression.txt.
+
+Wand, M. (1982) Deriving target code as a representation of continuation semantics. _ACM Trans. Program. Lang. Syst._ 4(3), 496–517.
+
+Winskel, G. (1993) _The Formal Semantics of Programming Languages: An Introduction_. MIT.
+
+Wright, J. (2005) _Compiling and Reasoning about Exceptions and Interrupts_. Ph.D. thesis, University of Nottingham.

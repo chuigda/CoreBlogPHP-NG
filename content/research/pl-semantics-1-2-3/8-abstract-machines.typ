@@ -160,3 +160,146 @@ exec (ADD n c)  = add n (exec c)
 ```
 
 在文献中这一函数常被称作 `apply` #link("(Reynolds, 1972)")：若将 `exec` 的类型展开成 #linebreak() `CONT -> Integer -> Integer`，则这一函数可被视作将续延应用于一个整数，以得到另一个整数。而本文选用 `exec` 的缘由稍后便会揭晓。
+
+下一步就是定义一个新的语义 `eval''`，它和 `eval'` 的行为一致，但使用 `CONT` 类型的值，而不是 `Cont` 类型的续延：
+
+```haskell
+eval'' :: Expr -> CONT -> Integer
+```
+
+而 `eval'` 的行为可由以下等式描述：
+
+#let p-eval2 = $[P"-"#[`eval''`]]$
+
+$
+  #[`eval''`] e med c quad = quad #[`eval'`] e med #[`(exec`] c #[`)`] wide #(p-eval2)
+$
+
+也就是说，将 `eval''` 应用于一个表达式 $e$ 和一个以 `CONT` 表示的续延 $c$，所得的结果应与将 `eval'` 应用于该表达式和续延 $#[`exec`] c$ 的结果相同。
+
+和之前一样，我们对表达式 $e$ 作结构归纳来得到 `eval''` 的定义。基准情况 $e = #[`Val n`]$ 的处理简单直接：
+
+$
+  & #[`eval'' (Val n)`] c \
+  & = quad { "规范" #(p-eval2) } \
+  & #[`eval' (Val n) (exec`] c #[`)`] \
+  & = quad { #[`eval'`] "的定义" } \
+  & #[`exec`] c med #[`n`]
+$
+
+而归纳情况 $e = #[`Add x y`]$ 中则须展开 `exec` 的定义，从而允许应用归纳假设：
+
+$
+  & #[`eval'' (Add x y)`] med c \
+  & = quad { "规范" #(p-eval2) } \
+  & #[`eval' (Add x y) (exec`] c #[`)`] \
+  & = quad { #[`eval'`] "的定义" } \
+  & #[`eval' x (next y (exec `] c #[`))`] \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`eval' x (exec (NEXT y `] c #[`))`] \
+  & = { #[`x`] "的归纳假设" } \
+  & #[`eval'' x (NEXT y`] c #[`)`]
+$
+
+然而，`exec` 的定义中有组合子 `next`，而 `next` 的定义中仍然包含 `eval'`。我们可以对 `CONT` 参数作分类讨论（无须归纳），为 `exec` 演算出一个指向 `eval''`（而非 `eval'`）的定义：
+
+$
+  & #[`exec HALT`] n \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`halt`] n \
+  & = quad { #[`halt`] "的定义" } \
+  & n
+  \ \ \
+  & #[`exec (NEXT y c)`] n \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`next y (exec c)`] n \
+  & = quad { #[`next`] "的定义" } \
+  & #[`eval' y (add`] n #[`(exec c))`] \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`eval' y (exec (ADD`] n #[`c))`] \
+  & = quad { "规范" #(p-eval2) } \
+  & #[`eval'' y (ADD`] n #[`c)`]
+  \ \ \
+  & #[`exec (ADD n c)`] m \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`add n (exec c)`] m \
+  & = quad { #[`add`] "的定义" } \
+  & #[`exec c (n + `]m #[`)`]
+$
+
+最后，原本的语义 `eval` 可由新语义 `eval''` 经如下演算还原：
+
+$
+  & #[`eval`] e \
+  & = quad { #[`eval`] "的旧定义" } \
+  & #[`eval'`] e (lambda n -> n) \
+  & = quad { #[`halt`] "的定义" } \
+  & #[`eval'`] e #h(0.5em) #[`halt`] \
+  & = quad { #[`exec`] "的定义" } \
+  & #[`eval'`] e #[`(exec HALT)`] \
+  & = quad { "规范" #(p-eval2) } \
+  & #[`eval''`] e #h(0.5em) #[`HALT`]
+$
+
+总结即得如下新定义：
+
+```haskell
+eval :: Expr -> Integer
+eval e = eval'' e HALT
+
+eval'' :: Expr -> CONT -> Integer
+eval'' (Val n)   c = exec c n
+eval'' (Add x y) c = eval'' x (NEXT y c)
+
+exec :: CONT -> Integer -> Integer
+exec HALT       n = n
+exec (NEXT y c) n = eval'' y (ADD n c)
+exec (ADD n c)  m = exec c (n + m)
+```
+
+这三个定义和 `CONT` 类型一共构成了一个用于求值表达式的抽象机。这四个组件可分别理解为：
+
+- `CONT` 是#term[控制栈 (control stack)] 的类型，控制栈中的指令决定抽象机在求值当前表达式后应如何继续。因此，这种抽象机有时也被称为#term[“求值/继续”机 ("eval/continue" machine)]。控制栈的类型也可重构为一系列指令：
+
+  ```haskell
+  type CONT = [INST]
+  data INST = ADD Int | NEXT Expr
+  ```
+
+  不过本文仍使用 `CONT` 原本的定义，因为它是以系统的方式得出的，并且只需要声明一种类型。
+- `eval` 以给定的表达式和空控制栈 `HALT` 调用 `eval''`，将表达式求值为整数。
+- `eval''` 以一个控制栈 `c` 为语境，对表达式求值。若表达式是整数值，则以该整数为参数#term[执行 (execute)] 控制栈。若表达式是一个加法，则首先求值其第一个参数 `x`，并将指令 `NEXT y` 置于控制栈顶，表示当 `x` 求值完毕时应求值第二个参数 `y`。
+- `exec` 以一个整数参数 `n` 为语境，#term[执行]控制栈 。若控制栈为空，由指令 `HALT` 表示，则将整数参数作为#term[执行]的结果返回；若栈顶是指令 `NEXT y`，则求值表达式 `y` 并将 `ADD n` 置于栈顶，表示当 `y` 求值完毕时，应将当前整数 `n` 与之相加；最后，若栈顶是指令 `ADD n`，这表明加法的两个参数的求值均已完成，则将两数之和作为语境，#term[执行]余下的控制栈。
+
+注意 `eval''` 和 `exec` 是互递归的，对应于抽象机的两种模式：抽象机的行动取决于表达式结构还是控制栈。例如，对表达式 $1 + 2$：
+
+```haskell
+  eval (Add (Val 1) (Val 2))
+= eval'' (Add (Val 1) (Val 2)) HALT
+= eval'' (Val 1) (NEXT (Val 2) HALT)
+= exec (NEXT (Val 2) HALT) 1
+= eval'' (Val 2) (ADD 1 HALT)
+= exec (ADD 1 HALT) 2
+= exec HALT 3
+= 3
+```
+
+总而言之，我们展示了如何演算出一个用于求值算术表达式的抽象机，所有实现机制都自然而然地从实现中涌现了出来。我们无须事先了解任何实现思路，因为这些思路是在演算过程中被系统地发现的。
+
+最后我们补充一点：抽象机所用的控制栈和第 6 节语境语义中的语境具有相似的形式。若将控制栈写成普通的代数数据类型：
+
+```haskell
+data CONT = HALT | NEXT Expr CONT | ADD Integer CONT
+```
+
+并以与第 6 节末尾相同的风格写出指定从左到右求值顺序的求值语境类型：
+
+```haskell
+data Con = Hole | AddL Con Expr | AddR Integer Con
+```
+
+注意到这两个类型是同构的，也就是说其值之间存在一一对应关系。这一同构表明了求值语境即是去函数化的续延，这并不仅限于此例，而是揭示了一种深层次的语义联系。下文引用的多篇文章对此进行了深入探讨。
+
+*延伸阅读* #h(1em) Reynolds 的开创性论文 (1972) 引入了三项关键技术：#term[定义性解释器 (definitional interpreter)]、续延传递风格和去函数化。Danvy 和他的合作者后来揭示出 Reynolds 的论文实际上包含了从求值器推导出抽象机的蓝图 (Ager et al., 2003a)，并继续就相关主题发表了一系列有影响力的论文，包括从求值器推导出编译器 (Ager et al., 2003b)、从小步语义推导出抽象机 (Danvy & Nielsen, 2004) 以及去函数化的对偶性 (Danvy & Millikin, 2009)；更多参考文献可在 Danvy 的特邀论文 (2008) 中找到。McBride (2008) 利用数据类型剖析的思想，开发了一种将使用 `fold` 算子表示的指称语义转换为等价抽象机的通用方法。
+
+本节基于 (Hutton & Wright, 2006; Hutton & Bahr, 2016)，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 (Bahr & Hutton, 2015)、寄存器机 (Hutton & Bahr, 2017; Bahr & Huhr, 2020)、类型化语言 (Pickard & Hutton, 2021), 非终止语言 (Bahr & Hutton, 2022) 和并行语言 (Bahr & Hutton) 演算编译器。
