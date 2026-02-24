@@ -2,7 +2,7 @@
 
 = 抽象机
 
-目前为止，我们的所有例子都侧重于解释语义学概念。而本节将展示如何利用整数和加法的语言来帮助发现语义概念：如何将这一语言用作基础，发现如何实现抽象机 #link("(Landin, 1964)")，从而以明确定义的求值顺序对表达式求值。回顾第 3 节中的简单求值函数：
+目前为止，我们的所有例子都侧重于解释语义学概念。而本节将展示如何利用整数和加法的语言来帮助发现语义概念：将这一语言用作基础，发现如何实现抽象机 #link("(Landin, 1964)")，从而以明确定义的求值顺序对表达式求值。回顾第 3 节中的简单求值函数：
 
 ```haskell
 eval :: Expr -> Integer
@@ -201,7 +201,7 @@ $
   & #[`eval'' x (NEXT y`] c #[`)`]
 $
 
-然而，`exec` 的定义中有组合子 `next`，而 `next` 的定义中仍然包含 `eval'`。我们可以对 `CONT` 参数作分类讨论（无须归纳），为 `exec` 演算出一个指向 `eval''`（而非 `eval'`）的定义：
+然而，`exec` 的定义中有组合子 `next`，而 `next` 的定义中仍然包含 `eval'`。我们可以对 `CONT` 参数作分类讨论（无须归纳），为 `exec` 演算出一个使用 `eval''`（而非 `eval'`）的定义：
 
 $
   & #[`exec HALT`] n \
@@ -302,4 +302,4 @@ data Con = Hole | AddL Con Expr | AddR Integer Con
 
 *延伸阅读* #h(1em) Reynolds 的开创性论文 #link("(1972)") 引入了三项关键技术：#term[定义性解释器 (definitional interpreter)]、续延传递风格和去函数化。Danvy 和他的合作者后来揭示出 Reynolds 的论文实际上包含了从求值器推导出抽象机的蓝图 #link("(Ager 等, 2003a)")，并继续就相关主题发表了一系列有影响力的论文，包括从求值器推导出编译器 #link("(Ager 等, 2003b)")、从小步语义推导出抽象机 #link("(Danvy & Nielsen, 2004)") 以及去函数化的对偶性 #link("(Danvy & Millikin, 2009)")；更多参考文献可在 Danvy 的特邀论文 #link("(2008)") 中找到。#link("McBride (2008)") 利用数据类型剖析的思想，开发了一种将使用 `fold` 算子表示的指称语义转换为等价抽象机的通用方法。
 
-本节基于 #link("(Hutton & Wright, 2006; Hutton & Bahr, 2016)")，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 #link("(Bahr & Hutton, 2015)")、寄存器机 #link("(Hutton & Bahr, 2017; Bahr & Hutton, 2020)")、类型化语言 #link("(Pickard & Hutton, 2021)"), 非终止语言 #link("(Bahr & Hutton, 2022)") 和并行语言 #link("(Bahr & Hutton)") 演算编译器。
+本节基于 #link("(Hutton & Wright, 2006; Hutton & Bahr, 2016)")，这些文献也展示了如何演算出扩展后的表达式语言的抽象机，以及如何将两步转换融合成一步。类似的技术可用于为栈机 #link("(Bahr & Hutton, 2015)")、寄存器机 #link("(Hutton & Bahr, 2017; Bahr & Hutton, 2020)")、类型化语言 #link("(Pickard & Hutton, 2021)"), 非终止语言 #link("(Bahr & Hutton, 2022)") 和并发语言 #link("(Bahr & Hutton, 2023)") 演算编译器。
