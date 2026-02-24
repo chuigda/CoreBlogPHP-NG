@@ -5,7 +5,7 @@
 // #show: codly-init.with()
 
 #show: project.with(
-  title: "一个依值类型 Lambda 演算的教学实现",
+  title: [一个依值类型 $lambda$ 演算的教学实现],
   authors: (
     (name: "Andres Löh", contrib: "原作者", affiliation: "乌特勒支大学"),
     (name: "Conor McBride", contrib: "原作者", affiliation: "斯特拉斯克莱德大学"),
@@ -58,11 +58,11 @@
 
 = 译者前言
 
-本文是对文章 #link("https://www.andres-loeh.de/LambdaPi/LambdaPi.pdf")[A tutorial implementation of a dependently typed lambda calculus] 的中文翻译，部分字句有所改动。排版经过调整，使图表总是位于直接描述该图表的文本下方，以便阅读。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以这种形式呈现。本文附有#link("https://github.com/club-doki7/LambdaPi")[其它语言的实现]。
+本文是对文章 #link("https://www.andres-loeh.de/LambdaPi/LambdaPi.pdf")[A tutorial implementation of a dependently typed lambda calculus] 的中文翻译，部分字句有所改动。排版经过调整，使图表总是位于直接描述该图表的文本下方，以便阅读。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以这种形式呈现。本文附有#link("https://github.com/club-doki7/LambdaPi")[其它语言的实现]。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
 = 摘要
 
-本文介绍了依值类型演算核心的类型规则，并提供了一个简洁的 Haskell 实现。本文着重阐述了从简单类型 Lambda 演算过渡到依值类型 Lambda 演算所需的变更。此外，本文还描述了如何扩展核心语言的数据类型，并给出了几个小型示例程序。本文附带一个#link("https://www.andres-loeh.de/LambdaPi")[可执行解释器和示例代码]，方便读者立即体验本文所描述的系统。
+本文介绍了依值类型演算核心的类型规则，并提供了一个简洁的 Haskell 实现。本文着重阐述了从简单类型 $lambda$ 演算过渡到依值类型 $lambda$ 演算所需的变更。此外，本文还描述了如何扩展核心语言的数据类型，并给出了几个小型示例程序。本文附带一个#link("https://www.andres-loeh.de/LambdaPi")[可执行解释器和示例代码]，方便读者立即体验本文所描述的系统。
 
 #set heading(numbering: "1.")
 
@@ -74,11 +74,11 @@
 
 函数式社区对依值类型普遍缺乏理解，这是阻碍依值类型进一步普及的主要障碍之一。尽管目前已经有了不少基于依值类型的优秀实验工具和编程语言，理解这些工具到底是如何工作的却是一件难事。很大一部分关于依值类型的文献都是由类型学家撰写、供其他类型学家阅读的，这些文献对函数式程序员来说并不友好。本文致力于弥补这一现状。
 
-本文从#term[简单类型 Lambda 演算 (simply-typed lambda calculus)]（第二节）开始，给出了抽象语法、求值和类型检查的数学规范和 Haskell 实现。以简单类型 Lambda 演算为起点，本文进一步地研究最小化的#term[依值类型 Lambda 演算 (dependently typed lambda calculus)]（第三节）。
+本文从#term[简单类型 $lambda$ 演算 (simply-typed lambda calculus)]（第二节）开始，给出了抽象语法、求值和类型检查的数学规范和 Haskell 实现。以简单类型 $lambda$ 演算为起点，本文进一步地研究最小化的#term[依值类型 $lambda$ 演算 (dependently typed lambda calculus)]（第三节）。
 
-受 Pierce 逐步发展类型系统[21]的启发，本文重点阐述了向依值类型 Lambda 演算过渡所需的规范和实现方面的变更。令人惊讶的是，所需的变更并没有想象中那么多。我们希望通过尽可能明确地阐述这些变更，能让已经熟悉简单类型 Lambda 演算的读者尽可能顺利地过渡到依值类型。
+受 Pierce 逐步发展类型系统[21]的启发，本文重点阐述了向依值类型 $lambda$ 演算过渡所需的规范和实现方面的变更。令人惊讶的是，所需的变更并没有想象中那么多。我们希望通过尽可能明确地阐述这些变更，能让已经熟悉简单类型 $lambda$ 演算的读者尽可能顺利地过渡到依值类型。
 
-尽管本文中没有发明新的类型系统，我们相信本文可以作为 Haskell 中依值类型系统实现的入门教程。实现一个类型系统是学习其中所有微妙细节的最佳途径之一。尽管我们不打算全面探讨所有实现类型化 Lambda 演算的方法，但我们会尽量明确阐述我们的设计决策，仔细提供其他选择，并概述更广泛的设计空间。
+尽管本文中没有发明新的类型系统，我们相信本文可以作为 Haskell 中依值类型系统实现的入门教程。实现一个类型系统是学习其中所有微妙细节的最佳途径之一。尽管我们不打算全面探讨所有实现类型化 $lambda$ 演算的方法，但我们会尽量明确阐述我们的设计决策，仔细提供其他选择，并概述更广泛的设计空间。
 
 只有将数据类型添加到这个基础演算中，才能真正发挥依值类型的全部威力。因此，我们在第四节中演示了如何使用自然数和#term[向量 (vector)] 扩展我们的语言。使用这些新增的数据类型，我们编写了经典的向量追加操作，以演示如何在我们的核心演算中进行编程。而利用本节解释的原理，可以向演算中加入更多数据类型。
 
@@ -89,9 +89,9 @@
 #let stlc() = $lambda_->$
 #let dtlc() = $lambda_Pi$
 
-= 简单类型 Lambda 演算
+= 简单类型 $lambda$ 演算
 
-在探索依值类型的过程中，我们希望从熟悉的领域入手。因此，在本节中，我们将讨论简单类型 Lambda 演算，简称 #stlc()。从某种意义上来说，#stlc()是最小的静态类型函数式语言。每个#term[词项 (term)]#footnote[译注：#term[词项]这一术语翻译取自练琪灏的依值类型入门讲义：#link("https://m.or.gd/notes/mltt-20230703.pdf")。] 都显式地标注了类型，不需要类型推理。相比于作为 ML 或 Haskell 等支持多态类型和#term[类型构造子 (type constructor)] 的语言的基础的那些#term[类型化 Lambda 演算 (typed lambda calculi)]，#stlc()的结构要简单得多。在#stlc()中只有基础类型，且函数类型不能是#term[多态的 (polymorphic)]。如果不增加额外的规则，#stlc()是#term[强正规化 (strongly normalizing)] 的：对于任何词项，无论求值策略如何，求值总是能停机。
+在探索依值类型的过程中，我们希望从熟悉的领域入手。因此，在本节中，我们将讨论简单类型 $lambda$ 演算，简称 #stlc()。从某种意义上来说，#stlc()是最小的静态类型函数式语言。每个#term[词项 (term)]#footnote[译注：#term[词项]这一术语翻译取自练琪灏的依值类型入门讲义：#link("https://m.or.gd/notes/mltt-20230703.pdf")。] 都显式地标注了类型，不需要类型推理。相比于作为 ML 或 Haskell 等支持多态类型和#term[类型构造子 (type constructor)] 的语言的基础的那些#term[类型化 $lambda$ 演算 (typed lambda calculi)]，#stlc()的结构要简单得多。在#stlc()中只有基础类型，且函数类型不能是#term[多态的 (polymorphic)]。如果不增加额外的规则，#stlc()是#term[强正规化 (strongly normalizing)] 的：对于任何词项，无论求值策略如何，求值总是能停机。
 
 == 抽象语法
 
@@ -261,13 +261,13 @@ $
 
 === 变量和值的表示
 
-#footnote[译注：本小节标题原为 "Representing bound variables", 直译为"约束变量的表示"。然实则本小节讨论内容不仅限于约束变量的表示，故改。]有很多不同的方法可以被用于表示#term[约束变量 (bound variable)]，每种方法都各有优劣。为了最大限度地发挥优势，我们在实现的不同地方选择不同的表示方法。
+#footnote[译注：本小节标题原为 "Representing bound variables", 直译为"绑定变量的表示"。然实则本小节讨论内容不仅限于绑定变量的表示，故改。]有很多不同的方法可以被用于表示#term[绑定变量 (bound variable)]，每种方法都各有优劣。为了最大限度地发挥优势，我们在实现的不同地方选择不同的表示方法。
 
 // 傻逼作者，全世界都写 α-equivalence，他非得写 α-equality。equivalence 和 equality 那能一样吗？
 
-我们使用#term[德布鲁因索引 (de Bruijn indices)] 表示局部约束变量：变量由数字而非字符串或字母表示，数字的含义是变量出现的位置和引入它的#term[约束符 (binder)]#footnote[译注：在这里，约束符指的就是 $lambda$。第三节会引入另一个约束符 $forall$/$Pi$。] 之间隔了多少层约束符。例如，使用德布鲁因索引，`id` 可以写成 $lambda -> 0$，而 `const` 可以写成 $lambda -> lambda 1$。这一表示法的优势在于不需要重命名变量——词项之间的 #term[$alpha$-等价性 ($alpha$-equivalence)]#footnote[译注："$alpha$-equivalence" 原作 $alpha$-"equality"。] 可以简化为#term[语法相等性 (syntactic equality)]。
+我们使用#term[德布鲁因索引 (de Bruijn indices)] 表示局部绑定变量：变量由数字而非字符串或字母表示，数字的含义是变量出现的位置和引入它的#term[绑定符 (binder)]#footnote[译注：在这里，绑定符指的就是 $lambda$。第三节会引入另一个绑定符 $forall$/$Pi$。] 之间隔了多少层绑定符。例如，使用德布鲁因索引，`id` 可以写成 $lambda -> 0$，而 `const` 可以写成 $lambda -> lambda 1$。这一表示法的优势在于不需要重命名变量——词项之间的 #term[$alpha$-等价性 ($alpha$-equivalence)]#footnote[译注："$alpha$-equivalence" 原作 $alpha$-"equality"。] 可以简化为#term[语法相等性 (syntactic equality)]。
 
-德布鲁因索引的缺点则是处理带有自由变量的词项相当麻烦。我们可以用未被 Lambda 约束的索引来表示自由变量，但这些索引是#term[相对的 (relative)] ——当我们遍历每个词项、进入 Lambda 表达式内部时，这些索引必须相应地更新。
+德布鲁因索引的缺点则是处理带有自由变量的词项相当麻烦。我们可以用未被 Lambda 绑定的索引来表示自由变量，但这些索引是#term[相对的 (relative)] ——当我们遍历每个词项、进入 Lambda 表达式内部时，这些索引必须相应地更新。
 
 因此，我们使用绝对指涉——也就是#term[名称 (name)] ——来表示自由变量。这种为局部变量使用数字、为相对于当前词项的全局变量使用变量名的做法称为#term[局部无名 (locally nameless)] 表示法 [23, 13]。
 
@@ -309,11 +309,11 @@ data Name
 
 // 原作者属实是英语老师死得早，你看他原文怎么写的？“When passing a binder in an algorithm, we have to convert a bound variable into a free variable temporarily, and use Local for that.” 那我问你，WHAT "an" algorithm? WHICH "a" bound variable? WHO IS "that"? HOW TO "pass"? 你写文章不是为了 fill the gap 的吗？那你写出这种“懂的人不看，看的人不懂”的句子是闹哪样？
 
-带类型注解的词项以 `Ann` 表示。如前所述，我们用整数表示约束变量 (`Bound`) ，用名称表示自由变量 (`Free`) 。那些通常指涉全局实体的名称使用字符串（`Global`）。当类型检查算法#footnote[译注：原文无此“类型检查”，依后文补。]进入一层约束符#footnote[译注：原文为“passing a binder”。因为 pass 既可以表示“通过”又可以表示“传递”，同时又少了递归的意思，因此此处意译为“进入”。] 时，我们需要将约束符引入的约束变量临时转换成一个自由变量，我们用 `Local` 表示这类变量。进行引用时，我们使用 `Quote` 构造子。构造子 `App`#footnote[译注：原文用符号是中缀运算符“`:@:`”，译者依个人好恶改。] 表示#term[应用]。
+带类型注解的词项以 `Ann` 表示。如前所述，我们用整数表示绑定变量 (`Bound`) ，用名称表示自由变量 (`Free`) 。那些通常指涉全局实体的名称使用字符串（`Global`）。当类型检查算法#footnote[译注：原文无此“类型检查”，依后文补。]进入一层绑定符#footnote[译注：原文为“passing a binder”。因为 pass 既可以表示“通过”又可以表示“传递”，同时又少了递归的意思，因此此处意译为“进入”。] 时，我们需要将绑定符引入的绑定变量临时转换成一个自由变量，我们用 `Local` 表示这类变量。进行引用时，我们使用 `Quote` 构造子。构造子 `App`#footnote[译注：原文用符号是中缀运算符“`:@:`”，译者依个人好恶改。] 表示#term[应用]。
 
 可推断项通过构造子 `Inf` 嵌入到可检查项中。Lambda 抽象（因为我们用了德布鲁因索引，所以不会引入显式的变量）使用 `Lam` 表示。
 
-类型只有两种：类型标识符 (`TFree`) 和函数箭头 (`Fun`) 。我们为类型标识符复用 `Name` 数据类型。在#stlc()中，类型层面上不会有约束变量，所以不需要 `TBound` 构造子。
+类型只有两种：类型标识符 (`TFree`) 和函数箭头 (`Fun`) 。我们为类型标识符复用 `Name` 数据类型。在#stlc()中，类型层面上不会有绑定变量，所以不需要 `TBound` 构造子。
 
 ```
 data Type
@@ -351,9 +351,9 @@ vfree n = VNeutral (NFree n)
 
 用于求值的代码在图 4 中给出。函数 `eval↑` 和 `eval↓` 实现了可推断项和可检查项的大步求值规则。将代码与图 1 对比，足见这一实现直截了当。
 
-替换是通过传递一个包含值的环境 `Env` 来实现的。因为约束变量是用数字表示的，`Env` 可以被简单地实现成一个列表 `[Value]`，其中第 $i$ 个元素对应着变量 `Bound i`。当进入一层约束符时，我们向环境中（列表的头部）添加一个新元素；当遇到变量 `Bound` 时，我们使用 Haskell 的 `!!` 运算符从列表中拿出正确的元素。
+替换是通过传递一个包含值的环境 `Env` 来实现的。因为绑定变量是用数字表示的，`Env` 可以被简单地实现成一个列表 `[Value]`，其中第 $i$ 个元素对应着变量 `Bound i`。当进入一层绑定符时，我们向环境中（列表的头部）添加一个新元素；当遇到变量 `Bound` 时，我们使用 Haskell 的 `!!` 运算符从列表中拿出正确的元素。
 
-而对于 Lambda 抽象（`Lam`），我们引入一个 Haskell 函数，该函数首先将约束变量 $x$ 添加到环境中，然后对函数体求值。
+而对于 Lambda 抽象（`Lam`），我们引入一个 Haskell 函数，该函数首先将绑定变量 $x$ 添加到环境中，然后对函数体求值。
 
 ```
 type Env = [Value]
@@ -451,7 +451,7 @@ type↓ i Γ _ _
 
 #colbreak()
 
-类型检查函数接受一个整数，该整数表示我们进入了多少层约束符。初次调用时，这个参数应该为 `0`，我们为此提供了包装函数 `type↑0`。我们用这个整数模拟处理约束变量时的类型规则：在 Lambda 抽象的类型规则 [LAM] 中，在检查函数体时，我们将约束变量添加到上下文中——而我们的实现正是这么做的。计数器 `i` 表示我们进入了多少层约束符，因此 `Local i` 总是一个可用的新名称。我们先将 `Local i` 添加到上下文 `Γ` 中，将其与约束变量关联起来，然后对函数体作类型检查。因为我们把一个约束变量变成了一个自由变量，所以我们要对函数体进行相应的替换。类型检查器不会遇到约束变量，因此函数 `type↑` 没有用于处理 `Bound` 的分支。
+类型检查函数接受一个整数，该整数表示我们进入了多少层绑定符。初次调用时，这个参数应该为 `0`，我们为此提供了包装函数 `type↑0`。我们用这个整数模拟处理绑定变量时的类型规则：在 Lambda 抽象的类型规则 [LAM] 中，在检查函数体时，我们将绑定变量添加到上下文中——而我们的实现正是这么做的。计数器 `i` 表示我们进入了多少层绑定符，因此 `Local i` 总是一个可用的新名称。我们先将 `Local i` 添加到上下文 `Γ` 中，将其与绑定变量关联起来，然后对函数体作类型检查。因为我们把一个绑定变量变成了一个自由变量，所以我们要对函数体进行相应的替换。类型检查器不会遇到绑定变量，因此函数 `type↑` 没有用于处理 `Bound` 的分支。
 
 请注意，在检查可推断项时，类型的等价性检查是通过对数据类型 `Type` 进行简单的语法相等性判断来实现的。我们的类型检查器不执行#term[合一 (unification) ]。
 
@@ -477,7 +477,7 @@ subst↓ i r (Lam e) = Lam (subst↓ (i + 1) r e)
 
 // 作者把一个事 (Value 不能 Eq, 不能 Show) 拆成两半，分别写在两个小节里，搁这召唤巨大涡流呢？
 
-我们的简单类型 Lambda 演算求值器就快完成了。目前还剩一个小问题：求值器返回的是 `Value`，而当下我们无法打印 `Value` 类型的值，也不能对 `Value` 作相等性判断。这是因为 `Value` 类型的 `VLam` 构造子接受的是一个 Haskell 函数，我们不能像对其他类型那样简单地为其派生 `Show` 和 `Eq`#footnote[译注：此处译文结构较原文有较大变化。]。因此，如果要重新得到一个值的内部结构，就需要用到 `quote` 函数。代码在图 7 中给出。
+我们的简单类型 $lambda$ 演算求值器就快完成了。目前还剩一个小问题：求值器返回的是 `Value`，而当下我们无法打印 `Value` 类型的值，也不能对 `Value` 作相等性判断。这是因为 `Value` 类型的 `VLam` 构造子接受的是一个 Haskell 函数，我们不能像对其他类型那样简单地为其派生 `Show` 和 `Eq`#footnote[译注：此处译文结构较原文有较大变化。]。因此，如果要重新得到一个值的内部结构，就需要用到 `quote` 函数。代码在图 7 中给出。
 
 ```
 quote0 :: Value -> Term↓
@@ -494,7 +494,7 @@ neutralQuote i (NApp  n v) = App (neutralQuote i n) (quote i v)
 
 #align(center)[图 7#h(1em)#stlc()中的引用]
 
-函数 `quote` 接受一个整数参数，该参数用来记录我们已经进入了多少层约束符。初次调用时，这个参数总是为 `0`，我们为此提供了包装函数 `quote0`。
+函数 `quote` 接受一个整数参数，该参数用来记录我们已经进入了多少层绑定符。初次调用时，这个参数总是为 `0`，我们为此提供了包装函数 `quote0`。
 
 // 傻逼昂撒语。
 
@@ -502,7 +502,7 @@ neutralQuote i (NApp  n v) = App (neutralQuote i n) (quote i v)
 
 // 我他妈要拿 Andres Löh，Conor McBride 和 Wouter Swierstra 的脑袋传球射门。
 
-如果#term[值]是一个中性项（`VNeutral`, 也就是将自由变量#term[应用]于零个或多个#footnote[译注：原文无此“零个或多个”，依前文补。]其他值），则使用 `neutralQuote` 函数处理#footnote[译注：原文为 "If the value is a neutral term (hence an application of a free variable to other values), the function neutralQuote is used to quote the arguments." 此处原文显然逻辑不通（我们对中性项的参数调用的是 #rs[quote] 而非 #rs[neutralQuote]），故译者完全重写了这一句。]。`boundfree` 函数被用于检查出现在中性项#footnote[译注：“中性项”原作“应用”。]头部的变量是一个自由变量，还是一个 `Quote` ——也就是约束变量：
+如果#term[值]是一个中性项（`VNeutral`, 也就是将自由变量#term[应用]于零个或多个#footnote[译注：原文无此“零个或多个”，依前文补。]其他值），则使用 `neutralQuote` 函数处理#footnote[译注：原文为 "If the value is a neutral term (hence an application of a free variable to other values), the function neutralQuote is used to quote the arguments." 此处原文显然逻辑不通（我们对中性项的参数调用的是 #rs[quote] 而非 #rs[neutralQuote]），故译者完全重写了这一句。]。`boundfree` 函数被用于检查出现在中性项#footnote[译注：“中性项”原作“应用”。]头部的变量是一个自由变量，还是一个 `Quote` ——也就是绑定变量：
 
 ```
 boundfree :: Int -> Name -> Term↑
@@ -520,7 +520,7 @@ boundfree i x         = Free x
 = Lam (Lam (Bound 1))
 ```
 
-当 `quote` 进入一层约束符时，我们为约束变量引入一个临时的名称。为确保在引用过程中该名称不会和其他名称发生冲突，我们只使用 `Quote` 构造子。如果约束变量在函数体中出现过，那么我们迟早会抵达这些出现的地方。此时即可根据引入和观测到 `Quote` 构造子之间经过的约束符数量，生成德布鲁因索引。
+当 `quote` 进入一层绑定符时，我们为绑定变量引入一个临时的名称。为确保在引用过程中该名称不会和其他名称发生冲突，我们只使用 `Quote` 构造子。如果绑定变量在函数体中出现过，那么我们迟早会抵达这些出现的地方。此时即可根据引入和观测到 `Quote` 构造子之间经过的绑定符数量，生成德布鲁因索引。
 
 === 例子
 
@@ -530,7 +530,7 @@ _略。请自行参照原文。_
 
 = 依值类型
 
-在本节中，我们将修改简单类型 Lambda 演算的类型系统，使其成为依值类型 Lambda 演算，简称#dtlc()。在本节的开头，我们会先讨论这些更改中的两个核心思想。接着，我们会给出抽象语法、求值和类型规则，并将这些规则中与#stlc()不同的部分用高亮标出。最后，我们在本节中讨论如何调整实现。
+在本节中，我们将修改简单类型 $lambda$ 演算的类型系统，使其成为依值类型 $lambda$ 演算，简称#dtlc()。在本节的开头，我们会先讨论这些更改中的两个核心思想。接着，我们会给出抽象语法、求值和类型规则，并将这些规则中与#stlc()不同的部分用高亮标出。最后，我们在本节中讨论如何调整实现。
 
 === 依值函数空间
 
@@ -572,7 +572,7 @@ $
 
 // 傻逼作者非得用你那抽象代数知识跟普通读者的初等代数直觉对着干是吧，函数的值域哪有不依赖于定义域的？
 
-依值函数空间 "$forall$" 扩展了通常的函数空间 "$->$"，它允许函数返回值的类型依赖于输入值#footnote[译注：原文为 "The dependent function space '$forall$' generalizes the usual function space '$->$' by allowing the range to depend on the domain"，译者依个人理解进行了意译。例如，依值类型的函数 $#rs[zeros] :: forall alpha :: * med . forall n :: #rs[Nat] . #rs[Vec] alpha med n$ 返回的类型 $#rs[Vec] alpha med n$ 显然依赖于参数 $n$ 的值。]。Haskell 中的#term[参数化多态 (parametric polymorphism)] 可以看作是依值函数的一种特例#footnote[译注：因为类型也可以被视作一种值。下一小节“一切皆词项”将详细展开。]，这也是我们使用符号 "$forall$" 的动机#footnote[类型学家称依值函数类型为 $Pi$-类型，并且会这么写：$Pi alpha : * tdt Pi n : #rs[Nat] tdt #rs[Vec] alpha med n$。这也是为什么我们将依值类型 Lambda 演算称为#dtlc()。]。但与参数化多态不同的是，依值函数空间不止能对类型进行抽象。上面的 `Vec` 类型是一个有效的依值类型。
+依值函数空间 "$forall$" 扩展了通常的函数空间 "$->$"，它允许函数返回值的类型依赖于输入值#footnote[译注：原文为 "The dependent function space '$forall$' generalizes the usual function space '$->$' by allowing the range to depend on the domain"，译者依个人理解进行了意译。例如，依值类型的函数 $#rs[zeros] :: forall alpha :: * med . forall n :: #rs[Nat] . #rs[Vec] alpha med n$ 返回的类型 $#rs[Vec] alpha med n$ 显然依赖于参数 $n$ 的值。]。Haskell 中的#term[参数化多态 (parametric polymorphism)] 可以看作是依值函数的一种特例#footnote[译注：因为类型也可以被视作一种值。下一小节“一切皆词项”将详细展开。]，这也是我们使用符号 "$forall$" 的动机#footnote[类型学家称依值函数类型为 $Pi$-类型，并且会这么写：$Pi alpha : * tdt Pi n : #rs[Nat] tdt #rs[Vec] alpha med n$。这也是为什么我们将依值类型 $lambda$ 演算称为#dtlc()。]。但与参数化多态不同的是，依值函数空间不止能对类型进行抽象。上面的 `Vec` 类型是一个有效的依值类型。
 
 值得注意的是，依值函数空间是通常函数空间的泛化。例如，我们可以为应用于上述 `Vec` 类型的恒等函数 `id` 添加这样的类型注解：
 
@@ -741,7 +741,7 @@ $
 
 // The difference here is that the type is a dependent function type. Note that the bound variable x may now not only occur in the body of the function e. 哈哈，又是“the” type。后半句也是说话说一半，看得出来克服 ADHD 对三位老顽童来说还是太困难了
 
-最后一条规则 [LAM] 是用来检查 Lambda 抽象的。与之前不同的是，Lambda 抽象的类型现在是一个依值函数类型，约束变量 $x$ 不仅可能出现在函数体 $e$ 中，还可能出现在返回类型 $tau'$ 中#footnote[译注：后半句“还可能出现在返回类型 $tau'$ 中”为译者补文。]。因此在对函数体 $e$ 作类型检查和对返回类型 $tau'$ 作#term[种类]检查时，都要使用扩展过的上下文 $Gamma, x :: tau$。
+最后一条规则 [LAM] 是用来检查 Lambda 抽象的。与之前不同的是，Lambda 抽象的类型现在是一个依值函数类型，绑定变量 $x$ 不仅可能出现在函数体 $e$ 中，还可能出现在返回类型 $tau'$ 中#footnote[译注：后半句“还可能出现在返回类型 $tau'$ 中”为译者补文。]。因此在对函数体 $e$ 作类型检查和对返回类型 $tau'$ 作#term[种类]检查时，都要使用扩展过的上下文 $Gamma, x :: tau$。
 
 总结下来，我们所作的所有修改都是围绕着我们在第三节开头引入的两个核心概念进行的：函数空间被泛化为依值函数空间；类型和#term[种类]也是词项。
 
@@ -786,11 +786,11 @@ data Value
 
 // 敢同恶鬼争高下，不向霸王让寸分
 
-和之前一样，我们用高阶抽象语法表示#term[值]，也就是用 Haskell 函数来表示约束结构#footnote[译注：也就是 $lambda$ 和 $forall$/$Pi$。从现在开始，$forall$ 也是约束符之一了。]。我们用 `VPi` 表示新的约束结构 $forall$/$Pi$。在依值函数空间中，由 $forall x : A tdt B$ 引入的约束变量 $x$ 不会出现在变量自身的类型 $A$ 中，但函数的返回类型 $B$ 中却有可能包含 $x$#footnote[译注：此句为译者改写。原文为 "In the dependent function space, a variable is bound that is visible in the range, but not in the domain."]。因此，输入类型可以简单地用一个 `Value` 表示，而返回类型则要用 Haskell 函数 `Value -> Value` 表示#footnote[译注：不妨把 $Pi x : A tdt B$ 看作 $Pi x : A tdt B(x)$，即类型 $B$ 是关于值 $x$ 的函数。]。
+和之前一样，我们用高阶抽象语法表示#term[值]，也就是用 Haskell 函数来表示绑定结构#footnote[译注：也就是 $lambda$ 和 $forall$/$Pi$。从现在开始，$forall$ 也是绑定符之一了。]。我们用 `VPi` 表示新的绑定结构 $forall$/$Pi$。在依值函数空间中，由 $forall x : A tdt B$ 引入的绑定变量 $x$ 不会出现在变量自身的类型 $A$ 中，但函数的返回类型 $B$ 中却有可能包含 $x$#footnote[译注：此句为译者改写。原文为 "In the dependent function space, a variable is bound that is visible in the range, but not in the domain."]。因此，输入类型可以简单地用一个 `Value` 表示，而返回类型则要用 Haskell 函数 `Value -> Value` 表示#footnote[译注：不妨把 $Pi x : A tdt B$ 看作 $Pi x : A tdt B(x)$，即类型 $B$ 是关于值 $x$ 的函数。]。
 
 === 求值
 
-要适配求值器，我们只需为函数 `eval↑` 添加两个用于处理 `Star` 和 `Pi` 的新分支，如图 11 所示（#stlc()的求值器见图 4）。`Star` 的求值非常简单。对于 `Pi`，我们求值其输入类型和返回类型，且在求值返回类型时，我们需要将约束变量 $x$ 添加到上下文中。
+要适配求值器，我们只需为函数 `eval↑` 添加两个用于处理 `Star` 和 `Pi` 的新分支，如图 11 所示（#stlc()的求值器见图 4）。`Star` 的求值非常简单。对于 `Pi`，我们求值其输入类型和返回类型，且在求值返回类型时，我们需要将绑定变量 $x$ 添加到上下文中。
 
 #codly(highlights: (
   (line: 1, start: 1, fill: hlc),
@@ -899,7 +899,7 @@ type↓ i Γ _ _
 
 // 传球射门 +1
 
-对于注解项 $e :: rho$，我们首先用类型检查函数 `type↓` 检查类型注解 $rho$ 具有#term[种类] $*$。接着我们对 $rho$ 求值，用求值结果 $tau$ 对 $e$ 作类型检查，如果类型检查成功，整个表达式的类型就是 $tau$#footnote[译注："$tau$" 原作 "$v$"，然此处显然为作者笔误。]。注意我们假设 `type↑` 所处理的类型中没有非约束变量，因此我们总是传给 `eval↓` 一个空环境。
+对于注解项 $e :: rho$，我们首先用类型检查函数 `type↓` 检查类型注解 $rho$ 具有#term[种类] $*$。接着我们对 $rho$ 求值，用求值结果 $tau$ 对 $e$ 作类型检查，如果类型检查成功，整个表达式的类型就是 $tau$#footnote[译注："$tau$" 原作 "$v$"，然此处显然为作者笔误。]。注意我们假设 `type↑` 所处理的类型中没有非绑定变量，因此我们总是传给 `eval↓` 一个空环境。
 
 `Star` 求值后的类型是 `VStar`。
 
@@ -907,13 +907,13 @@ type↓ i Γ _ _
 
 对于依值函数类型 $forall x :: rho thin . rho'$，我们首先对输入类型 $rho$ 作#term[种类]检查，然后将其求值为 $tau$#footnote[译注：原文为 "For a dependent function type, we first kind-check the domain $tau$. Then the domain is evaluated to $v$." 此处显然为作者笔误。]。接着，我们将值 $tau$ 加入上下文，对返回类型 $rho'$ 作#term[种类]检查——这里的思路跟#stlc()和#dtlc()中对 `Lam` 作类型检查的规则有异曲同工之妙。
 
-对于函数应用 $e thin e'$，类型推断函数 `type↑` 现在会给出一个#term[值]。该值的形式必须是 `VPi τ τ'` ——也就是依值函数类型。在图 10 相应的类型规则中，返回类型 $tau'$ 中的约束变量要用 $e'$ 替换。而在实现中，`τ'` 是一个函数，替换是通过将 `τ'` 应用于（求值后的）`e'` 实现的。
+对于函数应用 $e thin e'$，类型推断函数 `type↑` 现在会给出一个#term[值]。该值的形式必须是 `VPi τ τ'` ——也就是依值函数类型。在图 10 相应的类型规则中，返回类型 $tau'$ 中的绑定变量要用 $e'$ 替换。而在实现中，`τ'` 是一个函数，替换是通过将 `τ'` 应用于（求值后的）`e'` 实现的。
 
 在处理 `Inf` 时，我们必须对给定的 `v` 和推断出的 `v'` 作类型相等性判断。与类型规则不同的是，在 Haskell 中我们不能直接比较两个 `Value`。因此我们要用 `quote` 将这两个值引用回词项，然后再对词项作语法相等性判断。
 
-对于 Lambda 抽象 $lambda x -> e$，现在我们要求其具有依值函数类型 `VPi τ τ'`。和#stlc()一样，我们要在对函数体 $e$ 作类型检查时将约束变量 $x$（类型为 $tau$）加入上下文；但与#stlc()不同的是，现在除了要用 `subst↓` 替换函数体 $e$ 中的 $x$ 之外，还要将 `τ'` 应用于 `(Local i)` 来替换 $tau'$ 中的 $x$。
+对于 Lambda 抽象 $lambda x -> e$，现在我们要求其具有依值函数类型 `VPi τ τ'`。和#stlc()一样，我们要在对函数体 $e$ 作类型检查时将绑定变量 $x$（类型为 $tau$）加入上下文；但与#stlc()不同的是，现在除了要用 `subst↓` 替换函数体 $e$ 中的 $x$ 之外，还要将 `τ'` 应用于 `(Local i)` 来替换 $tau'$ 中的 $x$。
 
-为此，我们还要扩展替换函数，使其能够遍历注解项中的类型，并能够处理新结构 `Star` 和 `Pi`，如图 11 所示。对于 `Star`，没有需要替换的东西。而对于 `Pi`，我们要在对返回类型作替换时增加计数器的值，因为我们进入了一层约束符。
+为此，我们还要扩展替换函数，使其能够遍历注解项中的类型，并能够处理新结构 `Star` 和 `Pi`，如图 11 所示。对于 `Star`，没有需要替换的东西。而对于 `Pi`，我们要在对返回类型作替换时增加计数器的值，因为我们进入了一层绑定符。
 
 === 引用
 
@@ -921,7 +921,7 @@ type↓ i Γ _ _
 
 // 笑死，increment the counter i and apply ... to Quote i，那你 apply 的这个 Quote i 里的 i 到底是有没有 increment 过的？这不明摆着坑人么
 
-引用 `VStar` 会得到 `Star`。而因为依值函数类型是一个约束结构，引用 `VPi τ τ'` 的过程就类似于引用 `VLam`：在引用返回类型 `τ'` 时，我们将代表着函数返回类型的 Haskell 函数 `τ'` 应用于 `Quote i`，然后对结果应用 `quote (i + 1)`#footnote[译注：原文为 "To quote the range, we increment the counter i, and apply the Haskell function representing the range to #rs[Quote i]."]。
+引用 `VStar` 会得到 `Star`。而因为依值函数类型是一个绑定结构，引用 `VPi τ τ'` 的过程就类似于引用 `VLam`：在引用返回类型 `τ'` 时，我们将代表着函数返回类型的 Haskell 函数 `τ'` 应用于 `Quote i`，然后对结果应用 `quote (i + 1)`#footnote[译注：原文为 "To quote the range, we increment the counter i, and apply the Haskell function representing the range to #rs[Quote i]."]。
 
 == 依值类型今何在？
 
@@ -1143,7 +1143,7 @@ $
 
 === 其他函数
 
-要完成自然数的定义，我们必须相应地扩展用于替换和引用的辅助函数。不过这些新代码相当简单直接，因为我们没有引入新的约束结构。
+要完成自然数的定义，我们必须相应地扩展用于替换和引用的辅助函数。不过这些新代码相当简单直接，因为我们没有引入新的绑定结构。
 
 === 加法
 
