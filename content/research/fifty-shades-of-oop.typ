@@ -6,8 +6,8 @@
   authors: (
     (name: "Lesley Lai", contrib: "原作者", affiliation: ""),
     (name: "CAIMEO", contrib: "翻译提议", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
-    (name: "Cousin Ze", contrib: "翻译", affiliation: "第七通用设计局"),
+    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Cousin Ze", contrib: "翻译", affiliation: [Doki Doki $lambda$ Club!]),
     (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
     (name: "Claude", contrib: "校对", affiliation: "Anthropic")
   )
