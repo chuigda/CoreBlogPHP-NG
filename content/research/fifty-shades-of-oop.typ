@@ -15,7 +15,7 @@
 #show raw.where(block: true): it => pad(left: 2em, it)
 #set par(spacing: 1.2em)
 
-#let small(content) = text(size: 10pt)[#content]
+#let small(content) = box(stroke: gray, inset: 0.75em, outset: -0.15em, radius: 5pt)[#text(size: 10pt)[#content]]
 
 ⚠ 注意：本文为早期草稿，内容不完且有措误，且#text(tracking: -0.15em)[排版]质量差。
 
@@ -61,22 +61,22 @@
 #quote(attribution: link("https://evrone.com/blog/yukihiro-matsumoto-interview")[Yukihiro Matsumoto])[
   In Japanese, we have sentence chaining, which is similar to method chaining in Ruby.
 
-  日语中有#term[句子接续 (sentence chaining)]，这和 Ruby 中的#term[方法链 (method chaining)] 很像。
+  日语中有#term[句子接续 (sentence chaining, 連用形接続)]，这和 Ruby 中的#term[方法链 (method chaining)] 很像。
 ]
 
-#term[方法 (method)] 语法是面向对象程序设计中争议较少的特性之一，它反映了一种常见模式：对特定#term[主体 (subject)] 进行操作。即使在没有方法的语言中，#term[函数 (function)] 也常被当作方法使用：将相关的数据作为函数的第一个实参。
+#term[方法 (method)] 语法是面向对象程序设计中争议较少的特性之一，它反映了一种常见模式：对特定#term[主体 (subject)] 执行操作。即使在没有方法的语言中，#term[函数 (function)] 也常被当作方法使用：将相关的数据作为函数的第一个实参。
 
-#small[我们将在讨论封装时回顾“对特定主体进行操作”（也就是捆绑数据和行为）这一思想。]
+#small[我们将在讨论封装时回顾“对特定主体执行操作”（也就是捆绑数据和行为）这一思想。]
 
-方法语法包括方法定义和方法调用。支持方法的语言一般两者都有——除非你把函数式语言中的“管道运算符”当作一种方法调用。
+方法语法包括方法定义和方法调用。支持方法的语言一般两者都有——除非你把函数式语言中的#term[管道运算符 (pipe operator)] 当作一种方法调用。
 
 方法调用语法有利于 IDE 自动补全，且方法链比嵌套函数调用更符合人体工程学（类似于函数式语言中的管道运算符）。
 
-方法语法也有值得商榷之处。首先，许多语言不允许在类外定义方法，这使得方法与函数相比存在权力失衡。也有一些例外，例如 Rust（方法总是在结构体外定义的）、Scala、Kotlin 和 C#sym.sharp（扩展方法）。
+方法语法也有值得商榷之处。首先，许多语言不允许在类外定义方法，这使得方法与函数地位不对等。也有一些例外，如 Rust（方法总是在结构体外定义的）、Scala、Kotlin 和 C#sym.sharp（扩展方法）。
 
-其次，在许多语言中，#term[自指] `this` 或·`self` 是隐式的。这让代码更加简洁，但也可能造成混淆，并增加意外#term[名称遮蔽 (name shadowing)] 的风险。隐式自指的另一缺点则是自指总是通过指针传递的，且其类型不能更改。这就导致自指不能被按值/按拷贝传递，而指针引入的间接性有时会导致性能问题。更重要的是，因为自指的类型是固定的，你不能编写接受不同 `this` 类型的泛型函数。Python 和 Rust 从一开始就正确地设计了自指，而 C++ 也在 C++23 中引入了 #link("https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html")[Deducing this] 以解决这一问题。
+其次，在许多语言中，#term[自指] `this` 或 `self` 是隐式的。这让代码更加简洁，但也可能造成混淆，并增加意外#term[名称遮蔽 (name shadowing)] 的风险。隐式自指的另一缺点则是自指总是通过指针传递的，且其类型不能更改。这就导致自指不能被按值/按拷贝传递，而指针引入的间接性有时会导致性能问题。更重要的是，因为自指的类型是固定的，你不能编写接受不同 `this` 类型的泛型函数。Python 和 Rust 从一开始就正确地设计了自指，而 C++ 也在 C++23 中引入了 #link("https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html")[Deducing this] 以解决这一问题。
 
-第三，若语言同时支持“自由函数”和方法，函数和方法就成了做同一件事的两种方式，殊途同归却互不兼容，这在泛型编程中极易引发适配问题。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
+第三，若语言同时支持#term[自由函数 (free function)] 和方法，函数和方法就成了做同一件事的两种方式，殊途同归却互不兼容，这在泛型编程中极易引发适配问题。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
 
 第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，为的是在使用对象时，让方法和实例变量看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做没问题，几乎无需考虑。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
 
@@ -85,7 +85,7 @@
 #quote(attribution: link("https://dl.acm.org/doi/10.1145/361598.361623")[[Parnas, 1972b]])[
   Its interface or definition was chosen to reveal as little as possible about its inner workings.
 
-  #term[接口 (interface)]或#term[定义 (definition)]应尽可能少地透露其内部运作方式。
+  #term[接口 (interface)] 或#term[定义 (definition)]应尽可能少地透露其内部运作方式。
 ]
 
 在 Smalltalk 中，所有实例变量都不能在对象外直接访问，而所有方法都是公开的。现代的面向对象程序语言则通过 `private` 这样的#term[访问说明符 (access specifier)] 支持类级别的访问权限控制。即使是非面向对象语言，通常也支持某种形式的信息隐藏，例如模块系统、不透明类型乃至 C 语言的头文件分离。
