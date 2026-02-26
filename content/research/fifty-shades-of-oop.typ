@@ -31,16 +31,17 @@
 
 == 前言
 
-如今，抨击#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在接连看到 #link("https://lobste.rs/")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意抨击或是捍卫面向对象程序设计，但我希望能发表一些浅见，提供一个更细致入微的视角。
+如今，唱衰#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在接连看到 #link("https://lobste.rs/")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意捍卫或是抨击面向对象程序设计，但我希望能发表一些浅见，提供一个更细致入微的视角。
 
-工业界和学术界用“面向对象”一词来表示多种不同的含义。而相关的讨论如此低效，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
+工业界和学术界用“面向对象”一词来表示多种不同的含义。而相关讨论之所以徒劳无功，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
 
-何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他自己的观点]。然而，大多数人使用这一术语的方式已经大相径庭。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
+何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他自己的观点]。然而，大多数人使用这一术语的方式现已大相径庭。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
 
-#let rome(x) = numbering("(i)", x)
+#let rome(x) = numbering("(I)", x)
+#let byzantine(x) = numbering("(i)", x)
 
 #small[
-  有意思的是，本文发布之后，部分评论针对“对象”的权威定义展开了争论，且各自基于截然不同的标准，如：#rome(1) Alan Kay 的#term[消息传递 (message passing)]；#rome(2) 任何能提供#term[封装 (encapsulation)] 的事物（包括#term[闭包 closure] 与#term[模块 module]）；#rome(3) #term[动态派发 (dynamic dispatch)]；#rome(4) #term[方法 (method)]。
+  有意思的是，本文发布之后，部分评论针对“对象”的权威定义展开了争论，且各自基于截然不同的标准，如：#byzantine(1) Alan Kay 的#term[消息传递 (message passing)]；#byzantine(2) 任何能提供#term[封装 (encapsulation)] 的事物（包括#term[闭包 closure] 与#term[模块 module]）；#byzantine(3) #term[动态派发 (dynamic dispatch)]；#byzantine(4) #term[方法 (method)]。
 ]
 
 与其执着于单一定义，不如把面向对象程序设计当作一系列彼此关联的思想的混合体，并逐一考察每种思想。接下来，我将考察一些和面向对象相关的思想，并（主观地）探讨其优缺点。
@@ -68,7 +69,7 @@
   日语中有#term[句子接续 (sentence chaining, 連用形接続)]，这和 Ruby 中的#term[方法链 (method chaining)] 很像。
 ]
 
-#term[方法 (method)] 语法是面向对象程序设计中争议较少的特性之一，它反映了一种常见模式：对特定#term[主体 (subject)] 执行操作。即使在没有方法的语言中，#term[函数 (function)] 也常被当作方法使用：将相关的数据作为函数的第一个实参（或者在支持#term[柯里化 currying] 的语言中，作为最后一个实参）。
+#term[方法 (method)] 语法是面向对象程序设计中争议较少的特性之一，它反映了一种常见模式：对特定#term[主体 (subject)] 执行操作。即使在没有方法的语言中，#term[函数 (function)] 也常被当作方法使用：将相关的数据作为函数的第一个参数（或者在支持#term[柯里化 currying] 的语言中，作为最后一个参数）。
 
 #small[我们将在讨论封装时回顾“对特定主体执行操作”（也就是捆绑数据和行为）这一思想。]
 
@@ -82,7 +83,7 @@
 
 第三，若语言同时支持#term[自由函数 (free function)] 和方法，函数和方法就成了做同一件事的两种方式，殊途同归却互不兼容，这在泛型代码中可能造成问题。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
 
-第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，旨在让方法和对象看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做没问题，几乎无需考虑。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
+第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，旨在让方法和实例变量#footnote[译注：“实例变量”原作“对象”，译者依个人理解改。]看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做顺理成章，甚至算不上设计选择。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
 
 #colbreak()
 
@@ -116,7 +117,7 @@
 
 封装常与信息隐藏混淆，但它们确是不同的概念。封装指的是捆绑数据和操作数据的函数。面向对象语言通过对象/类和方法语法直接支持了封装，但也有其他的封装方式。许多现代语言也支持#link("https://en.wikipedia.org/wiki/Closure_(computer_programming)", term[闭包 (closure)])（事实上，闭包和对象可以相互模拟#footnote[译注：#link("https://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html")[对象是穷人的闭包，闭包是穷人的对象]。]）。还有一些不那么广为人知的方式，例如 ML 系语言中的#link("https://ocaml.org/docs/modules")[模块系统]。
 
-#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design, DDD)]。] 对于“将数据和功能捆绑在一起”这一做法有很多不同见解。当存在大量对象时，分批处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计的提倡者并不完全排斥封装，但他们鼓励更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据在代码中的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码。]
+#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design, 有时缩写作 DDD)]。] 对于“将数据和功能捆绑在一起”这一做法有很多不同见解。当存在大量对象时，分批处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计的提倡者并不完全排斥封装，但他们鼓励更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据在代码中的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码。]
 
 == 接口
 
