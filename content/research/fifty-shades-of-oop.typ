@@ -108,7 +108,7 @@
 #quote(attribution: [Bob Nystrom, #link("https://gameprogrammingpatterns.com/singleton.html")[Game Programming Patterns]])[
   If you can, just move all of that behavior into the class it helps. After all, OOP is about letting objects take care of themselves.
 
-  如果可以的话，把所有相关的行为都移到所服务的类中。毕竟面向对象程序设计就是要让对象自我管理。
+  如果可以的话，把所有相关的行为都移到其服务的类中。毕竟面向对象程序设计就是要让对象自我管理。
 ]
 
 封装常与信息隐藏混淆，但它们确是不同的概念。封装指的是捆绑数据和操作数据的函数。面向对象语言通过对象/类和方法语法直接支持了封装，但也有其他的封装方式。许多现代语言也支持#link("https://en.wikipedia.org/wiki/Closure_(computer_programming)", term[闭包 (closure)])（事实上，闭包和对象可以相互模拟#footnote[译注：#link("https://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html")[对象是穷人的闭包，闭包是穷人的对象]。]）。还有一些不那么广为人知的方式，例如 ML 系语言中的#link("https://ocaml.org/docs/modules")[模块系统]。
@@ -309,7 +309,7 @@ std::string name(const Cat& cat) {
 }
 ```
 
-而在支持延迟绑定函数的语言（如 Python 和 JavaScript）中，同模块内的函数总是能互调用。在另一些语言（如 Rust）中，函数默认就是互递归的。还有一些语言通过前向声明（C）或 `letrec` 结构（Scheme 和 ML 系语言）来支持互递归。这解决了“递归”的部分，但“开放”的部分尚未解决：
+而在支持延迟绑定函数的语言（如 Python 和 JavaScript）中，同模块内的函数总是能互调用。在另一些语言（如 Rust）中，函数默认就是支持互递归的。还有一些语言通过前向声明（C）或 `letrec` 结构（Scheme 和 ML 系语言）来支持互递归。这解决了“递归”的部分，但“开放”的部分尚未解决：
 
 ```cpp
 std::string name(const Cat& cat);
