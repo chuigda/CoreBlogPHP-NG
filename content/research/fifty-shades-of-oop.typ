@@ -33,7 +33,7 @@
 
 如今，唱衰#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在接连看到 #link("https://lobste.rs/")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意捍卫或是抨击面向对象程序设计，但我希望能发表一些浅见，提供一个更细致入微的视角。
 
-工业界和学术界用“面向对象”一词来表示多种不同的含义。而相关讨论之所以徒劳无功，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
+工业界和学术界用“面向对象”一词来表示太多不同的含义。而相关讨论之所以徒劳无功，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
 
 何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他自己的观点]。然而，大多数人使用这一术语的方式现已大相径庭。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
 
@@ -41,7 +41,7 @@
 #let byzantine(x) = numbering("(i)", x)
 
 #small[
-  有意思的是，本文发布之后，部分评论针对“对象”的权威定义展开了争论，且各自基于截然不同的标准，如：#byzantine(1) Alan Kay 的#term[消息传递 (message passing)]；#byzantine(2) 任何能提供#term[封装 (encapsulation)] 的事物（包括#term[闭包 closure] 与#term[模块 module]）；#byzantine(3) #term[动态派发 (dynamic dispatch)]；#byzantine(4) #term[方法 (method)]。
+  有意思的是，本文发布之后，部分评论针对“对象”的权威定义展开了争论，且各自基于截然不同的标准，如：#byzantine(1) Alan Kay 与#term[消息传递 (message passing)]；#byzantine(2) 任何能提供#term[封装 (encapsulation)] 的事物（包括#term[闭包 closure] 与#term[模块 module]）；#byzantine(3) #term[动态分派 (dynamic dispatch)]；#byzantine(4) #term[方法 (method)]。
 ]
 
 与其执着于单一定义，不如把面向对象程序设计当作一系列彼此关联的思想的混合体，并逐一考察每种思想。接下来，我将考察一些和面向对象相关的思想，并（主观地）探讨其优缺点。
@@ -57,7 +57,7 @@
 
 #term[类]扩展了“#term[结构体 (struct)]”或者“#term[记录 (record)]”的概念，增加了对方法语法、信息隐藏和继承的支持。这些具体特性我们稍后讨论。
 
-类也可以视作对象的蓝图。这不是唯一的做法——#term[原型 (prototype)] 是 #link("https://en.wikipedia.org/wiki/Self_(programming_language)")[Self 语言]首创的方案，并因其被 JavaScript 使用而广为人知。就我个人的感受而言，原型相较于#term[类]更难理解。甚至连 JavaScript 都引入了 ES6 `class` 以向初学者隐藏其背后的原型机制。
+类也可以视作对象的蓝图。这并非创建对象的唯一方式——#term[原型 (prototype)] 是 #link("https://en.wikipedia.org/wiki/Self_(programming_language)")[Self 语言]首创的方案，并因其被 JavaScript 使用而广为人知。就我个人的感受而言，原型相较于#term[类]更难理解，以至于连 JavaScript 都引入了 ES6 `class` 以向初学者隐藏其背后的原型机制。
 
 #small[在学习 JavaScript 时，原型继承和 `this` 的语义是最令我困扰的两个主题。]
 
@@ -83,7 +83,7 @@
 
 第三，若语言同时支持#term[自由函数 (free function)] 和方法，函数和方法就成了做同一件事的两种方式，殊途同归却互不兼容，这在泛型代码中可能造成问题。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
 
-第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，旨在让方法和实例变量#footnote[译注：“实例变量”原作“对象”，译者依个人理解改。]看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做顺理成章，甚至算不上设计选择。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
+第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，旨在让方法和实例变量#footnote[译注：“实例变量”原作“对象”，译者依个人判断改。]看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做顺理成章，甚至算不上刻意的设计。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
 
 #colbreak()
 
@@ -117,14 +117,118 @@
 
 封装常与信息隐藏混淆，但它们确是不同的概念。封装指的是捆绑数据和操作数据的函数。面向对象语言通过对象/类和方法语法直接支持了封装，但也有其他的封装方式。许多现代语言也支持#link("https://en.wikipedia.org/wiki/Closure_(computer_programming)", term[闭包 (closure)])（事实上，闭包和对象可以相互模拟#footnote[译注：#link("https://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html")[对象是穷人的闭包，闭包是穷人的对象]。]）。还有一些不那么广为人知的方式，例如 ML 系语言中的#link("https://ocaml.org/docs/modules")[模块系统]。
 
-#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design, 有时缩写作 DDD)]。] 对于“将数据和功能捆绑在一起”这一做法有很多不同见解。当存在大量对象时，分批处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计的提倡者并不完全排斥封装，但他们鼓励更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据在代码中的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码。]
+#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：请注意，#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design)]。] 对于“将数据和功能捆绑在一起”这一做法有很多独到见解。当存在大量对象时，分批处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计的提倡者并不完全排斥封装，但他们鼓励更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据和功能的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码]。
 
 == 接口
 
-#quote(attribution: [Daniel, Ingalls. #link("https://wiki.squeak.org/squeak/uploads/400/Smalltalk-76.pdf")["The Smalltalk-76 Programming System Design and Implementation"]])[
+#quote(attribution: [Daniel Ingalls, #link("https://wiki.squeak.org/squeak/uploads/400/Smalltalk-76.pdf")["The Smalltalk-76 Programming System Design and Implementation"]])[
   No part of a complex system should depend on the internal details of any other part.
 
   复杂系统中的任何部分都不应依赖其他部分的内部细节。
 ]
 
-分离接口与实现是一种古老的思想，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。但面向对象语境下的“接口”通常指用以支持多态性的特定语言构造的集合（常以继承实现）。接口通常不含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特征 (traits)] 和 Go 语言的 `interface` 都被用于指定一组独立于实现的抽象操作。
+分离接口与实现是一种古老的思想，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。但面向对象语境下的“接口”通常指用以支持多态性的一组特定的语言构造（常以继承实现）。接口通常不能包含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特征 (traits)] 和 Go 语言的 `interface` 都被用于指定一组独立于实现的抽象操作。
+
+接口常被视作完整类继承的一个更简单、更规范的替代方案。这个功能只有一种用途，且不像多重继承那样受到菱形继承问题的困扰。
+
+接口在与#link("https://en.wikipedia.org/wiki/Parametric_polymorphism", term[参数化多态 (parametric polymorphism)]) 合用时也非常有用，它能约束类型参数，限制其必须支持某些操作。动态类型语言（以及 C++/D 模板）通过#link("https://en.wikipedia.org/wiki/Duck_typing")[鸭子类型]来实现类似的功能，但即使是具有鸭子类型的语言也会在后期引入接口结构（如 C++ 的 `concept` 或 TypeScript 的 `interface`）以更明确地表达约束。
+
+面向对象语言中实现的接口通常有运行时开销，但也不总是如此。例如，C++ 的 `concept` 只支持编译期约束，而 Rust 的特征则仅通过 `dyn` 提供可选的运行时多态支持。
+
+== 延迟绑定
+
+#quote(attribution: link("https://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en")[Alan Kay])[
+  OOP to me means only messaging, local retention and protection and hiding of state-process, and extreme late-binding of all things.
+
+  于我而言，“面向对象程序设计”这个词的意思只有：消息传递，对内部状态和行为的保留、保护和隐藏，以及对所有事物的极度延迟绑定。
+]
+
+延迟绑定指的是将查找方法或成员推迟到运行时。这是大部分动态类型语言的默认行为，在这些语言中，方法调用常被实现成哈希表查找，但也有其他的实现方式，如动态加载和函数指针。
+
+延迟绑定的一个关键特性是可以在软件运行时更改其行为，从而支持各种热重载和#term[猴子补丁 (monkey-patching)]。例如，考虑以下 Python 代码：
+
+```python
+def bar():
+    return foo() + 1
+
+def foo():
+    return 42
+
+print(bar()) # 43
+
+def foo():
+    return 100
+
+print(bar()) # 101
+```
+
+注意到，当定义 `bar` 时，`foo` 尚未被定义；当 `bar` 被调用时，`foo` 的名称查找才发生。当然，“使用先于定义”在其他语言中也可通过让函数能够互递归的语言结构（如前向声明或 `letrec`）来实现。
+
+#small[延迟绑定天然地支持互递归函数调用，我们将在#term[开放递归 (open recursion)] 中进一步讨论。]
+
+示例的第二部分才是重头戏：在第二次调用 `bar` 之前，我们修改了 `foo` 的实现，而调用 `bar` 会自动反映这一变化。如果没有延迟绑定，这是无法实现的。
+
+延迟绑定的缺点在于其显著的性能开销。此外，它还可能成为破坏不变性，甚至导致接口不匹配的隐患。其可变性也可能引入一些更微妙的问题，例如 Python 中的“延迟绑定闭包”陷阱。
+
+== 动态分派
+
+#quote(attribution: link("https://youtu.be/32tDTD9UJCE?si=OqBHJ3PecCEvidoL")[Back to Basics: Object-Oriented Programming - Jon Kalb - CppCon 2019])[
+  A programming paradigm in C++ using Polymorphism based on runtime function dispatch using virtual functions.
+
+  这是一种 C++ 编程范式，它利用多态机制，通过虚函数来实现运行时的函数分派。
+]
+
+动态分派是一个与延迟绑定相关的概念，它指的是在运行时选择多态操作的具体实现。两个概念有所重叠，但动态分派更侧重于在多个已知的多态操作实现中作选择，而非运行时名称查找。
+
+在动态类型语言中，动态分派是默认行为，因为一切都是延迟绑定的。而在静态类型语言中，动态分派常被实现成#term[虚函数表 (virtual function table/virtual table/vtable)]，其底层结构大致如下：
+
+```cpp
+struct VTable {
+  // 用于销毁基类的函数指针
+  void (*destroy)(BaseClass&);
+
+  // 指向某个方法实现的函数指针
+  void (*foo)(void);
+
+  // 指向另一个方法实现的函数指针
+  int (*bar)(int);
+};
+
+struct BaseClass {
+  VTable* vtable;
+};
+```
+
+这些语言还在编译时保证虚函数表包含该类型的有效操作。
+
+动态分派可与继承解耦。例如，动态分派可以靠手动构造虚函数表来实现（如 Rust 的 #link("https://doc.rust-lang.org/beta/std/task/struct.RawWaker.html")[`RawWaker`] 类型#footnote[译注：原文举例为 C++ 的 `std::function`，译者依个人判断改。]），也可以用接口/特征/类型类这种语言结构来实现。不使用继承的动态分派通常不被视为“面向对象”。
+
+另一点需要注意的是，指向虚函数表的指针可以直接位于对象内部（如 C++），也可嵌入到#term[宽指针 (wide pointer)] 中（如 Go 和 Rust）。
+
+对动态分派的抱怨主要集中于性能问题：尽管虚函数调用本身很快，但虚函数会#link("https://johnnysswlab.com/the-true-price-of-virtual-functions-in-c/")[阻碍内联、降低缓存命中率和分支预测成功率]。
+
+== 继承
+
+#quote(attribution: link("https://www.stroustrup.com/bs_faq.html#oop")[Bjrane Stroustrup])[
+  Programming using class hierarchies and virtual functions to allow manipulation of objects of a variety of types through well-defined interfaces and to allow a program to be extended incrementally through derivation.
+
+  利用类层次结构和虚函数进行编程，可以通过定义良好的接口操作各种类型的对象，并允许程序通过#term[派生 (derivation)] 进行增量扩展。
+]
+
+继承的历史源远流长，上可追溯到 #link("https://en.wikipedia.org/wiki/Simula")[Simula 67]。它可能是面向对象程序设计最标志性的特征：几乎所有标榜“面向对象”的语言都包含它，而规避面向对象程序设计的语言则通常省略它。
+
+#let redacted(text) = box(fill: black, text)
+
+继承有时很#redacted[他妈的]方便。很多时候，其他写法会显著增加样板代码#footnote[译注：值得一提的是，臭名昭著的多重继承也有其#link("https://clang.llvm.org/doxygen/classclang_1_1BlockDecl.html")[特定的利基市场]。]。
+
+#small[我惭愧地承认，我写 Rust 的时候会时不时地怀念继承。]
+
+另一方面，继承是一个非常#link("https://en.wikipedia.org/wiki/Orthogonality_(programming)", term[不正交 (non-orthogonal)]) 的特性，它融合了动态分派、子类型多态、接口/实现分离和代码复用。它很灵活，但灵活性使其易被误用，故现在的语言倾向于用更严格的语言结构取而代之。
+
+继承还有一些其他的问题。首先，使用继承几乎肯定意味着你要承担动态分派和堆分配带来的性能开销。在某些语言——例如 C++——中，你可以在没有动态分派和堆分配的情况下使用继承，并且也存在一些合理的用例（例如用 #link("https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern", term[CRTP]) 实现代码复用）。但继承的主流用途确是运行时多态（因此也依赖动态分派）。
+
+其次，通过继承来实现子类型的方式不够严谨#footnote[译注：此处原作“unsound”，直译为“不健全”。这一词汇在类型论语境下有特定含义，且并不贴合本句中所描述的问题，故依译者个人判断意译。]，#link("https://en.wikipedia.org/wiki/Liskov_substitution_principle")[里氏替换原则 (Liskov substitution principle)] 的执行全靠程序员自觉#footnote[译注：当然，Rust 的特征、Go/TypeScript 的 `interface` 乃至 Haskell 的类型类在这方面也是一样的，契约的执行事实上也全靠程序员自觉。]。
+
+最后，继承结构是刚性的，会受到菱形继承#footnote[译注：此处原作“diagnoal problem”，译者查无此词，依个人判断改。]等问题的困扰。这些不灵活之处正是人们偏好“组合优于继承”的主要原因之一。#link("https://gameprogrammingpatterns.com/component.html")[《游戏编程模式》中的“组件模式”一章]给出了一个很好的例子。
+
+== 子类型
