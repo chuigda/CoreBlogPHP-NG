@@ -2,10 +2,12 @@
 
 #show: project.with(
   title: [面向对象五十弦],
+  author-cols: 2,
   authors: (
     (name: "Lesley Lai", contrib: "原作者", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
     (name: "CAIMEO", contrib: "翻译提议", affiliation: ""),
+    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
+    (name: "Cousin Ze", contrib: "翻译", affiliation: "第七通用设计局")
   )
 )
 
@@ -27,7 +29,7 @@
 
 == 前言
 
-如今，抨击#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在读过 #link("lobste.rs")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意抨击或是捍卫面向对象程序设计，但我希望能发表一点个人拙见，提供一个更细致入微的视角。
+如今，抨击#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在读过 #link("lobste.rs")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意抨击或是捍卫面向对象程序设计，但我希望能发表一些浅见，提供一个更细致入微的视角。
 
 工业界和学术界用“面向对象”一词来表示多种不同的含义。而相关的讨论如此低效，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
 
@@ -80,12 +82,24 @@
 
 第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，为的是在使用对象时，让方法和实例变量看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做没问题，几乎无需考虑。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
 
+#colbreak()
+
 == 信息隐藏
 
 #quote(attribution: link("https://dl.acm.org/doi/10.1145/361598.361623")[[Parnas, 1972b]])[
   Its interface or definition was chosen to reveal as little as possible about its inner workings.
 
-  #term[接口 (interface)] 或#term[定义 (definition)]应尽可能少地透露其内部运作方式。
+  #term[接口 (interface)] 或#term[定义 (definition)] 应尽可能少地透露其内部运作方式。
 ]
 
 在 Smalltalk 中，所有实例变量都不能在对象外直接访问，而所有方法都是公开的。现代的面向对象程序语言则通过 `private` 这样的#term[访问说明符 (access specifier)] 支持类级别的访问权限控制。即使是非面向对象语言，通常也支持某种形式的信息隐藏，例如模块系统、不透明类型乃至 C 语言的头文件分离。
+
+信息隐藏是防止#link("https://en.wikipedia.org/wiki/Class_invariant", term[不变式 (invariant)])#footnote[译注：请注意，#term[不变式]这一术语指的*不是*#term[不可变数据 (immutable data)]。]被破坏的有效手段，也是将频繁变动的实现细节与稳定的接口分离开来的好方法。
+
+#small[不幸的是，我见过很多大学课程教授流于形式的 `private` 和 getter/setter 方法，却不讲论其中缘由。]
+
+尽管如此，激进地隐藏信息会增加不必要的样板代码，并且可能引发#link("https://en.wikipedia.org/wiki/Abstraction_inversion", term[抽象倒置 (abstraction inversion)])。另一种批评则来自函数式程序员，他们认为若数据#term[不可变 (immutable)]，则无须维护不变式，进而也就不需要隐藏太多信息#footnote[译注：此观点有待商榷。即使数据不可变，在构造和操作时依然需要校验并维护逻辑上的不变式。]。而从某种意义上说，面向对象恰恰是在鼓励人们编写必须维护其不变式的可变对象。
+
+#small[不过，在对不可变数据支持不佳的语言中，“隐藏数据、仅暴露 getter 方法”确实是让对象不可变的一种方式。]
+
+信息隐藏还鼓励人们创建小巧且#term[自包含 (self-contained)] 的对象，让它们懂得“如何自我管理”，这就直接引出了封装这一话题。
