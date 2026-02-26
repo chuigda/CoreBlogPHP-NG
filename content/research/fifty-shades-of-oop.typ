@@ -27,7 +27,7 @@
 
 == 译者前言
 
-本文是文章 #link("https://lesleylai.info/en/fifty_shades_of_oop/")[Fifty Shades of OOP] 的中文翻译。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
+本文是文章 #link("https://lesleylai.info/en/fifty_shades_of_oop/")[Fifty Shades of OOP] 的中文翻译。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语不易辨识，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
 == 前言
 
@@ -35,7 +35,7 @@
 
 工业界和学术界用“面向对象”一词来表示太多不同的含义。而相关讨论之所以徒劳无功，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
 
-何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他对面向对象程序设计的构想]，然而大多数人使用这一术语的方式现已大相径庭。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
+何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它既依赖于“对象”的进一步定义，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他对面向对象程序设计的构想]，然而大多数人使用这一术语的方式现已与之渐行渐远。我也不想因强求某种“真正的”含义而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
 
 #let rome(x) = numbering("(I)", x)
 #let byzantine(x) = numbering("(i)", x)
@@ -55,9 +55,9 @@
   面向对象程序设计是一种实现方法：程序被组织为相互协作的对象集合，每个对象代表某个#term[类 (class)] 的一个#term[实例 (instance)]，并且其类都是通过#term[继承 (inheritance)] 关系组织起来的#term[类层次结构 (hierarchy of classes)] 的成员。
 ]
 
-#term[类]扩展了“#term[结构体 (struct)]”或者“#term[记录 (record)]”的概念，增加了对方法语法、信息隐藏和继承的支持。这些具体特性我们稍后讨论。
+#term[类 (class)] 扩展了“#term[结构体 (struct)]”或者“#term[记录 (record)]”的概念，增加了对方法语法、信息隐藏和继承的支持。我们稍后再分别讨论这些具体特性。
 
-类也可以视作对象的蓝图。这并非定义/组织对象的唯一方式——#term[原型 (prototype)] 是 #link("https://en.wikipedia.org/wiki/Self_(programming_language)")[Self 语言]首创的方案，并因被 JavaScript 使用而广为人知。就我个人的感受而言，原型相较于#term[类]更难理解，以至于连 JavaScript 都引入了 ES6 `class` 以向初学者隐藏其背后的原型机制。
+类也可以视作对象的蓝图。这并非定义/组织对象的唯一方式——#term[原型 (prototype)] 是 #link("https://en.wikipedia.org/wiki/Self_(programming_language)")[Self 语言]首创的方案，并因被 JavaScript 采用而广为人知。就我个人的感受而言，原型相较于#term[类]更难理解，以至于连 JavaScript 都引入了 ES6 `class` 以向初学者隐藏其背后的原型机制。
 
 #small[在学习 JavaScript 时，原型继承和 `this` 的语义是最令我困扰的两个主题。]
 
@@ -79,7 +79,7 @@
 
 方法语法也有值得商榷之处。首先，许多语言不允许在类外定义方法，这使得方法与函数地位不对等。也有一些例外，如 Rust（方法总是在结构体外定义的）、Scala、Kotlin 和 C#sym.sharp（扩展方法）。
 
-其次，在许多语言中，#term[自指] `this` 或 `self` 是隐式的。这让代码更加简洁，但也可能造成混淆，并增加意外#term[名称遮蔽 (name shadowing)] 的风险。隐式自指的另一缺点则是自指总是通过指针传递的，且其类型不能更改。这就导致自指不能被按值/按拷贝传递，而指针引入的间接性有时会导致性能问题。更重要的是，因为自指的类型是固定的，你不能编写接受不同 `this` 类型的泛型函数。Python 和 Rust 从一开始就正确地设计了自指，而 C++ 也在 C++23 中引入了 #link("https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html")[Deducing this] 以解决这一问题。
+其次，在许多语言中，#term[自指] `this` 或 `self` 是隐式的。这让代码更加简洁，但也可能造成混淆，并增加意外发生#term[名称遮蔽 (name shadowing)] 的风险。隐式自指的另一缺点则是，它几乎总是以指针的形式传递，且其类型不能更改。这就导致自指不能被按值/按拷贝传递，而指针引入的间接性有时会导致性能问题。更重要的是，因为自指的类型是固定的，你不能编写接受不同 `this` 类型的泛型函数。Python 和 Rust 从一开始就正确地设计了自指，而 C++ 也在 C++23 中引入了 #link("https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html")[Deducing this] 以解决这一问题。
 
 第三，若语言同时支持#term[自由函数 (free function)] 和方法，函数和方法就成了做同一件事的两种方式，殊途同归却互不兼容，这在泛型代码中可能造成问题。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
 
@@ -95,7 +95,7 @@
   #term[接口 (interface)] 或#term[定义 (definition)] 应尽可能少地透露其内部运作方式。
 ]
 
-在 Smalltalk 中，所有实例变量都不能在对象外直接访问，而所有方法都是公开的。现代的面向对象语言则通过 `private` 这样的#term[访问说明符 (access specifier)] 支持类级别的访问权限控制。即使是非面向对象语言，通常也支持某种形式的信息隐藏，例如模块系统、不透明类型乃至 C 语言的头文件分离。
+在 Smalltalk 中，所有实例变量都不能在对象外直接访问，而所有方法都是对外暴露的。现代的面向对象语言则通过 `private` 这样的#term[访问说明符 (access specifier)] 支持类级别的访问权限控制。即使是非面向对象语言，通常也支持某种形式的信息隐藏，例如模块系统、#term[不透明类型 (opaque type)] 乃至 C 语言的头文件分离。
 
 信息隐藏是防止#link("https://en.wikipedia.org/wiki/Class_invariant", term[不变式 (invariant)])#footnote[译注：请注意，#term[不变式]这一术语指的*不是*#term[不可变数据 (immutable data)]。]被破坏的有效手段，也是将频繁变动的实现细节与稳定的接口分离开来的好方法。
 
@@ -112,12 +112,12 @@
 #quote(attribution: [Bob Nystrom, #link("https://gameprogrammingpatterns.com/singleton.html")[Game Programming Patterns]])[
   If you can, just move all of that behavior into the class it helps. After all, OOP is about letting objects take care of themselves.
 
-  如果可以的话，把所有相关的行为都放到所服务的类中。毕竟面向对象程序设计就是要让对象自力更生。
+  如果可以的话，把所有相关的行为都移到所服务的类中。毕竟面向对象程序设计就是要让对象自行其是。
 ]
 
 封装常与信息隐藏混淆，但它们确是不同的概念。封装指的是捆绑数据和操作数据的函数。面向对象语言通过对象/类和方法语法直接支持了封装，但也有其他的封装方式。许多现代语言也支持#link("https://en.wikipedia.org/wiki/Closure_(computer_programming)", term[闭包 (closure)])（事实上，闭包和对象可以相互模拟#footnote[译注：#link("https://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html")[对象是穷人的闭包，闭包是穷人的对象]。]）。还有一些不那么广为人知的方式，例如 ML 系语言中的#link("https://ocaml.org/docs/modules")[模块系统]。
 
-#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：请注意，#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design)]。] 对于“将数据和功能捆绑在一起”这一做法有很多独到见解。当存在大量对象时，分批处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计的提倡者并不完全排斥封装，但他们鼓励更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据和功能的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码]。
+#link("https://en.wikipedia.org/wiki/Data-oriented_design", term[面向数据设计 (Data-oriented design, DOD)])#footnote[译注：请注意，#term[面向数据设计]这一术语指的*不是*#term[数据驱动设计 (Data-driven design)]。] 对于“将数据和功能捆绑在一起”这一做法有很多不同看法。当存在大量对象时，批量处理它们通常比逐个处理要高效得多。让众多小对象各自拥有独立行为会损害#term[数据局部性 (data locality)]、引入更多的间接性并减少并行优化的机会。当然，面向数据设计并不完全排斥封装，而是提倡一种更粗粒度的封装形式，#link("https://youtu.be/wo84LFzx5nI?si=ONwbHrfi0XVdSh3U")[根据数据和功能的实际使用方式来组织代码，而不是依照领域模型在概念上的结构来组织代码]。
 
 == 接口
 
@@ -127,11 +127,11 @@
   复杂系统中的任何部分都不应依赖其他部分的内部细节。
 ]
 
-分离接口与实现是一种古老的思想，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。但面向对象语境下的“接口”通常指用以支持多态性的一组特定的语言构造（常以继承的形式实现）。接口通常不能包含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特征 (traits)] 和 Go 语言的 `interface` 都被用于指定一组独立于实现的抽象操作。
+接口与实现分离的思想由来已久，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。不过面向对象语境中的“接口”通常指用以支持多态性的一组特定的语言构造（常以继承的形式实现）。接口通常不能包含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特征 (traits)] 和 Go 的 `interface` 都被用于描述一组独立于实现的抽象操作。
 
-接口常被视作完整类继承的一个更简单、更规范的替代方案。这种结构只有一种用途，且不像多重继承那样受到菱形继承问题的困扰。
+接口常被视作完整类继承的一个更简单、更规范的替代方案。接口只有一种用途，且不像多重继承那样受到菱形继承问题的困扰。
 
-接口在与#link("https://en.wikipedia.org/wiki/Parametric_polymorphism", term[参数化多态 (parametric polymorphism)]) 合用时也非常有用，它能约束类型参数，限制其必须支持某些操作。动态类型语言（以及 C++/D 模板）通过#link("https://en.wikipedia.org/wiki/Duck_typing")[鸭子类型]来实现类似的功能，但即使是具有鸭子类型的语言也会在后期引入接口结构（如 C++ 的 `concept` 或 TypeScript 的 `interface`）以更明确地表达约束。
+接口在与#link("https://en.wikipedia.org/wiki/Parametric_polymorphism", term[参数化多态 (parametric polymorphism)]) 合用时尤其有价值，它能约束类型参数，限制其必须支持某些操作。动态类型语言（以及 C++/D 模板）通过#link("https://en.wikipedia.org/wiki/Duck_typing")[鸭子类型]实现了类似的效果，但即使是支持鸭子类型的语言，往往也会在后期引入接口结构（如 C++ 的 `concept` 或 TypeScript 的 `interface`）以更明确地表达约束。
 
 面向对象语言中实现的接口通常有运行时开销，但也不总是如此。例如，C++ 的 `concept` 只支持编译期约束，而 Rust 的特征则仅通过 `dyn` 提供可选的运行时多态支持。
 
@@ -145,7 +145,7 @@
 
 延迟绑定指的是将方法或成员的查找推迟到运行时。这是大部分动态类型语言的默认行为，在这些语言中，方法调用常被实现成哈希表查找，但也有其他的实现方式，如动态加载和函数指针。
 
-延迟绑定的一个关键特性是可以在软件运行时更改其行为，从而支持各种热重载和#term[猴子补丁 (monkey-patching)]。例如，考虑以下 Python 代码：
+延迟绑定关键特性之一是软件可在运行时改变其行为，从而支持各种热重载和#term[猴子补丁 (monkey-patching)]。例如，考虑以下 Python 代码：
 
 ```python
 def bar():
@@ -166,9 +166,9 @@ print(bar()) # 101
 
 #small[延迟绑定天然地支持互递归函数调用，我们将在#term[开放递归 (open recursion)] 中进一步讨论。]
 
-示例的第二部分才是重头戏：在第二次调用 `bar` 之前，我们修改了 `foo` 的实现，而调用 `bar` 会自动反映这一变化。如果没有延迟绑定，这是无法实现的。
+例子的第二部分才是重头戏：在第二次调用 `bar` 之前，我们修改了 `foo` 的实现，而调用 `bar` 会自动反映这一变化。如果没有延迟绑定，这是无法实现的。
 
-延迟绑定的缺点在于其显著的性能开销。此外，它还可能成为破坏不变式、甚至导致接口不匹配的隐患。其可变性也可能引入一些更微妙的问题，例如 Python 中的“延迟绑定闭包”陷阱。
+延迟绑定的缺点在于其不容忽视的性能开销。此外，它还可能成为破坏不变式、甚至导致接口不匹配的隐患。其可变性也可能引入一些更微妙的问题，例如 Python 中著名的“延迟绑定闭包”陷阱。
 
 == 动态分派
 
@@ -180,7 +180,7 @@ print(bar()) # 101
 
 动态分派是一个与延迟绑定相关的概念，它指的是在运行时选择多态操作的具体实现。两个概念有所重叠，但动态分派更侧重于在多个已知的多态操作实现中作选择，而非运行时名称查找。
 
-在动态类型语言中，动态分派是默认行为，因为一切都是延迟绑定的。而在静态类型语言中，动态分派常被实现成#term[虚函数表 (virtual function table/virtual table/vtable)]，其底层结构大致如下：
+在动态类型语言中，一切都是延迟绑定的，动态分派自然就是默认行为。而在静态类型语言中，动态分派常通过#term[虚函数表 (virtual function table/virtual table/vtable)] 实现，其底层结构大致如下：
 
 ```cpp
 struct VTable {
@@ -215,7 +215,7 @@ struct BaseClass {
   利用类层次结构和虚函数进行编程，可以通过定义良好的接口操作各种类型的对象，并允许程序通过#term[派生 (derivation)] 进行增量扩展。
 ]
 
-继承的历史源远流长，上可追溯到 #link("https://en.wikipedia.org/wiki/Simula")[Simula 67]。它可能是面向对象程序设计最标志性的特征：几乎所有标榜“面向对象”的语言都包含它，而规避面向对象程序设计的语言则通常省略它。
+继承的历史源远流长，上可追溯到 #link("https://en.wikipedia.org/wiki/Simula")[Simula 67]。它可能是面向对象程序设计最具标志性的特性：几乎所有标榜“面向对象”的语言都包含它，而规避面向对象程序设计的语言则通常省略它。
 
 #let redacted(text) = box(fill: black, text)
 
@@ -223,13 +223,13 @@ struct BaseClass {
 
 #small[我惭愧地承认，我写 Rust 的时候会时不时地怀念继承。]
 
-另一方面，继承是一个非常#link("https://en.wikipedia.org/wiki/Orthogonality_(programming)", term[不正交 (non-orthogonal)]) 的特性，它融合了动态分派、子类型多态、接口/实现分离和代码复用。它很灵活，但灵活性使其易被误用，故现在的语言倾向于用更严格的语言结构取而代之。
+但另一方面，继承是一个非常#link("https://en.wikipedia.org/wiki/Orthogonality_(programming)", term[不正交 (non-orthogonal)]) 的特性，它融合了动态分派、子类型多态、接口/实现分离和代码复用。它很灵活，但灵活性使其易被误用，故一些现代语言倾向于用更严格的语言结构取而代之。
 
-继承还有一些其他问题。首先，使用继承几乎肯定意味着你要承担动态分派和堆分配带来的性能开销。在某些语言——例如 C++——中，你可以在没有动态分派和堆分配的情况下使用继承，并且也存在一些合理的用例（例如用 #link("https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern", term[CRTP]) 实现代码复用）。但继承的主流用途确是运行时多态（因此也依赖动态分派）。
+继承还有一些其他问题。首先，使用继承几乎肯定意味着承担动态分派和堆分配带来的性能开销。在某些语言——例如 C++——中，继承可以在没有动态分派和堆分配的情况下使用，并且也存在一些合理的用例（例如用 #link("https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern", term[CRTP]) 实现代码复用）。但继承的主流用途确是运行时多态（因此也依赖动态分派）。
 
-其次，通过继承来实现子类型的方式不够严谨#footnote[译注：此处原作“unsound”，直译为“不健全”。这一词汇在类型论语境下有特定含义，且并不贴合本句中所描述的问题，故依译者个人判断意译。]，#link("https://en.wikipedia.org/wiki/Liskov_substitution_principle")[里氏替换原则 (Liskov substitution principle)] 的执行全靠程序员自觉#footnote[译注：当然，Rust 的特征、Go/TypeScript 的 `interface` 乃至 Haskell 的类型类在这方面也是一样的，契约的执行事实上也全靠程序员自觉。结构子类型还存在微妙的名义性问题，使用不当则容易引出许多的危险。]。
+其次，继承以一种不够严谨#footnote[译注：此处原作“unsound”，直译为“不健全”。这一词汇在类型论语境下有特定含义，且并不贴合本句中所描述的问题，故依译者个人判断意译。]的方式实现了子类型，#link("https://en.wikipedia.org/wiki/Liskov_substitution_principle")[里氏替换原则 (Liskov substitution principle)] 的执行全靠程序员自觉#footnote[译注：当然，Rust 的特征、Go/TypeScript 的 `interface` 乃至 Haskell 的类型类在这方面也是一样的，契约的执行事实上也全靠程序员自觉。结构子类型还存在微妙的名义性问题，使用不当则容易引出许多的危险。]。
 
-最后，继承结构是刚性的，会受到#term[对角线问题 (diagonal problem)]#footnote[译注：译者查无此词，或指菱形继承问题，亦或指#term[表达式问题 (expression problem)]。] 等问题的困扰。这些不灵活之处正是人们偏好“组合优于继承”的主要原因之一。#link("https://gameprogrammingpatterns.com/component.html")[《游戏编程模式》中的“组件模式”一章]给出了一个很好的例子。
+最后，继承结构是刚性的，会受到#term[对角线问题 (diagonal problem)]#footnote[译注：译者查无此词，或指菱形继承问题，亦或指#term[表达式问题 (expression problem)]。] 等问题的困扰。这些不灵活之处正是“组合优于继承”这一设计理念流行的重要原因之一。#link("https://gameprogrammingpatterns.com/component.html")[《游戏编程模式》中的“组件模式”一章]给出了一个很好的例子。
 
 == 子类型
 
@@ -241,6 +241,18 @@ struct BaseClass {
 
 子类型描述了两种*类型*之间的“#term[是 (is-a)]”关系。里氏替换原则定义了安全的子类型关系必须满足的属性。
 
-面向对象语言通常通过继承来支持子类型。但请注意，继承并不总是对子类型关系的建模，也不是子类型关系的唯一形式。许多非面向对象语言中的接口/特征结构都支持子类型。而且除了显式声明子类型关系的#term[名义子类型 (nominal subtyping)] 之外，还有#term[结构子类型 (structural subtyping)]：若一个类型 S 包含了另一个类型 T 的全部特性，则前者就隐式地成为了后者的子类型。OCaml 中的#link("https://dev.realworldocaml.org/objects.html")[对象]及其多态变体和 TypeScript 中的 `interface` 就是结构子类型的优秀案例。子类型还体现在各种细微之处，例如 Rust 的#term[生存期 (lifetime)]#footnote[译注：允许将长生存期类型当作短生存期类型使用。]、TypeScript 的可空性#footnote[译注：允许将不可空类型当作可空类型使用。]以及依值类型语言中的类型宇宙层级#footnote[译注：允许将低层宇宙的类型当作高层宇宙的类型使用；这个例子是译者自己加的。]。
+面向对象语言通常通过继承来支持子类型。但请注意，继承并不总是对子类型关系的建模，也不是子类型关系的唯一形式。许多非面向对象语言中的接口/特征结构都支持子类型。而且除了显式声明子类型关系的#term[名义子类型 (nominal subtyping)] 之外，还有#term[结构子类型 (structural subtyping)]：若一个类型 S 包含了另一个类型 T 的全部特性，则 S 就隐式地成为了 T 的子类型。OCaml 中的#link("https://dev.realworldocaml.org/objects.html")[对象]及其多态变体和 TypeScript 中的 `interface` 就是结构子类型的优秀案例。子类型还体现在各种细微之处，例如 Rust 的#term[生存期 (lifetime)]#footnote[译注：允许将长生存期类型当作短生存期类型使用。]、TypeScript 的可空性#footnote[译注：允许将不可空类型当作可空类型使用。]以及依值类型语言中的类型宇宙层级#footnote[译注：允许将低层宇宙的类型当作高层宇宙的类型使用；这个例子是译者自己加的。]。
 
-#link("https://en.wikipedia.org/wiki/Type_variance", term[变型 (variance，即协变 covariance 和逆变 contravariance)])#footnote[和#term[不变式]无关。] 是与子类型相关的重要概念之一，它将参数化多态和子类型连接起来。解释这一概念需要一整篇文章，故此处不再赘述。变型极大地提高了子类型的易用性（例如，如果 C++ 指针不是协变的，它们就无法多态地使用了），但大多数语言都只实现了有限的、硬编码的变型，因其难以理解且容易出错。特别地，#term[可变数据类型 (mutable data type)] 通常应该是#term[不变 (invariant)]#footnote[译注：也和#term[不变式]无关，尽管是同一个英文单词。] 的，而 Java/C#sym.sharp 的协变数组类型就是典型的反面教材。只有少数语言允许程序员显式控制变型，如#link("https://docs.scala-lang.org/tour/variances.html")[Scala] 和 #link("https://kotlinlang.org/docs/generics.html")[Kotlin]。
+#link("https://en.wikipedia.org/wiki/Type_variance", term[变型 (variance，包括协变 covariance、逆变 contravariance 和不变 invariance)])#footnote[和#term[不变式]无关。] 是与子类型相关的重要概念之一，它连接了参数化多态和子类型。解释这一概念需要一整篇文章，故此处不再赘述#footnote[译注：不过译者碰巧找到了一篇#link("https://zhuanlan.zhihu.com/p/2008169926100284358")[极好的文章]。]。变型极大地提高了子类型的易用性（例如，如果 C++ 指针不是协变的，它们就无法多态地使用了），但大多数语言都只实现了有限的、硬编码的变型规则，因其难以理解且容易出错。特别地，#term[可变数据类型 (mutable data type)] 通常应该是#term[不变 (invariant)]#footnote[译注：也和#term[不变式]无关，尽管是同一个英文单词。] 的，而 Java/C#sym.sharp 的协变数组类型就是典型的反面教材。只有少数语言允许程序员显式控制变型，如#link("https://docs.scala-lang.org/tour/variances.html")[Scala] 和 #link("https://kotlinlang.org/docs/generics.html")[Kotlin]。
+
+经由子类型关系的类型转换通常是隐式的。虽说隐式转换声名狼藉，但从子类型隐式转换到超类型确实符合人体工程学，并且可能是最合乎情理的隐式转换。子类型也可看作隐式转换的对偶：隐式转换可被用于“仿造”子类型关系。例如，C++ 模板是#term[不变]的，但 `std::unique_ptr` 却允许从 `std::unique_ptr<Derived>` 隐式转换到 `std::unique_ptr<Base>`，从而实现了协变的效果。#link("https://journal.stuffwithstuff.com/2023/10/19/does-go-have-subtyping/")[《Go 有子类型吗？》]这篇文章很好地进一步探讨了这一思想。
+
+实现上的复杂度是语言设计者们试图规避子类型的原因之一。整合#term[双向类型推断 (bidirectional type inference)] 和子类型难如登天。Stephen Dolan 于 2016 年发表的博士论文#link("https://www.cs.tufts.edu/~nr/cs257/archive/stephen-dolan/thesis.pdf")[《代数子类型》]在这一问题上取得了长足的进步。
+
+== 消息传递
+
+#quote(attribution: link("https://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en")[Alan Kay])[
+  I thought of objects being like biological cells and/or individual computers on a network, only able to communicate with messages.
+
+  我把对象看作生物细胞或是网络上相互独立的计算机，它们之间只能通过消息通信。
+]
