@@ -13,7 +13,6 @@
 #show math.equation.where(block: true): set block(breakable: false)
 #show raw.where(block: true): set block(breakable: false)
 #show raw.where(block: true): it => pad(left: 2em, it)
-#show raw.where(lang: none): it => raw(it.text, lang: "hs", block: it.block)
 #set par(spacing: 1.2em)
 
 #let small(content) = text(size: 10pt)[#content]
@@ -28,11 +27,11 @@
 
 == 前言
 
-如今，对#term[面向对象程序设计 (Object Oriented Programming, OOP)] 口诛笔伐似乎成为了某种潮流。在读过 #link("lobste.rs")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意抨击或是捍卫面向对象程序设计，但我希望能发表一点个人拙见，提供一个更细致入微的视角。
+如今，抨击#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在读过 #link("lobste.rs")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意抨击或是捍卫面向对象程序设计，但我希望能发表一点个人拙见，提供一个更细致入微的视角。
 
 工业界和学术界用“面向对象”一词来表示多种不同的含义。而相关的讨论如此低效，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
 
-何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这个定义不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界的不同使用方式。Alan Kay 还给出过一个#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[这样的视角]。然而，大多数人使用这一术语的方式已经偏离了原意。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
+何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它没有定义“对象”是什么，也未能涵盖这一术语在工业界的不同使用方式。Alan Kay 还给出过一个#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[这样的视角]。然而，大多数人使用这一术语的方式已经偏离了原意。我不想因为坚持单一的“真实”含义，而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
 
 #let rome(x) = numbering("(i)", x)
 
@@ -40,7 +39,7 @@
   有意思的是，本文发布之后，部分评论针对“对象”的权威定义展开了争论，且各自基于截然不同的标准，如：#rome(1) Alan Kay 的#term[消息传递 (message passing)]；#rome(2) 任何能提供#term[封装 (encapsulation)] 的事物（包括#term[闭包 closure] 与#term[模块 module]）；#rome(3) #term[动态派发 (dynamic dispatch)]；#rome(4) #term[方法 (method)]。
 ]
 
-与其执着于单一定义，不如把面向对象程序设计当作一系列彼此关联的思想的混合体，并逐一单独考察每种思想。接下来，我将考察一些和面向对象程序设计相关的思想，并（主观地）探讨其优缺点。
+与其执着于单一定义，不如把面向对象程序设计当作一系列彼此关联的思想的混合体，并逐一考察每种思想。接下来，我将考察一些和面向对象相关的思想，并（主观地）探讨其优缺点。
 
 == 类
 
@@ -65,4 +64,20 @@
   日语中有#term[句子接续 (sentence chaining)]，这和 Ruby 中的#term[方法链 (method chaining)] 很像。
 ]
 
-#term[方法 (method)] 语法是面向对象特性中争议较少的特性之一。
+#term[方法 (method)] 语法是面向对象程序设计中争议较少的特性之一，它反映了一种常见模式：对特定#term[主体 (subject)] 进行操作。即使在没有方法的语言中，#term[函数 (function)] 也常被当作方法使用：将相关的数据作为函数的第一个实参。
+
+#small[我们将在讨论封装时回顾“对特定主体进行操作”（也就是捆绑数据和行为）这一思想。]
+
+方法语法包括方法定义和方法调用。支持方法的语言一般两者都有——除非你把函数式语言中的“管道运算符”当作一种方法调用。
+
+方法调用语法有利于 IDE 自动补全，且方法链比嵌套函数调用更符合人体工程学（类似于函数式语言中的管道运算符）。
+
+方法语法也有值得商榷之处。首先，许多语言不允许在类外定义方法，这使得方法与函数相比存在权力失衡。也有一些例外，例如 Rust（方法总是在结构体外定义的）、Scala、Kotlin 和 C$sharp$（扩展方法）。
+
+其次，在许多语言中，#term[自指] `this` 或·`self` 是隐式的。这让代码更加简洁，但也可能造成混淆，并增加意外#term[名称遮蔽 (name shadowing)] 的风险。隐式自指的另一缺点则是自指总是通过指针传递的，且其类型不能更改。这就导致自指不能被按值/按拷贝传递，而指针引入的间接性有时会导致性能问题。更重要的是，因为自指的类型是固定的，你不能编写接受不同 `this` 类型的泛型函数。Python 和 Rust 从一开始就正确地设计了自指，而 C++ 也在 C++23 中引入了 #link("https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html")[Deducing this] 以解决这一问题。
+
+第三，在既有“自由函数”又有方法的语言中，函数和方法就成了做同一件事的两种互不兼容的方式。这在泛型代码中可能引起问题 /*TODO: bad translation*/。Rust 允许#link("https://doc.rust-lang.org/stable/reference/expressions/call-expr.html#disambiguating-function-calls")[完全限定方法名称]并将其视为函数来解决这一问题。
+
+第四，大多数语言都将#term[点号语法 (dot notation)] 兼用于实例变量访问和方法调用。这是有意为之，为的是在使用对象时，让方法和实例变量看起来更#link("https://en.wikipedia.org/wiki/Uniform_access_principle")[统一]。在一些动态类型语言中，方法本就是实例变量，这么做没问题，几乎无需考虑。但在 C++ 和 Java 这样的语言中，这种做法就可能导致混淆，并引入名称遮蔽问题。
+
+== 信息隐藏
