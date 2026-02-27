@@ -6,8 +6,8 @@
   authors: (
     (name: "Lesley Lai", contrib: "原作者", affiliation: ""),
     (name: "CAIMEO", contrib: "翻译提议", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: [Doki Doki $lambda$ Club!]),
-    (name: "Cousin Ze", contrib: "翻译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Cousin Ze", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
     (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
     (name: "Claude", contrib: "校对", affiliation: "Anthropic")
   )
@@ -23,7 +23,7 @@
 
 == 译者前言
 
-本文是文章 #link("https://lesleylai.info/en/fifty_shades_of_oop/")[Fifty Shades of OOP] 的中文翻译。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语不易辨识，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
+本文是 #link("https://lesleylai.info/en/fifty_shades_of_oop/")[Fifty Shades of OOP] 的中文*编译*版本。译者基于个人判断对部分术语选择、代码示例和章节标题进行了调整，并以脚注形式添加了较多译注。所有对原文的实质性修改均已在脚注中以"译注"标注。原文观点以原作者为准。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语不易辨识，则总是会以#term[仿宋体]呈现。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
 本文另有#link("https://zhuanlan.zhihu.com/p/2000646239667128241")[Amisto 的译本]。
 
