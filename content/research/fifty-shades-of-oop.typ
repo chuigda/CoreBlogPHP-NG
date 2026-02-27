@@ -125,13 +125,13 @@
   复杂系统中的任何部分都不应依赖其他部分的内部细节。
 ]
 
-接口与实现分离的思想由来已久，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。不过面向对象语境中的“接口”通常指用以支持多态性的一组特定的语言构造（常以继承的形式实现）。接口通常不能包含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特征 (traits)] 和 Go 的 `interface` 都被用于描述一组独立于实现的抽象操作。
+接口与实现分离的思想由来已久，与信息隐藏、封装和#link("https://en.wikipedia.org/wiki/Abstract_data_type", term[抽象数据类型 (abstract data type)]) 密切相关。某种程度上讲，即使是 C 语言的头文件也可以视作一种接口。不过面向对象语境中的“接口”通常指用以支持多态性的一组特定的语言构造（常以继承的形式实现）。接口通常不能包含数据，并且在更严格的语言（如早期 Java）中也不能包含方法实现。接口的思想也常见于非面向对象语言：Haskell 的#term[类型类 (type class)]、Rust 的#term[特型 (traits)] 和 Go 的 `interface` 都被用于描述一组独立于实现的抽象操作。
 
 接口常被视作完整类继承的一个更简单、更规范的替代方案。接口只有一种用途，且不像多重继承那样受到菱形继承问题的困扰。
 
 接口在与#link("https://en.wikipedia.org/wiki/Parametric_polymorphism", term[参数化多态 (parametric polymorphism)]) 合用时尤其有价值，它能约束类型参数，限制其必须支持某些操作。动态类型语言（以及 C++/D 模板）通过#link("https://en.wikipedia.org/wiki/Duck_typing")[鸭子类型]实现了类似的效果，但即使是支持鸭子类型的语言，往往也会在后期引入接口结构（如 C++ 的 `concept` 或 TypeScript 的 `interface`）以更明确地表达约束。
 
-面向对象语言中实现的接口通常有运行时开销，但也不总是如此。例如，C++ 的 `concept` 只能用于编译期约束，而 Rust 的特征则仅通过 `dyn` 提供可选的运行时多态支持。
+面向对象语言中实现的接口通常有运行时开销，但也不总是如此。例如，C++ 的 `concept` 只能用于编译期约束，而 Rust 的特型则仅通过 `dyn` 提供可选的运行时多态支持。
 
 == 延迟绑定
 
@@ -199,7 +199,7 @@ struct BaseClass {
 
 这些语言还在编译时保证虚函数表包含该类型的有效操作。
 
-动态分派可与继承解耦。例如，动态分派可以靠手动构造虚函数表来实现（如 Rust 的 #link("https://doc.rust-lang.org/beta/std/task/struct.RawWaker.html")[`RawWaker`] / #link("https://doc.rust-lang.org/beta/std/task/struct.RawWakerVTable.html")[`RawWakerVTable`] 类型#footnote[译注：原文举例为 C++ 的 #rs[std::function]，译者依个人判断改。]），也可以用接口/特征/类型类这种语言结构来实现。不使用继承的动态分派通常不被称作“面向对象”。
+动态分派可与继承解耦。例如，动态分派可以靠手动构造虚函数表来实现（如 Rust 的 #link("https://doc.rust-lang.org/beta/std/task/struct.RawWaker.html")[`RawWaker`] / #link("https://doc.rust-lang.org/beta/std/task/struct.RawWakerVTable.html")[`RawWakerVTable`] 类型#footnote[译注：原文举例为 C++ 的 #rs[std::function]，译者依个人判断改。]），也可以用接口/特型/类型类这种语言结构来实现。不使用继承的动态分派通常不被称作“面向对象”。
 
 另一点需要注意的是，指向虚函数表的指针可以直接位于对象内部（如 C++），也可嵌入到#term[宽指针 (wide pointer)] 中（如 Go 和 Rust）。
 
@@ -225,7 +225,7 @@ struct BaseClass {
 
 继承还有一些其他问题。首先，使用继承几乎肯定意味着要承担动态分派和堆分配带来的性能开销。在某些语言——例如 C++——中，继承可以在没有动态分派和堆分配的情况下使用，并且也存在一些合理的用例（例如用 #link("https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern", term[CRTP]) 实现代码复用）。但继承的主流用途确是运行时多态（因此也依赖动态分派）。
 
-其次，继承以一种不够严谨#footnote[译注：此处原作“unsound”，直译为“不健全”。严格来说，继承实现的子类型在类型系统层面是#term[健全 (sound)] 的，只是语言无法在类型层面保证里氏替换原则这一语义性质。故依译者个人判断意译。]的方式实现了子类型，#link("https://en.wikipedia.org/wiki/Liskov_substitution_principle")[里氏替换原则 (Liskov substitution principle)] 的执行全靠程序员自觉#footnote[译注：当然，Rust 的特征、Go/TypeScript 的接口乃至 Haskell 的类型类在这方面也是一样的，契约的执行事实上也全靠程序员自觉。结构子类型还存在微妙的名义性问题，使用不当则容易引出许多的危险。]。
+其次，继承以一种不够严谨#footnote[译注：此处原作“unsound”，直译为“不健全”。严格来说，继承实现的子类型在类型系统层面是#term[健全 (sound)] 的，只是语言无法在类型层面保证里氏替换原则这一语义性质。故依译者个人判断意译。]的方式实现了子类型，#link("https://en.wikipedia.org/wiki/Liskov_substitution_principle")[里氏替换原则 (Liskov substitution principle)] 的执行全靠程序员自觉#footnote[译注：当然，Rust 的特型、Go/TypeScript 的接口乃至 Haskell 的类型类在这方面也是一样的，契约的执行事实上也全靠程序员自觉。结构子类型还存在微妙的名义性问题，使用不当则容易引出许多的危险。]。
 
 最后，继承结构是刚性的，会受到#term[对角线问题 (diagonal problem)]#footnote[译注：译者未能找到这个词汇的确切定义和出处，推测它 #byzantine(1) 可能是拼错了菱形 (diamond) 继承问题；#byzantine(2) 可能是指#term[表达式问题 (expression problem)]；#byzantine(3) 可能是指多维正交分类问题。] 等问题的困扰。这些不灵活之处正是“组合优于继承”这一设计理念流行的重要原因之一。#link("https://gameprogrammingpatterns.com/component.html")[《游戏编程模式》中的“组件模式”一章]给出了一个很好的例子。
 
@@ -239,7 +239,7 @@ struct BaseClass {
 
 #footnote[译注：本章标题原作#term[子类型多态 (Subtyping polymorphism)]，译者依个人判断改。]子类型描述了两种*类型*之间的“#term[是 (is-a)]”关系。里氏替换原则定义了安全的子类型关系必须满足的属性。
 
-面向对象语言通常通过继承来支持子类型。但请注意，继承并不总是对子类型关系的建模，也不是子类型关系的唯一形式。许多非面向对象语言中的接口/特征结构都支持子类型。而且除了显式声明子类型关系的#term[名义子类型 (nominal subtyping)] 之外，还有#term[结构子类型 (structural subtyping)]：若一个类型 S 包含了另一个类型 T 的全部特性，则 S 就隐式地成为了 T 的子类型。OCaml 中的#link("https://dev.realworldocaml.org/objects.html")[对象]和多态变体、TypeScript 中的 `interface` 都是结构子类型的优秀案例。子类型还体现在各种细微之处，例如 Rust 的#term[生存期 (lifetime)]#footnote[译注：允许将长生存期类型当作短生存期类型使用。]、TypeScript 的可空性#footnote[译注：允许将不可空类型当作可空类型使用。]以及依值类型语言中的类型宇宙层级#footnote[译注：允许将低层宇宙的类型当作高层宇宙的类型使用；这个例子是译者自己加的。]。
+面向对象语言通常通过继承来支持子类型。但请注意，继承并不总是对子类型关系的建模，也不是子类型关系的唯一形式。许多非面向对象语言中的接口/特型等结构都支持子类型。而且除了显式声明子类型关系的#term[名义子类型 (nominal subtyping)] 之外，还有#term[结构子类型 (structural subtyping)]：若一个类型 S 包含了另一个类型 T 的全部特性，则 S 就隐式地成为了 T 的子类型。OCaml 中的#link("https://dev.realworldocaml.org/objects.html")[对象]和多态变体、TypeScript 中的 `interface` 都是结构子类型的优秀案例。子类型还体现在各种细微之处，例如 Rust 的#term[生存期 (lifetime)]#footnote[译注：允许将长生存期类型当作短生存期类型使用。]、TypeScript 的可空性#footnote[译注：允许将不可空类型当作可空类型使用。]以及依值类型语言中的类型宇宙层级#footnote[译注：允许将低层宇宙的类型当作高层宇宙的类型使用；这个例子是译者自己加的。]。
 
 #link("https://en.wikipedia.org/wiki/Type_variance", term[型变 (variance，包括协变 covariance、逆变 contravariance 和不变 invariance)])#footnote[和#term[不变式]无关。] 是与子类型相关的重要概念之一，它连接了参数化多态和子类型。解释这一概念需要一整篇文章，故此处不再赘述#footnote[译注：不过译者碰巧找到了一篇#link("https://zhuanlan.zhihu.com/p/2008169926100284358")[极好的文章]。]。型变极大地提高了子类型的易用性（例如，如果 C++ 指针不是协变的，它们就无法多态地使用了），但大多数语言都只实现了有限的、硬编码的型变规则，因其难以理解且容易出错。特别地，#term[可变数据类型 (mutable data type)] 通常应该是#term[不变]#footnote[译注：也和#term[不变式]/#term[不可变数据]无关。] 的，而 Java/C#sym.sharp 的协变数组类型就是典型的反面教材。只有少数语言允许程序员显式控制型变，如#link("https://docs.scala-lang.org/tour/variances.html")[Scala] 和 #link("https://kotlinlang.org/docs/generics.html")[Kotlin]。
 
@@ -326,7 +326,7 @@ std::string name(const Cat& cat) {
 }
 ```
 
-这一问题可以用回调函数来修复：
+这一问题可以用回调函数解决：
 
 ```cpp
 struct Animal {
