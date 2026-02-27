@@ -31,7 +31,7 @@
 
 如今，唱衰#term[面向对象程序设计 (Object Oriented Programming, OOP)] 似乎成为了某种潮流。在接连看到 #link("https://lobste.rs/")[Lobsters] 上的两篇关于面向对象程序设计的文章之后，我决定写下这篇文章。我无意捍卫或是抨击面向对象程序设计，但我希望能发表一些浅见，提供一个更细致入微的视角。
 
-工业界和学术界用“面向对象”一词来表示太多不同的含义。而相关讨论之所以收效甚微，正是因为人们对“面向对象程序设计究竟是什么”缺乏共识。
+工业界和学术界用“面向对象”一词来表示太多不同的含义。而相关讨论之所以收效甚微，正是因为人们对“面向对象程序设计究竟是什么”各执一词。
 
 何谓面向对象程序设计？#link("https://en.wikipedia.org/wiki/Object-oriented_programming")[维基百科]将其定义为“基于对象概念的程序设计范式”。这一定义并不尽如人意，它既依赖于“对象”的进一步定义，也未能涵盖这一术语在工业界五花八门的用法。Alan Kay 也提出过#link("https://www.purl.org/stefan_ram/pub/doc_kay_oop_en")[他对面向对象程序设计的构想]。然而，大多数人使用这一术语的方式现已渐行渐远。我也不想为了强求某种“真正的”含义而陷入#link("https://en.wikipedia.org/wiki/Essentialism")[本质主义]或者#link("https://en.wikipedia.org/wiki/Etymological_fallacy")[词源学谬误]。
 
