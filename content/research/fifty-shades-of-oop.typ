@@ -211,7 +211,7 @@ struct BaseClass {
   利用类层次结构和虚函数进行编程，可以通过定义良好的接口操作各种类型的对象，并允许程序通过#term[派生 (derivation)] 进行增量扩展。
 ]
 
-继承的历史源远流长，上可追溯到 #link("https://en.wikipedia.org/wiki/Simula")[Simula 67]。它可能是面向对象程序设计最具标志性的特性：几乎所有标榜“面向对象”的语言都包含它，而规避面向对象程序设计的语言则通常省略它。
+继承#footnote[译注：“传统”的面向对象理论常把继承分为#term[接口继承 (interface inheritance)] 和 #term[实现继承 (implementation inheritance)]。而本节的主题主要是实现继承。]的历史源远流长，上可追溯到 #link("https://en.wikipedia.org/wiki/Simula")[Simula 67]。它可能是面向对象程序设计最具标志性的特性：几乎所有标榜“面向对象”的语言都包含它，而规避面向对象程序设计的语言则通常省略它。
 
 #let redacted(content) = highlight(fill: black, text(fill: black, content))
 
@@ -264,7 +264,7 @@ struct BaseClass {
 #quote(attribution: link("https://dev.realworldocaml.org/objects.html")[Real World OCaml])[
   In general, a rule of thumb is: use classes and objects in situations where open recursion is a big win.
 
-  一般来说，经验法则是：在开放递归能带来巨大优势的情况下，使用类和对象。
+  一般来说，经验法则是：若开放递归能带来显著优势，则使用类和对象。
 ]
 
 开放递归的概念源于著名的#link("https://www.cis.upenn.edu/~bcpierce/tapl/")[《类型与程序设计语言》]一书，却可能是本文中最鲜为人知的术语。然而，这一术语描述的不过是面向对象中的常见特性之一：对象的方法可以相互调用，即使它们在继承层次结构中的不同类中定义。
