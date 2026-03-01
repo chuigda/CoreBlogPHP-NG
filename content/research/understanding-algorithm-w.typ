@@ -4,11 +4,11 @@
   title: [理解 $cal(W)$ 算法],
   authors: (
     (name: "Jeremy Mikkola", contrib: "原作者", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "编译", affiliation: "第七通用设计局"),
+    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki #sym.lambda Club!]),
     (name: "Alias Qli", contrib: "校对", affiliation: ""),
-    (name: "Anqur", contrib: "类型论支持", affiliation: "第七通用设计局"),
-    (name: "Flaribbit", contrib: "校对\nTypst 技术支持", affiliation: "第七通用设计局"),
-    (name: "Lyra", contrib: "校对", affiliation: "第七通用设计局"),
+    (name: "Anqur", contrib: "类型论支持", affiliation: [Doki Doki #sym.lambda Club!]),
+    (name: "Flaribbit", contrib: "校对，Typst 支持", affiliation: [Doki Doki #sym.lambda Club!]),
+    (name: "Lyra", contrib: "校对", affiliation: [Doki Doki #sym.lambda Club!]),
   )
 )
 
