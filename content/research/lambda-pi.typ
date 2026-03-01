@@ -219,12 +219,12 @@ $, caption: [#stlc()中的类型语境和#term[良构 (well-formed)] 的类型])
   #h(2em)
   (Gamma (x) = tau)
   /
-  (Gamma tack x tin tau)
+  (Gamma tack x tout tau)
   #h(1em) ["VAR"]
   \ \
   (Gamma tack e tout tau -> tau' #h(1em) Gamma tack e' tin tau)
   /
-  (Gamma tack e thin e' tin tau')
+  (Gamma tack e thin e' tout tau')
   #h(1em) ["APP"]
   \ \
   (Gamma tack e tout tau)
@@ -685,7 +685,7 @@ $
   \ \
   (Gamma (x) = tau)
   /
-  (Gamma tack x tin tau)
+  (Gamma tack x tout tau)
   #h(1em) ["VAR"]
   #h(2em)
   (Gamma tack e tout #mhl($forall x :: tau tdt tau'$)
@@ -695,7 +695,7 @@ $
    #mhl($tau'[x |-> e'] evalto tau''$)
    )
   /
-  (Gamma tack e thin e' tin #mhl($tau''$))
+  (Gamma tack e thin e' tout #mhl($tau''$))
   #h(1em) ["APP"]
   \ \
   (Gamma tack e tout tau)
