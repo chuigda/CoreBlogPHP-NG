@@ -6,8 +6,8 @@
   authors: (
     (name: "Lesley Lai", contrib: "原作者", affiliation: ""),
     (name: "CAIMEO", contrib: "翻译提议", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
-    (name: "Cousin Ze", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki #sym.lambda Club!]),
+    (name: "Cousin Ze", contrib: "编译", affiliation: [Doki Doki #sym.lambda Club!]),
     (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
     (name: "Claude", contrib: "校对", affiliation: "Anthropic")
   )
@@ -259,7 +259,7 @@ struct BaseClass {
 
 许多早期面向对象概念受到过分布式和模拟系统的启发，在这些系统中，消息传递是自然而然的。然而，在大多数人都还写单线程代码的年代，这一理念在 C++ 和 Java 等语言中逐渐被遗忘。与消息传递相比，方法语法的优势有限（Bjarne Stroustrup 肯定从 Simula 那里了解到了消息传递的思想，但在实践中需要考虑如何高效实现）。真正的消息传递仍然存在，但仅限于特定领域，如进程间通信和高度#term[事件驱动 (event-driven)] 的系统。
 
-消息传递在并发编程中迎来了复兴。讽刺的是，这复兴并非来自面向对象语言，而是来自 Erlang 和 Go 等非面向对象语言，通过#term[施动器 (actor)]#footnote[译注：术语选择逻辑：考虑 Collins 词典给出的解释“person who does something or participates in something”，再考虑 re·actor = 反应器，pro·actor = 预动器/前摄器 $|->$ actor = 施动器。] 和#term[信道 (channel)] 之类的结构实现。这种#link("https://en.wikipedia.org/wiki/Shared-nothing_architecture", term[无共享 (shared-nothing)]) 并发机制消除了一系列数据竞争和竞态错误。结合监督机制，施动器还提供了容错性，一个施动器发生故障不会影响整个程序。
+消息传递在并发编程中迎来了复兴。讽刺的是，这复兴并非来自面向对象语言，而是来自 Erlang 和 Go 等非面向对象语言，通过#term[参与者 (actor)] 和#term[信道 (channel)] 之类的结构实现。这种#link("https://en.wikipedia.org/wiki/Shared-nothing_architecture", term[无共享 (shared-nothing)]) 并发机制消除了一系列数据竞争和竞态错误。结合监督机制，参与者模式还提供了容错性，一个参与者发生故障不会影响整个程序。
 
 == 开放递归
 

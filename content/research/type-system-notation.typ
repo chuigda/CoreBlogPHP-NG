@@ -326,12 +326,12 @@ $
 
 === 双向类型检查
 
-#let tin = $#math.op(sym.colon, limits: false)_arrow.b$
-#let tout = $#math.op(sym.colon, limits: false)_arrow.t$
+#let checkas = $#math.op(sym.colon, limits: false)_arrow.b$
+#let inferto = $#math.op(sym.colon, limits: false)_arrow.t$
 
 #link("https://arxiv.org/abs/1908.05839")[#term[双向类型检查 (Bidirectional typechecking)]] 是一种不依赖约束求解器的、有限的非局部类型推理技术。一个双向系统将通常的类型判断 $Gamma tack e : tau$ 分为两个特化的判断：
-- $Gamma tack e arrow.l.double tau$（或作 $Gamma tack e arrow.b tau$，$Gamma tack e tin tau$）是#term[检查 (checking)] 判断，它检查表达式 $e$ 是否具有期望的类型 $tau$。算法上，$tau$ 是判断的输入。
-- $Gamma tack e arrow.r.double tau$（或作 $Gamma tack e arrow.t tau$，$Gamma tack e tout tau$） 是#term[推导 (inference)] 判断，在“不知道期望类型是什么”的时候使用。算法上，$tau$ 是判断的输出。
+- $Gamma tack e arrow.l.double tau$（或作 $Gamma tack e arrow.b tau$，$Gamma tack e checkas tau$）是#term[检查 (checking)] 判断，它检查表达式 $e$ 是否具有期望的类型 $tau$。算法上，$tau$ 是判断的输入。
+- $Gamma tack e arrow.r.double tau$（或作 $Gamma tack e arrow.t tau$，$Gamma tack e inferto tau$） 是#term[推导 (inference)] 判断，在“不知道期望类型是什么”的时候使用。算法上，$tau$ 是判断的输出。
 
 两个判断以互递归的方式定义，双向传播类型信息，因此允许在某些时候省略类型注解。例如，$lambda$ 抽象的类型规则的检查变体允许省略变量绑定上的类型注解，因为变量的类型可以根据期望的类型确定：
 

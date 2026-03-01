@@ -13,7 +13,7 @@
   // Set paragraph spacing.
   set par(spacing: 0.9em)
   set par(leading: 0.58em)
-  show raw: set text(font: "LXGW Bright Code", size: 10.5pt, weight: 400, ligatures: false, features: (liga: 0,  dlig: 0, clig: 0, calt: 0, locl: 0))
+  show raw: set text(font: "LXGW Bright Code", size: 10pt, weight: 350, ligatures: false, features: (liga: 0,  dlig: 0, clig: 0, calt: 0, locl: 0))
   show math.equation: text.with(font: ("New Computer Modern"))
 
   // Title row.
