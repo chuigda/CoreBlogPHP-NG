@@ -5,7 +5,7 @@
   author-cols: 3,
   authors: (
     (name: "Alexis King", contrib: "原作者", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: [Doki Doki #sym.lambda Club!]),
     (name: "CAIMEO", contrib: "翻译提议、校对", affiliation: ""),
   )
 )

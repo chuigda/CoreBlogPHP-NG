@@ -5,7 +5,7 @@
   author-cols: 3,
   authors: (
     (name: "Graham Hutton", contrib: "原作者", affiliation: "诺丁汉大学"),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
+    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: [Doki Doki #sym.lambda CLub!]),
     (name: "CAIMEO", contrib: "翻译提议、校对", affiliation: ""),
     (name: "gjz010", contrib: "Typst 技术支持", affiliation: ""),
     (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
