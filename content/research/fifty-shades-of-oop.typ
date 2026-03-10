@@ -6,8 +6,8 @@
   authors: (
     (name: "Lesley Lai", contrib: "原作者", affiliation: ""),
     (name: "CAIMEO", contrib: "翻译提议", affiliation: ""),
-    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
-    (name: "Cousin Ze", contrib: "编译", affiliation: [Doki Doki $lambda$ Club!]),
+    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki #sym.lambda Club!]),
+    (name: "Cousin Ze", contrib: "编译", affiliation: [Doki Doki #sym.lambda Club!]),
     (name: "Gemini", contrib: "校对", affiliation: "Google Deepmind"),
     (name: "Claude", contrib: "校对", affiliation: "Anthropic")
   )
@@ -243,7 +243,7 @@ struct BaseClass {
 
 #link("https://en.wikipedia.org/wiki/Type_variance", term[型变 (variance，包括协变 covariance 和逆变 contravariance)])#footnote[和#term[不变式]无关。] 是与子类型相关的重要概念之一，它连接了参数化多态和子类型。解释这一概念需要一整篇文章，故此处不再赘述#footnote[译注：不过译者碰巧找到了一篇#link("https://zhuanlan.zhihu.com/p/2008169926100284358")[极好的文章]。]。型变极大地提高了子类型的易用性（例如，如果 C++ 指针不是协变的，它们就无法多态地使用了），但大多数语言都只实现了有限的、硬编码的型变规则，因其难以理解且容易出错。特别地，#term[可变数据类型 (mutable data type)] 通常应该是#term[无型变 (invariance / invariant)]#footnote[译注：也和#term[不变式]/#term[不可变数据]无关。] 的，而 Java/C#sym.sharp 的协变数组类型就是典型的反面教材。只有少数语言允许程序员显式控制型变，如#link("https://docs.scala-lang.org/tour/variances.html")[Scala] 和 #link("https://kotlinlang.org/docs/generics.html")[Kotlin]。
 
-经由子类型关系的类型转换通常是隐式的。虽说隐式转换声名狼藉，但从子类型隐式转换到超类型确实符合人体工程学，并且可能是最合乎情理的隐式转换。子类型也可看作隐式转换的对偶：隐式转换可被用于“仿造”子类型关系。例如，C++ 模板是#term[不变]的，但 `std::unique_ptr` 却允许从 `std::unique_ptr<Derived>` 隐式转换到 `std::unique_ptr<Base>`，从而实现了协变的效果。#link("https://journal.stuffwithstuff.com/2023/10/19/does-go-have-subtyping/")[《Go 有子类型吗？》]这篇文章很好地进一步探讨了这一思想。
+经由子类型关系的类型转换通常是隐式的。虽说隐式转换声名狼藉，但从子类型隐式转换到超类型确实符合人体工程学，并且可能是最合乎情理的隐式转换。子类型也可看作隐式转换的对偶：隐式转换可被用于“仿造”子类型关系。例如，C++ 模板是#term[无型变]的，但 `std::unique_ptr` 却允许从 `std::unique_ptr<Derived>` 隐式转换到 `std::unique_ptr<Base>`，从而实现了协变的效果。#link("https://journal.stuffwithstuff.com/2023/10/19/does-go-have-subtyping/")[《Go 有子类型吗？》]这篇文章很好地进一步探讨了这一思想。
 
 实现上的复杂度是语言设计者们试图规避子类型的原因之一。整合#term[双向类型推断 (bidirectional type inference)] 和子类型难如登天。Stephen Dolan 于 2016 年发表的博士论文#link("https://www.cs.tufts.edu/~nr/cs257/archive/stephen-dolan/thesis.pdf")[《代数子类型》]在这一问题上取得了长足的进步。
 
@@ -259,7 +259,7 @@ struct BaseClass {
 
 许多早期面向对象概念受到过分布式和模拟系统的启发，在这些系统中，消息传递是自然而然的。然而，在大多数人都还写单线程代码的年代，这一理念在 C++ 和 Java 等语言中逐渐被遗忘。与消息传递相比，方法语法的优势有限（Bjarne Stroustrup 肯定从 Simula 那里了解到了消息传递的思想，但在实践中需要考虑如何高效实现）。真正的消息传递仍然存在，但仅限于特定领域，如进程间通信和高度#term[事件驱动 (event-driven)] 的系统。
 
-消息传递在并发编程中迎来了复兴。讽刺的是，这复兴并非来自面向对象语言，而是来自 Erlang 和 Go 等非面向对象语言，通过#term[施动器 (actor)]#footnote[译注：术语选择逻辑：考虑 Collins 词典给出的解释“person who does something or participates in something”，再考虑 re·actor = 反应器，pro·actor = 预动器/前摄器 $|->$ actor = 施动器。] 和#term[信道 (channel)] 之类的结构实现。这种#link("https://en.wikipedia.org/wiki/Shared-nothing_architecture", term[无共享 (shared-nothing)]) 并发机制消除了一系列数据竞争和竞态错误。结合监督机制，施动器还提供了容错性，一个施动器发生故障不会影响整个程序。
+消息传递在并发编程中迎来了复兴。讽刺的是，这复兴并非来自面向对象语言，而是来自 Erlang 和 Go 等非面向对象语言，通过#term[参与者 (actor)] 和#term[信道 (channel)] 之类的结构实现。这种#link("https://en.wikipedia.org/wiki/Shared-nothing_architecture", term[无共享 (shared-nothing)]) 并发机制消除了一系列数据竞争和竞态错误。结合监督机制，参与者模式还提供了容错性，一个参与者发生故障不会影响整个程序。
 
 == 开放递归
 

@@ -10,7 +10,7 @@
     (name: "Andres Löh", contrib: "原作者", affiliation: "乌特勒支大学"),
     (name: "Conor McBride", contrib: "原作者", affiliation: "斯特拉斯克莱德大学"),
     (name: "Wouter Swierstra", contrib: "原作者", affiliation: "诺丁汉大学"),
-    (name: "Chuigda Whitegive", contrib: "翻译", affiliation: "第七通用设计局"),
+    (name: "Chuigda Whitegive", contrib: "编译", affiliation: [Doki Doki #sym.lambda CLub!]),
     (name: "Gemini", contrib: "类型论支持、校对", affiliation: "Google Deepmind"),
     (name: "Claude", contrib: "校对", affiliation: "Anthropic"),
     (name: "", contrib: "", affiliation: ""),
@@ -58,7 +58,7 @@
 
 = 译者前言
 
-本文是对文章 #link("https://www.andres-loeh.de/LambdaPi/LambdaPi.pdf")[A tutorial implementation of a dependently typed lambda calculus] 的中文翻译，部分字句有所改动。排版经过调整，使图表总是位于直接描述该图表的文本下方，以便阅读。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以这种形式呈现。本文附有#link("https://github.com/club-doki7/LambdaPi")[其它语言的实现]。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
+本文是 #link("https://www.andres-loeh.de/LambdaPi/LambdaPi.pdf")[A tutorial implementation of a dependently typed lambda calculus] 的中文*编译*版本，译者基于个人判断改动了部分字句和代码。排版经过调整，使图表总是位于直接描述该图表的文本下方，以便阅读。#term[术语 (terminology)] 在正文中第一次出现的地方以#term[仿宋体（中文）]或 #emph[Italic (English)] 呈现，如果某个术语难以辨认，则总是会以这种形式呈现。本文附有#link("https://github.com/club-doki7/LambdaPi")[其它语言的实现]。如遇翻译或排版质量问题，请在 #link("https://github.com/chuigda/CoreBlogPHP-NG/issues") 向译者报告。
 
 = 摘要
 
@@ -242,7 +242,7 @@ $, caption: [#stlc()的类型规则])
 
 我们首先来看#term[可推断项 (inferable term)] [ANN]，我们将带类型注解的词项与其类型注解进行比对，然后返回该类型。变量的类型可以在环境中查找 [VAR]。对于#term[应用] [APP]，我们首先处理函数 $e$——它必须具有函数类型，然后我们将参数 $e'$与函数的输入类型进行比较，并将函数的返回类型#footnote[译注：“输入类型”原作“#term[定义域 (domain)]”，“返回类型”原作“#term[值域 (range)]”。“值域”这一术语并不严谨，既可指#term[陪域/到达域 (codomain)]，亦可指#term[像/像集 (image/image set)]。且在类型论语境下，将#term[集合 (Set)] 与#term[类型 (Type)] 混为一谈，则容易引出许多的危险。简单起见，译者扬弃了这两个术语，统一使用“输入类型”和“返回类型”。至于相关理论知识，本文限于篇幅不再赘述，感兴趣的读者可自行探索。]作为结果类型返回。
 
-最后两条规则用于类型检查。如果我们能推断出一个词项的类型，且该类型与给定的类型一致，那么该词项也能通过给定类型的检查 [CHK]。Lambda 抽象只能被检查为函数类型 [LAM]。我们在扩展后的语境中检查 $lambda$ 抽象的#term[函数体 (body)]。
+最后两条规则用于类型检查。如果我们能推断出一个词项的类型，且该类型与给定的类型一致，那么该词项也能通过给定类型的检查 [CHK]。$lambda$ 抽象只能被检查为函数类型 [LAM]。我们在扩展后的语境中检查 $lambda$ 抽象的#term[函数体 (body)]。
 
 请注意，这些规则几乎完全是#term[语法制导 (syntax-directed) ]的：尽管连接可检查项和可推断项的规则 [CHK] 似乎可以匹配任何词项，然而规则中并没有用于推断 $lambda$ 抽象的类型的规则，也没有显式地检查类型注解、变量或#term[应用]的规则。因此，这些规则可以被很容易地转换为语法制导的算法。
 
@@ -311,7 +311,7 @@ data Name
 
 带类型注解的词项以 `Ann` 表示。如前所述，我们用整数表示绑定变量 (`Bound`) ，用名称表示自由变量 (`Free`) 。那些通常指涉全局实体的名称使用字符串（`Global`）。当类型检查算法#footnote[译注：原文无此“类型检查”，依后文补。]进入一层绑定符#footnote[译注：原文为“passing a binder”。因为 pass 既可以表示“通过”又可以表示“传递”，同时又少了递归的意思，因此此处意译为“进入”。] 时，我们需要将绑定符引入的绑定变量临时转换成一个自由变量，我们用 `Local` 表示这类变量。进行引用时，我们使用 `Quote` 构造子。构造子 `App`#footnote[译注：原文用符号是中缀运算符“`:@:`”，译者依个人好恶改。] 表示#term[应用]。
 
-可推断项通过构造子 `Inf` 嵌入到可检查项中。Lambda 抽象（因为我们用了德布鲁因索引，所以不会引入显式的变量）使用 `Lam` 表示。
+可推断项通过构造子 `Inf` 嵌入到可检查项中。$lambda$ 抽象（因为我们用了德布鲁因索引，所以不会引入显式的变量）使用 `Lam` 表示。
 
 类型只有两种：类型标识符 (`TFree`) 和函数箭头 (`Fun`) 。我们为类型标识符复用 `Name` 数据类型。在#stlc()中，类型层面上不会有绑定变量，所以不需要 `TBound` 构造子。
 
@@ -741,7 +741,7 @@ $
 
 // The difference here is that the type is a dependent function type. Note that the bound variable x may now not only occur in the body of the function e. 哈哈，又是“the” type。后半句也是说话说一半，看得出来克服 ADHD 对三位老顽童来说还是太困难了
 
-最后一条规则 [LAM] 是用来检查 $lambda$ 抽象的。与之前不同的是，Lambda 抽象的类型现在是一个依值函数类型，绑定变量 $x$ 不仅可能出现在函数体 $e$ 中，还可能出现在返回类型 $tau'$ 中#footnote[译注：后半句“还可能出现在返回类型 $tau'$ 中”为译者补文。]。因此在对函数体 $e$ 作类型检查和对返回类型 $tau'$ 作#term[种类]检查时，都要使用扩展过的语境 $Gamma, x :: tau$。
+最后一条规则 [LAM] 是用来检查 $lambda$ 抽象的。与之前不同的是，$lambda$ 抽象的类型现在是一个依值函数类型，绑定变量 $x$ 不仅可能出现在函数体 $e$ 中，还可能出现在返回类型 $tau'$ 中#footnote[译注：后半句“还可能出现在返回类型 $tau'$ 中”为译者补文。]。因此在对函数体 $e$ 作类型检查和对返回类型 $tau'$ 作#term[种类]检查时，都要使用扩展过的语境 $Gamma, x :: tau$。
 
 总结下来，我们所作的所有修改都是围绕着我们在第三节开头引入的两个核心概念进行的：函数空间被泛化为依值函数空间；类型和#term[种类]也是词项。
 
@@ -1060,7 +1060,7 @@ data Term↑ = ...
 
 === 求值
 
-之前，#term[值]只有两种，Lambda 抽象和“卡住”的#term[应用]。而现在，我们需要扩展用于表示#term[值]的数据类型来适配自然数的构造子：
+之前，#term[值]只有两种，$lambda$ 抽象和“卡住”的#term[应用]。而现在，我们需要扩展用于表示#term[值]的数据类型来适配自然数的构造子：
 
 ```
 data Value = ...
